@@ -1,7 +1,3 @@
-Create a new commit for all of our uncommitted changes
-run git status && git diff HEAD && git status --porcelain to see what files are uncommitted
-add the untracked and changed files
+Commit staged changes.
 
-Add an atomic commit message with an appropriate message
-
-add a tag such as "feat", "fix", "docs", etc. that reflects our work
+Run `git status` and `git diff --cached` to review staged changes, then commit with a concise message prefixed with a tag (feat, fix, docs, refactor, test, chore).
