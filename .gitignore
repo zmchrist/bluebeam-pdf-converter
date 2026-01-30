@@ -36,7 +36,8 @@ node_modules/
 frontend/dist/
 
 # Temporary files
-backend/data/temp/
+backend/data/temp/*
+!backend/data/temp/.gitkeep
 *.tmp
 *.temp
 
