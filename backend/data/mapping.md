@@ -12,15 +12,15 @@ Updated based on actual subjects discovered in BidMap.pdf.
 
 | Bid Icon Subject | Deployment Icon Subject | Category |
 |------------------|------------------------|----------|
-| Artist - Indoor Wi-Fi Access Point | AP - Cisco 9120 | Access Points |
-| Artist - Wi-Fi Access Point | AP - Cisco 9120 | Access Points |
+| Artist - Indoor Wi-Fi Access Point | AP - Cisco MR36H | Access Points |
+| Artist - Wi-Fi Access Point | AP - Cisco MR36H | Access Points |
 | Artist - High Density Wi-Fi Access Point | AP - Cisco 9166I | Access Points |
 | Artist - High Density Directional Wi-Fi Access Point | AP - Cisco 9166D | Access Points |
 | Artist - Outdoor Wi-Fi Access Point | AP - Cisco MR78 | Access Points |
 | Artist - Ethernet Hardline | HL - Artist | Hardlines |
 | Artist - High Capacity Ethernet Hardline | HL - Artist | Hardlines |
-| Production - Indoor Wi-Fi Access Point | AP - Cisco 9120 | Access Points |
-| Production - Wi-Fi Access Point | AP - Cisco 9120 | Access Points |
+| Production - Indoor Wi-Fi Access Point | AP - Cisco MR36H | Access Points |
+| Production - Wi-Fi Access Point | AP - Cisco MR36H | Access Points |
 | Production - Medium Density Wi-Fi Access Point | AP - Cisco 9166I | Access Points |
 | Production - High Density Wi-Fi Access Point | AP - Cisco 9166I | Access Points |
 | Production - Medium Density Directional Wi-Fi Access Point | AP - Cisco 9166D | Access Points |
@@ -28,31 +28,31 @@ Updated based on actual subjects discovered in BidMap.pdf.
 | Production - Outdoor Wi-Fi Access Point | AP - Cisco MR78 | Access Points |
 | Production - Ethernet Hardline | HL - Production | Hardlines |
 | Production - High Capacity Ethernet Hardline | HL - Production | Hardlines |
-| Point-of-Sale - Indoor Wi-Fi Access Point | AP - Cisco 9120 | Access Points |
-| Point-of-Sale - Wi-Fi Access Point | AP - Cisco 9120 | Access Points |
+| Point-of-Sale - Indoor Wi-Fi Access Point | AP - Cisco MR36H | Access Points |
+| Point-of-Sale - Wi-Fi Access Point | AP - Cisco MR36H | Access Points |
 | Point-of-Sale - High Density Wi-Fi Access Point | AP - Cisco 9166I | Access Points |
 | Point-of-Sale - High Density Directional Wi-Fi Access Point | AP - Cisco 9166D | Access Points |
 | Point-of-Sale - Outdoor Wi-Fi Access Point | AP - Cisco MR78 | Access Points |
 | Point-of-Sale - Ethernet Hardline | HL - PoS | Hardlines |
 | Point-of-Sale - High Capacity Ethernet Hardline | HL - PoS | Hardlines |
-| Access Control - Indoor Wi-Fi Access Point | AP - Cisco 9120 | Access Points |
-| Access Control - Wi-Fi Access Point | AP - Cisco 9120 | Access Points |
+| Access Control - Indoor Wi-Fi Access Point | AP - Cisco MR36H | Access Points |
+| Access Control - Wi-Fi Access Point | AP - Cisco MR36H | Access Points |
 | Access Control - High Density Wi-Fi Access Point | AP - Cisco 9166I | Access Points |
 | Access Control - High Density Directional Wi-Fi Access Point | AP - Cisco 9166D | Access Points |
 | Access Control - Outdoor Wi-Fi Access Point | AP - Cisco MR78 | Access Points |
 | Access Control - Ethernet Hardline | HL - Access Control | Hardlines |
 | Access Control - High Capacity Ethernet Hardline | HL - Access Control | Hardlines |
-| Sponsor - Indoor Wi-Fi Access Point | AP - Cisco 9120 | Access Points |
-| Sponsor - Wi-Fi Access Point | AP - Cisco 9120 | Access Points |
+| Sponsor - Indoor Wi-Fi Access Point | AP - Cisco MR36H | Access Points |
+| Sponsor - Wi-Fi Access Point | AP - Cisco MR36H | Access Points |
 | Sponsor - High Density Wi-Fi Access Point | AP - Cisco 9166I | Access Points |
 | Sponsor - High Density Directional Wi-Fi Access Point | AP - Cisco 9166D | Access Points |
 | Sponsor - Outdoor Wi-Fi Access Point | AP - Cisco MR78 | Access Points |
 | Sponsor - Ethernet Hardline | HL - Sponsor | Hardlines |
 | Sponsor - High Capacity Ethernet Hardline | HL - Sponsor | Hardlines |
 | High Density - Wi-Fi Access Point | AP - Cisco 9166I | Access Points |
-| High Density - Stadium Wi-Fi Access Point | AP - Cisco DB10 | Access Points |
+| High Density - Stadium Wi-Fi Access Point | AP - Cisco Marlin 4 | Access Points |
 | Hyper Directional Stadium Access Point | AP - Cisco DB10 | Access Points |
-| Hyper Directional Wi-Fi 7 Stadium Access Point | AP - Cisco Marlin 4 | Access Points |
+| Hyper Directional Wi-Fi 7 Stadium Access Point | AP - Cisco DB10 | Access Points |
 | Distribution - Compact Edge Switch | SW - Cisco Micro 4P | Switches |
 | Distribution - Edge Switch | SW - Cisco 9200 12P | Switches |
 | Distribution - Clair Custom IDF Rack | SW - IDF Cisco 9300 24X | Switches |

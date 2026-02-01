@@ -1,45 +1,41 @@
 """
 Appearance stream extractor service.
 
-Extracts annotation appearance streams from reference PDF files
-to enable visual appearance copying during conversion.
+Extracts annotation color information from reference PDF files
+to enable visual appearance matching during conversion.
+
+Uses PyMuPDF for reliable color extraction.
 """
 
 import logging
 from pathlib import Path
 from typing import Any
 
-from PyPDF2 import PdfReader
-from PyPDF2.generic import (
-    ArrayObject,
-    DictionaryObject,
-    IndirectObject,
-    NameObject,
-)
+import pymupdf
 
 logger = logging.getLogger(__name__)
 
 
 class AppearanceExtractor:
     """
-    Service for extracting annotation appearance streams from reference PDFs.
+    Service for extracting annotation appearance data from reference PDFs.
 
-    This allows copying the visual appearance of icons from one PDF
-    (e.g., DeploymentMap.pdf) to annotations in another PDF.
+    This extracts color information (fill, stroke, opacity) from annotations
+    in a reference PDF (e.g., DeploymentMap.pdf) so the converted annotations
+    can match the expected visual appearance.
     """
 
     def __init__(self):
         """Initialize appearance extractor."""
         self.appearances: dict[str, dict[str, Any]] = {}
-        self._reader: PdfReader | None = None
         self._loaded = False
 
     def load_from_pdf(self, pdf_path: Path) -> int:
         """
-        Load appearance streams from a reference PDF.
+        Load appearance data from a reference PDF.
 
-        Extracts the /AP (appearance) dictionary from each annotation
-        and stores it keyed by subject name.
+        Extracts color information from each annotation and stores it
+        keyed by subject name.
 
         Args:
             pdf_path: Path to reference PDF file
@@ -54,41 +50,36 @@ class AppearanceExtractor:
             raise FileNotFoundError(f"Reference PDF not found: {pdf_path}")
 
         self.appearances.clear()
-        self._reader = PdfReader(pdf_path)
 
-        # Process all pages (though we expect single page for maps)
-        for page_num, page in enumerate(self._reader.pages):
-            self._extract_from_page(page, page_num)
+        doc = pymupdf.open(pdf_path)
+
+        try:
+            for page_num, page in enumerate(doc):
+                self._extract_from_page(page, page_num)
+        finally:
+            doc.close()
 
         self._loaded = True
         logger.info(f"Loaded {len(self.appearances)} appearance streams from {pdf_path.name}")
 
         return len(self.appearances)
 
-    def _extract_from_page(self, page: Any, page_num: int) -> None:
+    def _extract_from_page(self, page: pymupdf.Page, page_num: int) -> None:
         """
         Extract appearances from a single page.
 
         Args:
-            page: PDF page object
+            page: PyMuPDF page object
             page_num: Page number (0-indexed)
         """
-        annots_ref = page.get("/Annots")
-        if not annots_ref:
-            return
+        for annot in page.annots():
+            if annot is None:
+                continue
 
-        # Dereference if needed
-        annots = annots_ref.get_object() if hasattr(annots_ref, "get_object") else annots_ref
-        if not annots:
-            return
-
-        for annot_ref in annots:
             try:
-                annot = annot_ref.get_object() if hasattr(annot_ref, "get_object") else annot_ref
-
                 # Get subject
-                subj = annot.get("/Subj") or annot.get("/Subject") or ""
-                subj_str = str(subj).strip()
+                info = annot.info
+                subj_str = info.get("subject", "").strip()
 
                 if not subj_str:
                     continue
@@ -97,29 +88,59 @@ class AppearanceExtractor:
                 if subj_str in self.appearances:
                     continue
 
-                # Check for appearance dictionary
-                ap = annot.get("/AP")
-                if not ap:
+                # Extract colors
+                colors = annot.colors
+                fill_color = colors.get("fill")
+                stroke_color = colors.get("stroke")
+
+                # Get opacity
+                opacity = annot.opacity
+
+                # Only store if we have color data
+                if fill_color is None and stroke_color is None:
                     continue
 
-                # Store the annotation data we need to copy
+                # Convert colors to tuples
+                fill_tuple = tuple(fill_color) if fill_color else None
+                stroke_tuple = tuple(stroke_color) if stroke_color else None
+
+                # Store the appearance data
                 self.appearances[subj_str] = {
-                    "annot_ref": annot_ref,  # Keep reference for indirect objects
-                    "subtype": str(annot.get("/Subtype", "/Circle")),
-                    "ic": annot.get("/IC"),  # Interior color
-                    "c": annot.get("/C"),  # Border color
-                    "bs": annot.get("/BS"),  # Border style
-                    "rd": annot.get("/RD"),  # Rect difference
-                    "ap": ap,  # Appearance dictionary
-                    "oc": annot.get("/OC"),  # Optional content
+                    "fill": fill_tuple,
+                    "stroke": stroke_tuple,
+                    "opacity": opacity if opacity is not None else 1.0,
+                    "subtype": self._get_annotation_subtype(annot),
                     "page_num": page_num,
                 }
 
-                logger.debug(f"Extracted appearance for: {subj_str}")
+                logger.debug(
+                    f"Extracted appearance for: {subj_str} "
+                    f"fill={fill_tuple} stroke={stroke_tuple}"
+                )
 
             except Exception as e:
                 logger.debug(f"Error extracting annotation appearance: {e}")
                 continue
+
+    def _get_annotation_subtype(self, annot: pymupdf.Annot) -> str:
+        """
+        Get the annotation subtype in PDF format.
+
+        Args:
+            annot: PyMuPDF annotation object
+
+        Returns:
+            PDF annotation subtype string (e.g., "/Circle")
+        """
+        type_map = {
+            pymupdf.PDF_ANNOT_CIRCLE: "/Circle",
+            pymupdf.PDF_ANNOT_SQUARE: "/Square",
+            pymupdf.PDF_ANNOT_POLYGON: "/Polygon",
+            pymupdf.PDF_ANNOT_POLY_LINE: "/PolyLine",
+            pymupdf.PDF_ANNOT_STAMP: "/Stamp",
+            pymupdf.PDF_ANNOT_TEXT: "/Text",
+        }
+        return type_map.get(annot.type[0], "/Circle")
 
     def get_appearance_data(self, subject: str) -> dict[str, Any] | None:
         """
@@ -129,7 +150,12 @@ class AppearanceExtractor:
             subject: Annotation subject name
 
         Returns:
-            Dictionary with appearance data, or None if not found
+            Dictionary with appearance data:
+                - fill: RGB tuple (0-1 range) or None
+                - stroke: RGB tuple (0-1 range) or None
+                - opacity: Float 0-1
+                - subtype: PDF annotation subtype
+            Or None if not found
         """
         return self.appearances.get(subject)
 
@@ -162,12 +188,3 @@ class AppearanceExtractor:
             True if load_from_pdf() has been called successfully
         """
         return self._loaded
-
-    def get_reader(self) -> PdfReader | None:
-        """
-        Get the PDF reader for indirect object resolution.
-
-        Returns:
-            PdfReader instance or None if not loaded
-        """
-        return self._reader
