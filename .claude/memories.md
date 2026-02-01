@@ -4,6 +4,148 @@
 
 ---
 
+## Session Update: 2026-01-30 (Night) - Clone Approach NOT WORKING
+
+### Issue Discovered
+**Script reports success but NO ICONS VISIBLE in output PDF!**
+
+The `test_batch_clone.py` script reports converting 376/376 icons, but when the user opens `test_batch_clone_output.pdf`, no icons are visible. The conversion is silently failing despite appearing to succeed.
+
+### What Was Attempted
+- Created `backend/scripts/test_clone_icon.py` - Single icon cloning from DeploymentMap.pdf
+- Created `backend/scripts/test_batch_clone.py` - Batch conversion of all icons
+- Implemented coordinate transformation for PDF appearance streams
+- Fixed PyPDF2 stream handling (DecodedStreamObject, no Filter copy)
+
+### Technical Analysis
+
+**Original BidMap.pdf annotations HAVE appearance streams:**
+```
+Subject: Artist - Indoor Wi-Fi Access Point
+Subtype: /Circle
+Rect: [6351.083, 7463.711, 6373.975, 7486.62]
+Has /AP: Yes
+AP stream (279 bytes): 0 0 0 RG 0.5968134 w 0.6 0.4 1 rg 6362.529 7464.308 m...
+```
+
+**Output PDF annotations appear to have data but don't render:**
+- Annotations exist with correct subjects
+- /AP dictionary exists
+- Stream data appears present (~380 bytes)
+- BUT icons don't appear when PDF is opened
+
+### Possible Root Causes
+1. **PyPDF2 annotation handling** - May not be properly linking annotations to page
+2. **Indirect object references** - New annotations may not be properly registered
+3. **Page /Annots array modification** - Changes may not persist correctly
+4. **Stream encoding issue** - Despite data being present, may not be valid PDF stream
+
+### Files Created (but not working)
+- `backend/scripts/test_clone_icon.py` - Single icon clone test
+- `backend/scripts/test_batch_clone.py` - Batch clone conversion
+- `samples/maps/test_clone_output.pdf` - Output (icons not visible)
+- `samples/maps/test_batch_clone_output.pdf` - Output (icons not visible)
+
+### Status
+**BLOCKED - Clone approach produces output but icons don't render**
+
+Need to investigate why PyPDF2-created annotations aren't visible. May need to:
+1. Use a different PDF library (pypdf, reportlab, PyMuPDF)
+2. Debug the exact PDF structure differences between working and broken annotations
+3. Try a completely different approach
+
+---
+
+## Session Update: 2026-01-30 (Evening) - Visual Icon Rendering
+
+### Completed
+- Created `backend/scripts/test_single_icon.py` - Single icon conversion test with embedded XObject image
+- Successfully rendered a deployment icon with appearance stream (proof of concept)
+- Analyzed BTX deployment icon structure (GROUP with 6 child annotations)
+
+### Key Discoveries
+
+**Deployment Icons are Complex Groups:**
+Each deployment icon in BTX is a GROUP containing 6 child annotations:
+| Child | Type | Purpose |
+|-------|------|---------|
+| 0 | FreeText | Reference label "j100" (top, blue text) |
+| 1 | Circle | Blue circle background (RGB: 0.22, 0.34, 0.65) |
+| 2 | **BBImage** | Product photo (Bluebeam-proprietary image type) |
+| 3 | FreeText | "CISCO" header (white text) |
+| 4 | FreeText | Model number "MR36H" (white text) |
+| 5 | FreeText | Coordinate placeholder "xx' xx°" (blue text) |
+
+**Appearance Stream Approach Works:**
+- Created PDF appearance stream with embedded XObject image
+- Used Bezier curves to draw circle, embedded PNG image, added text
+- **Result:** Icon renders but as SQUARE instead of circle (Bezier issue)
+- "CISCO" text visible, product image shows as white square
+
+**Bid vs Deployment Icon Visual Difference:**
+- Bid icons: Simple colored circles with WiFi symbol (single annotation)
+- Deployment icons: Blue circle + product photo + text labels (complex group)
+
+### Files Created
+- `backend/scripts/test_single_icon.py` - Converts one "Artist - Indoor Wi-Fi Access Point" → "AP - Cisco 9120" with embedded image appearance
+- `samples/maps/test_single_icon_output.pdf` - Test output PDF
+- `samples/maps/test_single_icon_cropped.pdf` - Cropped view around converted icon
+
+### Current Issue
+Circle rendering as SQUARE - Bezier curve approximation not working correctly in PDF appearance stream. Need to fix the path drawing commands.
+
+### Status
+**Phase 3 visual appearance work in progress.** Proof of concept working - appearance streams render. Next: fix circle drawing, refine text positioning, then scale to all icons.
+
+---
+
+## Session Update: 2026-01-30 (Afternoon)
+
+### Completed
+- Created `backend/scripts/test_conversion.py` - End-to-end conversion test script
+- Created `backend/app/services/appearance_extractor.py` - Extracts icon appearances from reference PDFs
+- Updated `annotation_replacer.py` to use appearance data from reference PDFs
+- Fixed mapping.md with actual subjects from BidMap.pdf (was using BTX subjects which didn't match)
+- **Test conversion successful: 376/402 annotations converted (93.5%)**
+
+### Key Discoveries
+
+**Subject Name Mismatch:**
+- BidMap.pdf uses different subject names than BTX files
+- Example: PDF has "Artist - Indoor Wi-Fi Access Point", BTX has "Artist - Wi-Fi Access Point"
+- Example: PDF has "Distribution - Edge Switch", BTX has "INFRAS - Edge Switch"
+- **Solution:** Updated mapping.md with actual subjects from PDF
+
+**Appearance Stream Approach:**
+- Icons need `/AP` (appearance stream) for visual graphics - not just subject/colors
+- BTX resources contain XObject images but embedding them is complex
+- **Better approach:** Extract appearances from DeploymentMap.pdf and clone them
+- Loaded 27 unique appearance streams from DeploymentMap.pdf
+
+**Appearance Coverage:**
+- 12 deployment subjects have visual appearances from reference PDF
+- 25 deployment subjects missing (not in DeploymentMap.pdf) - fall back to colored shapes
+- DeploymentMap.pdf has different model names (e.g., "AP - Cisco MR36H" vs "AP - Cisco 9120")
+
+### Files Created
+- `backend/scripts/test_conversion.py` - Test script for full conversion pipeline
+- `backend/scripts/diagnose_annotations.py` - Diagnostic tool for PDF annotation analysis
+- `backend/app/services/appearance_extractor.py` - Appearance stream extraction service
+
+### Files Modified
+- `backend/app/services/annotation_replacer.py` - Added appearance data support, BTX property parsing
+- `backend/tests/test_annotation_replacer.py` - Updated tests for new behavior (uses /Subj not /Subject, /Circle not /Stamp)
+- `backend/data/mapping.md` - Expanded to 89 mappings with actual PDF subjects
+
+### Status
+**Phase 3 partially complete.** Annotation replacement working but visual appearance limited by reference PDF coverage.
+
+**26 skipped annotations are expected:** Legend items, gear lists, measurements (not equipment icons)
+
+**Visual appearance gap:** Many deployment icons don't exist in DeploymentMap.pdf, so they show as colored shapes instead of icon graphics.
+
+---
+
 ## Recent Progress: BTX Loader Implementation (2026-01-30)
 
 ### Completed Phase 2: BTX File Parsing
@@ -29,17 +171,8 @@
 - **Bid icons**: 70 icons from 1 BTX file
 - **Deployment icons**: 118 icons from 8 BTX files
 
-**mapping.md Rebuilt:**
-- Replaced placeholder subjects with real subjects from BTX files
-- 68 bid→deployment mappings created (97.1% coverage)
-- 2 unmapped bid icons (special items without deployment equivalents):
-  - `CLAIR GEAR LIST` (title/header)
-  - `MISC - 5G Cellular Hotspot (MiFi)` (portable device)
-
 **Tests Added:**
 - `backend/tests/test_btx_loader.py` - 24 unit tests, all passing
-
-**User is manually reviewing mapping.md for accuracy.**
 
 ---
 
@@ -79,7 +212,7 @@
 1. Parse PDF to find all markup annotation coordinates
 2. Extract subject field from each annotation (may need hex→string translation)
 3. Look up subject in mapping.md to find corresponding deployment icon subject
-4. Reference toolchest BTX files to get deployment icon visual data
+4. Reference toolchest BTX files OR DeploymentMap.pdf to get deployment icon visual data
 5. Delete bid icon annotation completely (subject + visual data)
 6. Insert deployment icon annotation at exact same coordinates and size
 7. Change both subject field AND visual appearance
@@ -109,11 +242,19 @@
 - `<Name>` is NOT the subject - it's a random internal ID
 - Subject is in decoded `<Raw>` field: `/Subj(Subject Name Here)`
 - Files may have UTF-8 BOM that must be stripped before XML parsing
+- Resources contain XObject images (158x160 RGB with alpha mask)
 
-### Annotation Format:
-- PDF annotations contain subject field that matches BTX subject names
-- Subject names may be hex-encoded in PDF (use SubjectExtractor)
-- Coordinates and size preserved during replacement
+### PDF Annotation Structure (from BidMap.pdf):
+```
+/Type: /Annot
+/Subtype: /Circle (or /Square)
+/Rect: [x1, y1, x2, y2]
+/Subj: "Subject Name"
+/IC: [r, g, b]  # Interior color
+/C: [r, g, b]   # Border color
+/BS: {/W: width, /S: /S}  # Border style
+/AP: {/N: stream}  # Appearance stream (the actual graphics)
+```
 
 ### Icon Matching Logic:
 ```
@@ -121,7 +262,7 @@ Find bid icon subject in PDF annotation →
 Parse mapping.md markdown table →
 Find bid subject row in mapping →
 Get corresponding deployment subject →
-Look up deployment icon in toolchest BTX →
+Look up deployment icon appearance in DeploymentMap.pdf OR BTX →
 Replace annotation (coords preserved, size preserved, subject + appearance changed)
 ```
 
@@ -152,7 +293,8 @@ samples/
 │   └── deploymentIcons/
 └── maps/
     ├── BidMap.pdf (4.3MB) - Sample bid map with markups
-    └── DeploymentMap.pdf (8.1MB) - Sample deployment map with markups
+    ├── BidMap_converted_*.pdf - Generated conversion outputs
+    └── DeploymentMap.pdf (8.1MB) - Reference for appearance extraction
 ```
 
 ### mapping.md File:
@@ -162,13 +304,12 @@ samples/
   ```markdown
   | Bid Icon Subject | Deployment Icon Subject | Category |
   |------------------|------------------------|----------|
-  | Access Control - Wi-Fi Access Point | AP - Cisco 9120 | Access Points |
-  | INFRAS - Edge Switch | SW - Cisco 9200 12P | Switches |
-  | INFRAS - Point-to-Point Transeiver | P2P - Ubiquiti NanoBeam | Point-to-Points |
+  | Artist - Indoor Wi-Fi Access Point | AP - Cisco 9120 | Access Points |
+  | Distribution - Edge Switch | SW - Cisco 9200 12P | Switches |
   ```
-- **Current Stats:** 68 mappings covering 97.1% of bid icons
+- **Current Stats:** 89 mappings covering actual subjects from BidMap.pdf
 - **Subject Name Patterns:**
-  - Bid icons: `Category - Description` (e.g., "Access Control - Wi-Fi Access Point")
+  - Bid icons in PDF: `Category - Indoor/Outdoor/Medium Density Wi-Fi Access Point` style
   - Deployment icons: `Type - Model` (e.g., "AP - Cisco 9120", "SW - Cisco 9200 12P")
 - **Purpose:** Single source of truth for bid↔deployment icon mappings
 - **Scope:** Universal mapping applies to ALL conversions (one north star file)
@@ -207,9 +348,9 @@ samples/
 ### Backend:
 - Python 3.11+
 - FastAPI
-- PDF library: PyPDF2, pypdf, or pdfplumber (need to test which works best)
-- BTX XML parsing (for toolchest icon reference)
-- Markdown parsing (for mapping.md)
+- PDF library: PyPDF2 (working, but deprecated - consider pypdf)
+- BTX XML parsing with lxml
+- Markdown parsing for mapping.md
 
 ### Frontend:
 - React 18
@@ -241,80 +382,6 @@ samples/
 
 ---
 
-## PRD Updates Completed (2026-01-29):
-
-1. ✅ **Executive Summary** - Updated to describe PDF conversion workflow
-2. ✅ **Mission & Core Principles** - Changed to 3-step workflow, accuracy focus
-3. ✅ **MVP Scope** - Removed BTX upload, mapping UI; added PDF processing
-4. ✅ **User Stories** - Completely rewritten for PDF upload/download workflow (6 stories)
-
-## PRD Updates Still Needed:
-
-5. ⏳ **Architecture Diagram** - Update for PDF processing (remove mapping UI layer)
-6. ⏳ **Directory Structure** - Add mapping.md, PDF processing services
-7. ⏳ **Features Section** - Remove mapping editor, add PDF annotation processing
-8. ⏳ **Technology Stack** - Add PDF libraries, remove mapping CRUD
-9. ⏳ **API Specification** - Simplify to 4 endpoints (upload, convert, download, health)
-10. ⏳ **Implementation Phases** - Revise for simpler architecture (4 phases instead of 6)
-
----
-
-## Key User Answers from Conversation:
-
-**Q: How do we parse PDF annotations?**
-A: Parse PDF directly to find markup annotation coordinates. Map underneath is flat, so only icon markups exist.
-
-**Q: What format is mapping.md?**
-A: Markdown table with columns: Bid Icon Subject, Deployment Icon Subject, Category
-
-**Q: Multiple mapping files?**
-A: NO - One mapping.md file that applies universally to all conversions
-
-**Q: Where does mapping.md live?**
-A: `backend/data/mapping.md`
-
-**Q: Subject name matching?**
-A: Extract subject from PDF annotation (may need hex→string translation), look up in mapping.md, find corresponding deployment subject
-
-**Q: Multi-page PDFs?**
-A: Single-page for MVP. Multi-page is future enhancement.
-
-**Q: How to replace annotations?**
-A: Find coords → translate subject via mapping.md → delete bid annotation entirely → insert deployment annotation at same coords/size
-
-**Q: What needs to change in annotation?**
-A: Both subject field AND visual appearance. Delete bid icon completely, replace with deployment icon.
-
----
-
-## Next Steps (In Order):
-
-### Immediate (User Action Required):
-1. **User to review mapping.md** - Verify bid→deployment mappings are correct
-
-### After Mapping Verification:
-2. Implement `annotation_replacer.py` - Core annotation replacement logic
-3. Implement `pdf_reconstructor.py` - Write modified PDFs with new annotations
-4. Test with sample BidMap.pdf to verify conversion works
-5. Build FastAPI endpoints (upload, convert, download)
-6. Create React frontend UI
-
-### Documentation (Lower Priority):
-7. Update Architecture diagram (remove mapping UI, add PDF processing layer)
-8. Update Directory Structure in PRD
-9. Update README.md with corrected workflow
-
----
-
-## Questions Still Needing Verification:
-
-1. ~~Are annotations actually .btx format or standard PDF annotations?~~ - **ANSWERED:** BTX files are XML with zlib-compressed hex fields
-2. ~~Is BTX information in hexadecimal?~~ - **ANSWERED:** Yes, fields starting with `789c` are hex-encoded zlib-compressed
-3. ~~Do subject names need hex→string translation?~~ - **ANSWERED:** Subject is in decoded `<Raw>` field as `/Subj(Name)`
-4. Which PDF library works best with Bluebeam PDFs (PyPDF2, pypdf, pdfplumber)? - Still needs testing
-
----
-
 ## Implementation Phases Status:
 
 ### Phase 1: Core Backend Services ✅ COMPLETE
@@ -327,20 +394,41 @@ A: Both subject field AND visual appearance. Delete bid icon completely, replace
 - [x] BTX loader with zlib decompression (`btx_loader.py`)
 - [x] Subject extraction from Raw fields
 - [x] Icon data loading (70 bid, 118 deployment)
-- [x] mapping.md rebuilt with real subjects (68 mappings)
 - [x] Comprehensive unit tests (24 tests passing)
-- [ ] User reviewing mapping.md for accuracy
 
-### Phase 3: Annotation Replacement (NEXT)
-- [ ] `annotation_replacer.py` - Replace bid annotations with deployment
-- [ ] `pdf_reconstructor.py` - Write modified PDF
+### Phase 3: Annotation Replacement ⚠️ BLOCKED (2026-01-30)
+- [x] `annotation_replacer.py` - Replace bid annotations with deployment
+- [x] `appearance_extractor.py` - Extract appearances from reference PDF
+- [x] `scripts/test_clone_icon.py` - Clone-based single icon conversion
+- [x] `scripts/test_batch_clone.py` - Batch clone conversion
+- [x] Coordinate transformation for appearance streams
+- [ ] **BLOCKED: Icons don't render in output PDF despite script reporting success**
 
-### Phase 4: API & Frontend
+### Phase 4: API & Frontend (BLOCKED)
 - [ ] FastAPI endpoints (upload, convert, download)
 - [ ] React frontend with upload/download UI
 - [ ] Integration testing
 
 ---
 
-**Status:** Phase 2 complete, awaiting user verification of mapping.md
-**Next Task:** User to review mapping.md, then proceed to Phase 3 (Annotation Replacement)
+## Known Issues / Gaps
+
+### CRITICAL: Converted Icons Not Visible
+**Script reports 376/376 converted but NO icons appear in output PDF**
+
+Investigation needed:
+1. PyPDF2 may not properly handle annotation creation
+2. May need different PDF library (pypdf, PyMuPDF, reportlab)
+3. Need to compare raw PDF bytes between working and broken files
+
+### Questions Resolved
+- PDF annotations use `/Subj` key, not `/Subject`
+- Original annotation types are `/Circle` and `/Square`, not `/Stamp`
+- Subject names in PDF differ from BTX subject names
+- DecodedStreamObject must NOT have `/Filter` copied from template
+- Stream coordinates are absolute and need transformation with delta
+
+---
+
+**Status:** Phase 3 BLOCKED. Clone approach creates output file but icons don't render.
+**Next Task:** Debug why PyPDF2-created annotations are invisible, or try different PDF library
