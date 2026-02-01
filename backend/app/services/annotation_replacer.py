@@ -3,21 +3,16 @@ Annotation replacement service.
 
 Replaces bid icon annotations with deployment icon annotations
 while preserving exact coordinates and sizing.
+
+Uses PyMuPDF (fitz) for proper annotation creation with valid
+appearance streams that render correctly in PDF viewers.
 """
 
 import logging
-import re
-import zlib
-from typing import Any, TYPE_CHECKING
+from pathlib import Path
+from typing import TYPE_CHECKING
 
-from PyPDF2.generic import (
-    ArrayObject,
-    DictionaryObject,
-    FloatObject,
-    NameObject,
-    NumberObject,
-    TextStringObject,
-)
+import pymupdf
 
 from app.models.annotation import Annotation, AnnotationCoordinates
 from app.models.mapping import IconData
@@ -26,8 +21,14 @@ from app.services.mapping_parser import MappingParser
 
 if TYPE_CHECKING:
     from app.services.appearance_extractor import AppearanceExtractor
+    from app.services.icon_renderer import IconRenderer
 
 logger = logging.getLogger(__name__)
+
+# Default colors for annotations when no appearance data is available
+DEFAULT_FILL_COLOR = (1.0, 0.5, 0.0)  # Orange - visible on most backgrounds
+DEFAULT_STROKE_COLOR = (0, 0, 0)  # Black border
+DEFAULT_BORDER_WIDTH = 0.5
 
 
 class AnnotationReplacer:
@@ -37,9 +38,9 @@ class AnnotationReplacer:
     This service handles the core conversion logic:
     1. Looks up bid subject in mapping to find deployment subject
     2. Gets deployment icon data from BTX loader
-    3. Creates new annotation dictionary with preserved coordinates
+    3. Creates new annotation with preserved coordinates using PyMuPDF
     4. Removes bid annotation from PDF page
-    5. Inserts deployment annotation at same position
+    5. Inserts deployment annotation at same position with valid appearance stream
     """
 
     def __init__(
@@ -47,6 +48,7 @@ class AnnotationReplacer:
         mapping_parser: MappingParser,
         btx_loader: BTXReferenceLoader,
         appearance_extractor: "AppearanceExtractor | None" = None,
+        icon_renderer: "IconRenderer | None" = None,
     ):
         """
         Initialize annotation replacer.
@@ -55,462 +57,319 @@ class AnnotationReplacer:
             mapping_parser: MappingParser instance with loaded mappings
             btx_loader: BTXReferenceLoader instance with loaded icons
             appearance_extractor: Optional AppearanceExtractor for copying visual appearances
+            icon_renderer: Optional IconRenderer for rich icon rendering with gear images
         """
         self.mapping_parser = mapping_parser
         self.btx_loader = btx_loader
         self.appearance_extractor = appearance_extractor
+        self.icon_renderer = icon_renderer
 
-    def _parse_btx_raw_properties(self, icon_data: IconData) -> dict:
-        """
-        Parse annotation properties from BTX raw data.
-
-        The BTX raw field contains a PDF dictionary-like string with
-        properties like /IC (interior color), /C (border color),
-        /Subtype, /BS (border style), etc.
-
-        Args:
-            icon_data: IconData with metadata containing raw_hex
-
-        Returns:
-            Dictionary of parsed properties
-        """
-        props = {
-            "subtype": "/Circle",  # Default
-            "interior_color": None,
-            "border_color": None,
-            "border_width": 0.5,
-            "rect_diff": None,
-        }
-
-        if not icon_data.metadata:
-            return props
-        raw_hex = icon_data.metadata.get("raw_hex", "")
-        if not raw_hex:
-            return props
-
-        try:
-            # Decode the raw hex data
-            raw_bytes = bytes.fromhex(raw_hex)
-            if raw_hex.lower().startswith("789c"):
-                raw_str = zlib.decompress(raw_bytes).decode("utf-8", errors="replace")
-            else:
-                raw_str = raw_bytes.decode("utf-8", errors="replace")
-
-            # Parse /Subtype
-            subtype_match = re.search(r"/Subtype/(\w+)", raw_str)
-            if subtype_match:
-                props["subtype"] = f"/{subtype_match.group(1)}"
-
-            # Parse /IC (interior color) - format: /IC[r g b]
-            ic_match = re.search(r"/IC\[([^\]]+)\]", raw_str)
-            if ic_match:
-                try:
-                    colors = [float(x) for x in ic_match.group(1).split()]
-                    if len(colors) >= 3:
-                        props["interior_color"] = colors[:3]
-                except ValueError:
-                    pass
-
-            # Parse /C (border color) - format: /C[r g b]
-            c_match = re.search(r"/C\[([^\]]+)\]", raw_str)
-            if c_match:
-                try:
-                    colors = [float(x) for x in c_match.group(1).split()]
-                    if len(colors) >= 3:
-                        props["border_color"] = colors[:3]
-                except ValueError:
-                    pass
-
-            # Parse /BS border style - format: /BS<</W 0.5/S/S/Type/Border>>
-            bs_w_match = re.search(r"/W\s+([\d.]+)", raw_str)
-            if bs_w_match:
-                try:
-                    props["border_width"] = float(bs_w_match.group(1))
-                except ValueError:
-                    pass
-
-            # Parse /RD (rect difference) - format: /RD[a b c d]
-            rd_match = re.search(r"/RD\[([^\]]+)\]", raw_str)
-            if rd_match:
-                try:
-                    rd_values = [float(x) for x in rd_match.group(1).split()]
-                    if len(rd_values) >= 4:
-                        props["rect_diff"] = rd_values[:4]
-                except ValueError:
-                    pass
-
-            logger.debug(f"Parsed BTX properties: {props}")
-
-        except Exception as e:
-            logger.warning(f"Failed to parse BTX raw properties: {e}")
-
-        return props
-
-    def create_deployment_annotation(
+    def _get_colors_for_annotation(
         self,
-        bid_annotation: Annotation,
         deployment_subject: str,
-        icon_data: IconData | None = None,
-        writer: Any = None,
-    ) -> DictionaryObject:
+        icon_data: IconData | None,
+    ) -> tuple[tuple[float, float, float], tuple[float, float, float], float]:
         """
-        Create deployment annotation dictionary from bid annotation.
+        Get fill and stroke colors for an annotation.
 
-        Preserves exact coordinates and size from bid annotation,
-        updates subject to deployment subject, and applies visual
-        properties from BTX icon data or reference PDF appearances.
+        Tries to get colors from:
+        1. Appearance extractor (reference PDF)
+        2. BTX icon data
+        3. Default colors
 
         Args:
-            bid_annotation: Original bid annotation with coordinates
-            deployment_subject: Deployment icon subject name
-            icon_data: Optional icon data from BTX (for visual appearance)
-            writer: Optional PdfWriter for cloning indirect objects
+            deployment_subject: Subject name for lookup
+            icon_data: Optional BTX icon data
 
         Returns:
-            DictionaryObject ready to insert into PDF page
+            Tuple of (fill_color, stroke_color, opacity)
         """
-        coords = bid_annotation.coordinates
+        fill_color = DEFAULT_FILL_COLOR
+        stroke_color = DEFAULT_STROKE_COLOR
+        opacity = 1.0
 
-        # Reconstruct PDF rect format: [x1, y1, x2, y2]
-        x1 = coords.x
-        y1 = coords.y
-        x2 = coords.x + coords.width
-        y2 = coords.y + coords.height
-
-        rect = ArrayObject([
-            FloatObject(x1),
-            FloatObject(y1),
-            FloatObject(x2),
-            FloatObject(y2),
-        ])
-
-        # Check if we have appearance data from reference PDF
-        appearance_data = None
+        # Try appearance extractor first
         if self.appearance_extractor and self.appearance_extractor.has_appearance(deployment_subject):
             appearance_data = self.appearance_extractor.get_appearance_data(deployment_subject)
-            logger.debug(f"Using appearance data from reference PDF for: {deployment_subject}")
+            if appearance_data:
+                if appearance_data.get("fill"):
+                    fill_color = appearance_data["fill"]
+                if appearance_data.get("stroke"):
+                    stroke_color = appearance_data["stroke"]
+                if appearance_data.get("opacity") is not None:
+                    opacity = appearance_data["opacity"]
+                logger.debug(f"Using appearance colors for: {deployment_subject}")
+                return fill_color, stroke_color, opacity
 
-        # Parse BTX properties if available (fallback)
-        btx_props = {}
-        if icon_data and not appearance_data:
-            btx_props = self._parse_btx_raw_properties(icon_data)
+        # Try BTX icon data for color hints (if available in future)
+        if icon_data and icon_data.metadata:
+            # BTX colors would be extracted here if available
+            pass
 
-        # Determine annotation subtype
-        if appearance_data:
-            subtype = appearance_data.get("subtype", "/Circle")
-        else:
-            subtype = btx_props.get("subtype", "/Circle")
-            if bid_annotation.annotation_type:
-                # Prefer matching the original annotation type
-                orig_type = bid_annotation.annotation_type
-                if orig_type in ["/Circle", "/Square", "/Polygon", "/PolyLine"]:
-                    subtype = orig_type
+        logger.debug(f"Using default colors for: {deployment_subject}")
+        return fill_color, stroke_color, opacity
 
-        # Create annotation dictionary
-        annot = DictionaryObject()
-        annot.update({
-            NameObject("/Type"): NameObject("/Annot"),
-            NameObject("/Subtype"): NameObject(subtype),
-            NameObject("/Rect"): rect,
-            NameObject("/Subj"): TextStringObject(deployment_subject),
-            NameObject("/F"): NumberObject(4),  # Print flag
-        })
-
-        # Apply appearance data from reference PDF if available
-        if appearance_data and writer:
-            self._apply_appearance_data(annot, appearance_data, writer)
-        else:
-            # Fallback to BTX properties or defaults
-            self._apply_btx_properties(annot, btx_props, bid_annotation)
-
-        # Copy contents if available from original
-        if bid_annotation.raw_data and "/Contents" in bid_annotation.raw_data:
-            contents = bid_annotation.raw_data.get("/Contents", "")
-            if contents:
-                annot[NameObject("/Contents")] = TextStringObject(str(contents))
-
-        logger.debug(
-            f"Created deployment annotation: {deployment_subject} "
-            f"at ({coords.x}, {coords.y}) with subtype {subtype}"
-        )
-
-        return annot
-
-    def _apply_appearance_data(
+    def _render_rich_icon(
         self,
-        annot: DictionaryObject,
-        appearance_data: dict[str, Any],
-        writer: Any,
-    ) -> None:
+        writer,
+        deployment_subject: str,
+        rect: list[float],
+        id_label: str = "j100",
+    ):
         """
-        Apply appearance data from reference PDF to annotation.
+        Render a rich deployment icon with full visual appearance.
+
+        Uses the IconRenderer to create a PDF appearance stream with
+        gear images, brand text, and model text.
 
         Args:
-            annot: Annotation dictionary to modify
-            appearance_data: Appearance data extracted from reference PDF
-            writer: PdfWriter for cloning indirect objects
-        """
-        try:
-            # Clone and apply appearance dictionary
-            ap = appearance_data.get("ap")
-            if ap and writer:
-                # Clone the appearance stream objects to the new PDF
-                cloned_ap = writer._add_object(ap)
-                annot[NameObject("/AP")] = cloned_ap
-
-            # Apply interior color
-            ic = appearance_data.get("ic")
-            if ic:
-                annot[NameObject("/IC")] = ic
-
-            # Apply border color
-            c = appearance_data.get("c")
-            if c:
-                annot[NameObject("/C")] = c
-
-            # Apply border style
-            bs = appearance_data.get("bs")
-            if bs:
-                annot[NameObject("/BS")] = bs
-
-            # Apply rect difference
-            rd = appearance_data.get("rd")
-            if rd:
-                annot[NameObject("/RD")] = rd
-
-        except Exception as e:
-            logger.warning(f"Failed to apply appearance data: {e}")
-
-    def _apply_btx_properties(
-        self,
-        annot: DictionaryObject,
-        btx_props: dict,
-        bid_annotation: Annotation,
-    ) -> None:
-        """
-        Apply BTX properties or defaults to annotation.
-
-        Args:
-            annot: Annotation dictionary to modify
-            btx_props: Properties parsed from BTX data
-            bid_annotation: Original bid annotation
-        """
-        # Apply interior color from BTX or use original
-        if btx_props.get("interior_color"):
-            ic = btx_props["interior_color"]
-            annot[NameObject("/IC")] = ArrayObject([
-                FloatObject(ic[0]),
-                FloatObject(ic[1]),
-                FloatObject(ic[2]),
-            ])
-        elif bid_annotation.raw_data and "/IC" in bid_annotation.raw_data:
-            # Try to preserve original interior color
-            try:
-                orig_ic = bid_annotation.raw_data["/IC"]
-                if isinstance(orig_ic, str) and orig_ic.startswith("["):
-                    colors = [float(x) for x in orig_ic.strip("[]").split(",")]
-                    if len(colors) >= 3:
-                        annot[NameObject("/IC")] = ArrayObject([
-                            FloatObject(colors[0]),
-                            FloatObject(colors[1]),
-                            FloatObject(colors[2]),
-                        ])
-            except (ValueError, KeyError):
-                pass
-
-        # Apply border color from BTX or default to black
-        if btx_props.get("border_color"):
-            bc = btx_props["border_color"]
-            annot[NameObject("/C")] = ArrayObject([
-                FloatObject(bc[0]),
-                FloatObject(bc[1]),
-                FloatObject(bc[2]),
-            ])
-        else:
-            # Default black border
-            annot[NameObject("/C")] = ArrayObject([
-                FloatObject(0),
-                FloatObject(0),
-                FloatObject(0),
-            ])
-
-        # Apply border style
-        border_width = btx_props.get("border_width", 0.5)
-        bs = DictionaryObject()
-        bs.update({
-            NameObject("/W"): FloatObject(border_width),
-            NameObject("/S"): NameObject("/S"),  # Solid
-            NameObject("/Type"): NameObject("/Border"),
-        })
-        annot[NameObject("/BS")] = bs
-
-        # Apply rect difference if available (for proper rendering)
-        if btx_props.get("rect_diff"):
-            rd = btx_props["rect_diff"]
-            annot[NameObject("/RD")] = ArrayObject([
-                FloatObject(rd[0]),
-                FloatObject(rd[1]),
-                FloatObject(rd[2]),
-                FloatObject(rd[3]),
-            ])
-
-    def _find_and_remove_annotation(
-        self,
-        page: Any,
-        target_coords: AnnotationCoordinates,
-        target_subject: str,
-    ) -> bool:
-        """
-        Find and remove annotation from page by matching coordinates and subject.
-
-        Args:
-            page: PDF page object (from PdfWriter)
-            target_coords: Coordinates of annotation to remove
-            target_subject: Subject of annotation to remove
+            writer: PdfWriter to add objects to
+            deployment_subject: Deployment subject name
+            rect: Annotation rect [x1, y1, x2, y2]
+            id_label: ID label for the icon
 
         Returns:
-            True if annotation was found and removed, False otherwise
+            IndirectObject reference to appearance stream, or None if can't render
         """
-        if "/Annots" not in page:
-            logger.debug("Page has no /Annots array")
-            return False
+        if not self.icon_renderer:
+            return None
 
-        annots = page["/Annots"]
-        if not annots:
-            return False
+        if not self.icon_renderer.can_render(deployment_subject):
+            return None
 
-        # Find annotation by matching rect and subject
-        to_remove_idx = None
-        for idx, annot_ref in enumerate(annots):
-            try:
-                annot_obj = annot_ref.get_object()
+        return self.icon_renderer.render_icon(writer, deployment_subject, rect, id_label)
 
-                # Check subject match
-                subj = annot_obj.get("/Subject") or annot_obj.get("/Subj") or ""
-                if str(subj) != target_subject:
-                    continue
+    def _create_annotation_on_page(
+        self,
+        page: pymupdf.Page,
+        coords: AnnotationCoordinates,
+        deployment_subject: str,
+        annotation_type: str,
+        fill_color: tuple[float, float, float],
+        stroke_color: tuple[float, float, float],
+        opacity: float = 1.0,
+        contents: str = "",
+    ) -> pymupdf.Annot | None:
+        """
+        Create a new annotation on the page using PyMuPDF.
 
-                # Check rect match (approximate due to float precision)
-                rect = annot_obj.get("/Rect", [])
-                if len(rect) >= 4:
-                    x1 = float(rect[0])
-                    y1 = float(rect[1])
-                    # Match within tolerance
-                    if abs(x1 - target_coords.x) < 0.01 and abs(y1 - target_coords.y) < 0.01:
-                        to_remove_idx = idx
-                        break
-            except Exception as e:
-                logger.debug(f"Error checking annotation {idx}: {e}")
-                continue
+        Args:
+            page: PyMuPDF page object
+            coords: Annotation coordinates
+            deployment_subject: Subject name for the annotation
+            annotation_type: Type of annotation (/Circle, /Square, etc.)
+            fill_color: RGB fill color (0-1 range)
+            stroke_color: RGB stroke color (0-1 range)
+            opacity: Annotation opacity (0-1)
+            contents: Optional contents text
 
-        if to_remove_idx is not None:
-            del annots[to_remove_idx]
-            logger.debug(f"Removed annotation at index {to_remove_idx}: {target_subject}")
-            return True
+        Returns:
+            Created annotation object, or None if creation failed
+        """
+        # Create rect from coordinates
+        # PyMuPDF uses (x0, y0, x1, y1) format
+        x0 = coords.x
+        y0 = coords.y
+        x1 = coords.x + coords.width
+        y1 = coords.y + coords.height
 
-        return False
+        rect = pymupdf.Rect(x0, y0, x1, y1)
+
+        try:
+            # Create annotation based on type
+            if annotation_type == "/Circle":
+                annot = page.add_circle_annot(rect)
+            elif annotation_type == "/Square":
+                annot = page.add_rect_annot(rect)
+            elif annotation_type in ["/Polygon", "/PolyLine"]:
+                # For polygon/polyline, use rect corners as simple polygon
+                points = [
+                    pymupdf.Point(x0, y0),
+                    pymupdf.Point(x1, y0),
+                    pymupdf.Point(x1, y1),
+                    pymupdf.Point(x0, y1),
+                ]
+                if annotation_type == "/Polygon":
+                    annot = page.add_polygon_annot(points)
+                else:
+                    annot = page.add_polyline_annot(points)
+            else:
+                # Default to circle for unknown types
+                annot = page.add_circle_annot(rect)
+                logger.debug(f"Unknown annotation type {annotation_type}, defaulting to Circle")
+
+            # Set annotation properties
+            annot.set_colors(fill=fill_color, stroke=stroke_color)
+            annot.set_border(width=DEFAULT_BORDER_WIDTH)
+            annot.set_opacity(opacity)
+
+            # Set info dictionary for subject
+            info = annot.info
+            info["subject"] = deployment_subject
+            if contents:
+                info["content"] = contents
+            annot.set_info(info)
+
+            # CRITICAL: Call update() to generate valid appearance stream
+            annot.update()
+
+            logger.debug(
+                f"Created annotation: {deployment_subject} at ({coords.x}, {coords.y}) "
+                f"type={annotation_type}"
+            )
+
+            return annot
+
+        except Exception as e:
+            logger.error(f"Failed to create annotation {deployment_subject}: {e}")
+            return None
 
     def replace_annotations(
         self,
-        annotations: list[Annotation],
-        page: Any,
-        writer: Any = None,
+        input_pdf: Path,
+        output_pdf: Path,
     ) -> tuple[int, int, list[str]]:
         """
-        Replace all bid annotations with deployment annotations on a page.
+        Replace bid annotations with deployment annotations in a PDF.
 
-        For each annotation:
-        1. Look up bid subject in mapping to find deployment subject
-        2. Get deployment icon data from BTX loader
-        3. Remove original bid annotation from page
-        4. Create and insert deployment annotation at same coordinates
+        Opens the input PDF, iterates through all annotations,
+        replaces bid annotations with deployment annotations at the
+        same coordinates, and saves to output PDF.
 
         Args:
-            annotations: List of bid annotations from PDFAnnotationParser
-            page: PDF page object to modify (from PdfWriter or PdfReader)
-            writer: Optional PdfWriter for cloning appearance streams
+            input_pdf: Path to input PDF with bid annotations
+            output_pdf: Path to save converted PDF
 
         Returns:
             Tuple of (converted_count, skipped_count, skipped_subjects)
             - converted_count: Number of annotations successfully replaced
             - skipped_count: Number of annotations skipped
             - skipped_subjects: List of bid subjects that were skipped
-
-        Raises:
-            ConversionError: If critical conversion failure occurs
         """
         converted_count = 0
         skipped_count = 0
         skipped_subjects: list[str] = []
 
-        if not annotations:
-            logger.warning("No annotations provided for replacement")
+        if not input_pdf.exists():
+            logger.error(f"Input PDF not found: {input_pdf}")
             return 0, 0, []
 
-        # Ensure page has /Annots array
-        if "/Annots" not in page:
-            page[NameObject("/Annots")] = ArrayObject()
+        # Open PDF with PyMuPDF
+        doc = pymupdf.open(input_pdf)
 
-        for annotation in annotations:
-            bid_subject = annotation.subject
+        try:
+            for page_num, page in enumerate(doc):
+                # Collect annotations to process (can't modify during iteration)
+                annotations_to_process: list[dict] = []
 
-            if not bid_subject:
-                logger.debug("Skipping annotation with empty subject")
-                skipped_count += 1
-                skipped_subjects.append("(empty subject)")
-                continue
+                for annot in page.annots():
+                    if annot is None:
+                        continue
 
-            # Look up deployment subject
-            deployment_subject = self.mapping_parser.get_deployment_subject(bid_subject)
-            if not deployment_subject:
-                logger.info(f"No mapping found for bid subject: {bid_subject}")
-                skipped_count += 1
-                skipped_subjects.append(bid_subject)
-                continue
+                    # Get annotation info
+                    info = annot.info
+                    bid_subject = info.get("subject", "")
 
-            # Get deployment icon data (optional, for visual appearance)
-            icon_data = self.btx_loader.get_icon_data(deployment_subject, "deployment")
-            if not icon_data and not (self.appearance_extractor and self.appearance_extractor.has_appearance(deployment_subject)):
-                logger.warning(
-                    f"No BTX icon data or appearance for deployment subject: {deployment_subject}, "
-                    f"proceeding with basic replacement"
-                )
-                # Continue anyway - we can still replace the subject
+                    if not bid_subject:
+                        logger.debug("Skipping annotation with empty subject")
+                        skipped_count += 1
+                        skipped_subjects.append("(empty subject)")
+                        continue
 
-            try:
-                # Remove original bid annotation
-                removed = self._find_and_remove_annotation(
-                    page,
-                    annotation.coordinates,
-                    bid_subject,
-                )
-                if not removed:
-                    logger.debug(
-                        f"Could not find bid annotation to remove: {bid_subject}"
-                    )
-                    # Still proceed with adding deployment annotation
+                    # Look up deployment subject
+                    deployment_subject = self.mapping_parser.get_deployment_subject(bid_subject)
+                    if not deployment_subject:
+                        logger.info(f"No mapping found for bid subject: {bid_subject}")
+                        skipped_count += 1
+                        skipped_subjects.append(bid_subject)
+                        continue
 
-                # Create deployment annotation
-                new_annot = self.create_deployment_annotation(
-                    annotation,
-                    deployment_subject,
-                    icon_data,
-                    writer,
-                )
+                    # Get annotation details before deleting
+                    rect = annot.rect
+                    annot_type = self._get_annotation_type(annot)
+                    contents = info.get("content", "")
+                    # Store xref for later deletion (more reliable than annot reference)
+                    annot_xref = annot.xref
 
-                # Add to page
-                page["/Annots"].append(new_annot)
+                    # Store info for later creation
+                    annotations_to_process.append({
+                        "xref": annot_xref,
+                        "bid_subject": bid_subject,
+                        "deployment_subject": deployment_subject,
+                        "rect": rect,
+                        "type": annot_type,
+                        "contents": contents,
+                        "page_num": page_num,
+                    })
 
-                converted_count += 1
-                logger.debug(
-                    f"Converted: {bid_subject} -> {deployment_subject}"
-                )
+                # Process collected annotations (delete old, create new)
+                for annot_info in annotations_to_process:
+                    try:
+                        # Get colors for deployment annotation
+                        icon_data = self.btx_loader.get_icon_data(
+                            annot_info["deployment_subject"], "deployment"
+                        )
+                        fill_color, stroke_color, opacity = self._get_colors_for_annotation(
+                            annot_info["deployment_subject"], icon_data
+                        )
 
-            except Exception as e:
-                logger.error(f"Error converting annotation {bid_subject}: {e}")
-                skipped_count += 1
-                skipped_subjects.append(bid_subject)
-                continue
+                        # Find and delete original annotation by xref
+                        annot_to_delete = None
+                        for annot in page.annots():
+                            if annot and annot.xref == annot_info["xref"]:
+                                annot_to_delete = annot
+                                break
+                        if annot_to_delete:
+                            page.delete_annot(annot_to_delete)
+
+                        # Create coordinates object
+                        rect = annot_info["rect"]
+                        coords = AnnotationCoordinates(
+                            x=rect.x0,
+                            y=rect.y0,
+                            width=rect.width,
+                            height=rect.height,
+                            page=page_num + 1,
+                        )
+
+                        # Create new deployment annotation
+                        new_annot = self._create_annotation_on_page(
+                            page=page,
+                            coords=coords,
+                            deployment_subject=annot_info["deployment_subject"],
+                            annotation_type=annot_info["type"],
+                            fill_color=fill_color,
+                            stroke_color=stroke_color,
+                            opacity=opacity,
+                            contents=annot_info["contents"],
+                        )
+
+                        if new_annot:
+                            converted_count += 1
+                            logger.debug(
+                                f"Converted: {annot_info['bid_subject']} -> "
+                                f"{annot_info['deployment_subject']}"
+                            )
+                        else:
+                            skipped_count += 1
+                            skipped_subjects.append(annot_info["bid_subject"])
+
+                    except Exception as e:
+                        logger.error(
+                            f"Error converting annotation {annot_info['bid_subject']}: {e}"
+                        )
+                        skipped_count += 1
+                        skipped_subjects.append(annot_info["bid_subject"])
+
+            # Save the modified PDF
+            doc.save(output_pdf)
+            logger.info(
+                f"Saved converted PDF to {output_pdf}: "
+                f"{converted_count} converted, {skipped_count} skipped"
+            )
+
+        finally:
+            doc.close()
 
         logger.info(
             f"Annotation replacement complete: "
@@ -518,3 +377,87 @@ class AnnotationReplacer:
         )
 
         return converted_count, skipped_count, skipped_subjects
+
+    def _get_annotation_type(self, annot: pymupdf.Annot) -> str:
+        """
+        Get the annotation type in PDF format (e.g., /Circle, /Square).
+
+        Args:
+            annot: PyMuPDF annotation object
+
+        Returns:
+            PDF annotation type string
+        """
+        # PyMuPDF annotation types are integers
+        # Map to PDF type names
+        type_map = {
+            pymupdf.PDF_ANNOT_CIRCLE: "/Circle",
+            pymupdf.PDF_ANNOT_SQUARE: "/Square",
+            pymupdf.PDF_ANNOT_POLYGON: "/Polygon",
+            pymupdf.PDF_ANNOT_POLY_LINE: "/PolyLine",
+            pymupdf.PDF_ANNOT_STAMP: "/Stamp",
+            pymupdf.PDF_ANNOT_TEXT: "/Text",
+        }
+        return type_map.get(annot.type[0], "/Circle")
+
+    # Legacy method for backward compatibility with old API
+    def replace_annotations_legacy(
+        self,
+        annotations: list[Annotation],
+        page_dict: dict,
+        writer=None,
+    ) -> tuple[int, int, list[str]]:
+        """
+        Legacy method for backward compatibility.
+
+        This method is deprecated. Use replace_annotations() with file paths instead.
+
+        Args:
+            annotations: List of bid annotations from PDFAnnotationParser
+            page_dict: PDF page dictionary object
+            writer: Optional PdfWriter (ignored)
+
+        Returns:
+            Tuple of (converted_count, skipped_count, skipped_subjects)
+        """
+        logger.warning(
+            "replace_annotations_legacy is deprecated. "
+            "Use replace_annotations(input_pdf, output_pdf) instead."
+        )
+        # This method cannot work properly without file paths
+        # Return zeros to indicate no processing
+        return 0, 0, []
+
+    def create_deployment_annotation(
+        self,
+        bid_annotation: Annotation,
+        deployment_subject: str,
+        icon_data: IconData | None = None,
+        writer=None,
+    ) -> dict:
+        """
+        Create deployment annotation data from bid annotation.
+
+        This is a simplified version that returns annotation metadata.
+        The actual annotation creation happens in _create_annotation_on_page()
+        when using the new file-based API.
+
+        Args:
+            bid_annotation: Original bid annotation with coordinates
+            deployment_subject: Deployment icon subject name
+            icon_data: Optional icon data from BTX
+            writer: Ignored (legacy parameter)
+
+        Returns:
+            Dictionary with annotation metadata
+        """
+        coords = bid_annotation.coordinates
+
+        return {
+            "subject": deployment_subject,
+            "x": coords.x,
+            "y": coords.y,
+            "width": coords.width,
+            "height": coords.height,
+            "type": bid_annotation.annotation_type or "/Circle",
+        }

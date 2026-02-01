@@ -1,0 +1,414 @@
+"""
+Icon configuration module.
+
+Provides configuration data for rendering deployment icons including:
+- Category mappings for deployment subjects
+- Category-level default rendering parameters
+- Per-icon override configurations
+- Image path mappings
+- Helper functions for config retrieval
+"""
+
+from pathlib import Path
+
+# Base paths (relative to project root)
+SAMPLES_ICONS_DIR = Path("samples/icons")
+GEAR_ICONS_DIR = SAMPLES_ICONS_DIR / "gearIcons"
+DEPLOYMENT_ICONS_DIR = SAMPLES_ICONS_DIR / "deploymentIcons"
+
+# Category subdirectories in gearIcons/
+GEAR_ICON_CATEGORIES = {
+    "APs": GEAR_ICONS_DIR / "APs",
+    "Switches": GEAR_ICONS_DIR / "Switches",
+    "P2Ps": GEAR_ICONS_DIR / "P2Ps",
+    "Hardlines": GEAR_ICONS_DIR / "Hardlines",
+    "Hardware": GEAR_ICONS_DIR / "Hardware",
+    "Misc": GEAR_ICONS_DIR / "Misc",
+}
+
+
+# Maps deployment subjects to their categories
+ICON_CATEGORIES: dict[str, str] = {
+    # === Access Points ===
+    "AP - Cisco MR36H": "APs",
+    "AP - Cisco 9120": "APs",
+    "AP - Cisco 9166I": "APs",
+    "AP - Cisco 9166D": "APs",
+    "AP - Cisco MR78": "APs",
+    "AP - Cisco Marlin 4": "APs",
+    "AP - Cisco DB10": "APs",
+    # === Switches ===
+    "SW - Cisco Micro 4P": "Switches",
+    "SW - Cisco 9200 12P": "Switches",
+    "SW - IDF Cisco 9300 24X": "Switches",
+    # === Distribution ===
+    "DIST - Mini NOC": "Switches",
+    "DIST - Micro NOC": "Switches",
+    "DIST - Standard NOC": "Switches",
+    "DIST - Pelican NOC": "Switches",
+    "DIST - MikroTik Hex": "Switches",
+    "DIST - Starlink": "Switches",
+    # === Point-to-Points ===
+    "P2P - Ubiquiti NanoBeam": "P2Ps",
+    "P2P - Ubiquiti LiteAP": "P2Ps",
+    "P2P - Ubiquiti GigaBeam": "P2Ps",
+    "P2P - Ubiquiti GigaBeam LR": "P2Ps",
+    # === IoT / VoIP ===
+    "VOIP - Yealink T29G": "IoT",
+    "VOIP - Yealink CP965": "IoT",
+    # === IoT / CCTV ===
+    "CCTV - AXIS P5655-E": "IoT",
+    "CCTV - AXIS S9302": "IoT",
+    # === IoT / Emergency Announce ===
+    "EAS - Command Unit": "IoT",
+    "EAS - Laptop": "IoT",
+    "EAS - Trigger Box": "IoT",
+    # === IoT / IPTV ===
+    "IPTV - BrightSign XT1144": "IoT",
+    # === Hardlines (all use same image, different model text) ===
+    "HL - Artist": "Hardlines",
+    "HL - Production": "Hardlines",
+    "HL - PoS": "Hardlines",
+    "HL - Access Control": "Hardlines",
+    "HL - Sponsor": "Hardlines",
+    "HL - General Internet": "Hardlines",
+    "HL - Audio": "Hardlines",
+    "HL - Emergency Announce System": "Hardlines",
+    "HL - WAN": "Hardlines",
+    # === Cables (no gear images) ===
+    "FIBER": "Cables",
+    # === Miscellaneous (no gear images) ===
+    "INFRA - Fiber Patch Panel": "Misc",
+}
+
+
+# Category-level default rendering parameters
+CATEGORY_DEFAULTS: dict[str, dict] = {
+    "APs": {
+        "circle_color": (0.22, 0.34, 0.65),  # Navy blue from MR36H reference
+        "circle_border_width": 0.5,
+        "circle_border_color": (0.0, 0.0, 0.0),
+        "id_box_height": 4.0,
+        "id_box_width_ratio": 0.55,
+        "id_box_border_width": 0.6,
+        "img_scale_ratio": 0.70,
+        "brand_text": "CISCO",
+        "brand_font_size": 1.9,
+        "brand_y_offset": -4.0,  # from circle top
+        "brand_x_offset": -0.2,
+        "model_font_size": 1.6,
+        "model_y_offset": 2.5,  # from circle bottom
+        "model_x_offset": -0.7,
+        "font_name": "/Helvetica-Bold",
+        "text_color": (1.0, 1.0, 1.0),  # White
+        "id_text_color": None,  # Same as circle_color if None
+    },
+    "Switches": {
+        "circle_color": (0.15, 0.45, 0.25),  # Green
+        "circle_border_width": 0.5,
+        "circle_border_color": (0.0, 0.0, 0.0),
+        "id_box_height": 4.0,
+        "id_box_width_ratio": 0.55,
+        "id_box_border_width": 0.6,
+        "img_scale_ratio": 0.70,
+        "brand_text": "",  # Many switches/NOCs have no brand text
+        "brand_font_size": 1.9,
+        "brand_y_offset": -4.0,
+        "brand_x_offset": -0.2,
+        "model_font_size": 1.6,
+        "model_y_offset": 2.5,
+        "model_x_offset": -0.7,
+        "font_name": "/Helvetica-Bold",
+        "text_color": (1.0, 1.0, 1.0),
+        "id_text_color": None,
+    },
+    "P2Ps": {
+        "circle_color": (0.4, 0.2, 0.6),  # Purple
+        "circle_border_width": 0.5,
+        "circle_border_color": (0.0, 0.0, 0.0),
+        "id_box_height": 4.0,
+        "id_box_width_ratio": 0.55,
+        "id_box_border_width": 0.6,
+        "img_scale_ratio": 0.70,
+        "brand_text": "UBIQUITI",
+        "brand_font_size": 1.9,
+        "brand_y_offset": -4.0,
+        "brand_x_offset": -0.2,
+        "model_font_size": 1.6,
+        "model_y_offset": 2.5,
+        "model_x_offset": -0.7,
+        "font_name": "/Helvetica-Bold",
+        "text_color": (1.0, 1.0, 1.0),
+        "id_text_color": None,
+    },
+    "IoT": {
+        "circle_color": (0.6, 0.3, 0.1),  # Brown/orange
+        "circle_border_width": 0.5,
+        "circle_border_color": (0.0, 0.0, 0.0),
+        "id_box_height": 4.0,
+        "id_box_width_ratio": 0.55,
+        "id_box_border_width": 0.6,
+        "img_scale_ratio": 0.70,
+        "brand_text": "",  # Varies by device
+        "brand_font_size": 1.9,
+        "brand_y_offset": -4.0,
+        "brand_x_offset": -0.2,
+        "model_font_size": 1.6,
+        "model_y_offset": 2.5,
+        "model_x_offset": -0.7,
+        "font_name": "/Helvetica-Bold",
+        "text_color": (1.0, 1.0, 1.0),
+        "id_text_color": None,
+    },
+    "Hardlines": {
+        "circle_color": (0.3, 0.3, 0.3),  # Gray
+        "circle_border_width": 0.5,
+        "circle_border_color": (0.0, 0.0, 0.0),
+        "id_box_height": 4.0,
+        "id_box_width_ratio": 0.55,
+        "id_box_border_width": 0.6,
+        "img_scale_ratio": 0.70,
+        "brand_text": "",  # No brand text for hardlines
+        "brand_font_size": 1.9,
+        "brand_y_offset": -4.0,
+        "brand_x_offset": -0.2,
+        "model_font_size": 1.6,
+        "model_y_offset": 2.5,
+        "model_x_offset": -0.7,
+        "font_name": "/Helvetica-Bold",
+        "text_color": (1.0, 1.0, 1.0),
+        "id_text_color": None,
+    },
+    "Cables": {
+        "circle_color": (0.8, 0.6, 0.0),  # Yellow/orange for fiber
+        "circle_border_width": 0.5,
+        "circle_border_color": (0.0, 0.0, 0.0),
+        "id_box_height": 4.0,
+        "id_box_width_ratio": 0.55,
+        "id_box_border_width": 0.6,
+        "img_scale_ratio": 0.70,
+        "brand_text": "",
+        "brand_font_size": 1.9,
+        "brand_y_offset": -4.0,
+        "brand_x_offset": -0.2,
+        "model_font_size": 1.6,
+        "model_y_offset": 2.5,
+        "model_x_offset": -0.7,
+        "font_name": "/Helvetica-Bold",
+        "text_color": (1.0, 1.0, 1.0),
+        "id_text_color": None,
+        "no_image": True,  # No gear image for cables
+    },
+    "Misc": {
+        "circle_color": (0.5, 0.5, 0.5),  # Gray
+        "circle_border_width": 0.5,
+        "circle_border_color": (0.0, 0.0, 0.0),
+        "id_box_height": 4.0,
+        "id_box_width_ratio": 0.55,
+        "id_box_border_width": 0.6,
+        "img_scale_ratio": 0.70,
+        "brand_text": "",
+        "brand_font_size": 1.9,
+        "brand_y_offset": -4.0,
+        "brand_x_offset": -0.2,
+        "model_font_size": 1.6,
+        "model_y_offset": 2.5,
+        "model_x_offset": -0.7,
+        "font_name": "/Helvetica-Bold",
+        "text_color": (1.0, 1.0, 1.0),
+        "id_text_color": None,
+        "no_image": True,  # No gear image for misc infra
+    },
+}
+
+
+# Per-icon override configurations (only values that differ from category defaults)
+ICON_OVERRIDES: dict[str, dict] = {
+    # === Access Points ===
+    # MR36H uses category defaults - no overrides needed
+    "AP - Cisco 9120": {
+        "model_y_offset": 3.0,  # Taller image needs adjustment
+        "img_scale_ratio": 0.65,
+    },
+    "AP - Cisco 9166I": {
+        "model_y_offset": 2.8,
+    },
+    "AP - Cisco 9166D": {
+        "model_y_offset": 2.8,
+    },
+    "AP - Cisco DB10": {
+        "img_scale_ratio": 0.60,  # Larger device image
+    },
+    # === Switches with brand text ===
+    "SW - Cisco Micro 4P": {
+        "brand_text": "CISCO",
+    },
+    "SW - Cisco 9200 12P": {
+        "brand_text": "CISCO",
+    },
+    "SW - IDF Cisco 9300 24X": {
+        "brand_text": "CISCO",
+    },
+    # === Distribution with brand text ===
+    "DIST - MikroTik Hex": {
+        "brand_text": "MIKROTIK",
+    },
+    "DIST - Starlink": {
+        "brand_text": "STARLINK",
+    },
+    # === IoT devices with brand text ===
+    "VOIP - Yealink T29G": {
+        "brand_text": "YEALINK",
+    },
+    "VOIP - Yealink CP965": {
+        "brand_text": "YEALINK",
+    },
+    "CCTV - AXIS P5655-E": {
+        "brand_text": "AXIS",
+    },
+    "CCTV - AXIS S9302": {
+        "brand_text": "AXIS",
+    },
+    "IPTV - BrightSign XT1144": {
+        "brand_text": "BRIGHTSIGN",
+    },
+    # Hardlines use category defaults - no overrides needed
+    # All hardlines use same image and color, differentiated by model text
+}
+
+
+# Maps deployment subject to gear icon filename (relative to gearIcons/)
+ICON_IMAGE_PATHS: dict[str, str | None] = {
+    # === Access Points ===
+    "AP - Cisco MR36H": "APs/AP - Cisco MR36H.png",
+    "AP - Cisco 9120": "APs/AP - Cisco 9120.png",
+    "AP - Cisco 9166I": "APs/AP - Cisco 9166.png",  # Same image for I and D variants
+    "AP - Cisco 9166D": "APs/AP - Cisco 9166.png",
+    "AP - Cisco MR78": "APs/AP - Cisco MR78.png",
+    "AP - Cisco Marlin 4": "APs/AP - Cisco Marlin 4.png",
+    "AP - Cisco DB10": "APs/AP - DB10.png",  # Note: filename is "AP - DB10" not "AP - Cisco DB10"
+    # === Switches / Distribution ===
+    "SW - Cisco Micro 4P": "Switches/Cisco Micro 4-P.png",
+    "SW - Cisco 9200 12P": "Switches/Cisco 9200 12-P.png",
+    "SW - IDF Cisco 9300 24X": "Switches/Cisco 9300 24-P.png",
+    "DIST - Mini NOC": "Switches/Mini NOC.png",
+    "DIST - Micro NOC": "Switches/Mini NOC.png",  # Same as Mini NOC
+    "DIST - Standard NOC": "Switches/NOC.png",
+    "DIST - Pelican NOC": "Switches/NOC.png",  # Use standard NOC image
+    "DIST - MikroTik Hex": "Switches/MikroTik Hex.png",
+    "DIST - Starlink": "Switches/Starlink.png",
+    # === Point-to-Points ===
+    "P2P - Ubiquiti NanoBeam": "P2Ps/P2P - Ubiquiti NanoBeam.png",
+    "P2P - Ubiquiti LiteAP": "P2Ps/P2P - Ubiquiti LiteAP AC.png",
+    "P2P - Ubiquiti GigaBeam": "P2Ps/P2P - Ubiquiti GigaBeam.png",
+    "P2P - Ubiquiti GigaBeam LR": "P2Ps/P2P - Ubiquiti GigaBeam LR.png",
+    # === IoT / VoIP ===
+    "VOIP - Yealink T29G": "Misc/Yealink T29G.png",
+    "VOIP - Yealink CP965": "Misc/Yealink P965.png",  # Note: filename is "P965" not "CP965"
+    # === IoT / CCTV ===
+    "CCTV - AXIS P5655-E": "Misc/AXIS P5655-E.png",
+    "CCTV - AXIS S9302": "Misc/AXIS S9302 Workstation.png",
+    # === IoT / Emergency Announce ===
+    "EAS - Command Unit": "Misc/Emergency Announce Command Unit.png",
+    "EAS - Laptop": "Misc/EAS Laptop.png",
+    "EAS - Trigger Box": "Misc/Emergency Announce Trigger Box.png",
+    # === IoT / IPTV ===
+    "IPTV - BrightSign XT1144": "Misc/Brightsign XT1144.png",
+    # === Hardlines (all use CAT6 Cable image) ===
+    "HL - Artist": "Hardlines/CAT6 Cable.png",
+    "HL - Production": "Hardlines/CAT6 Cable.png",
+    "HL - PoS": "Hardlines/CAT6 Cable.png",
+    "HL - Access Control": "Hardlines/CAT6 Cable.png",
+    "HL - Sponsor": "Hardlines/CAT6 Cable.png",
+    "HL - General Internet": "Hardlines/CAT6 Cable.png",
+    "HL - Audio": "Hardlines/CAT6 Cable.png",
+    "HL - Emergency Announce System": "Hardlines/CAT6 Cable.png",
+    "HL - WAN": "Hardlines/CAT6 Cable.png",
+    # === Cables (NO gear images) ===
+    "FIBER": None,
+    # === Miscellaneous (NO gear images) ===
+    "INFRA - Fiber Patch Panel": None,
+}
+
+
+def get_icon_config(subject: str) -> dict:
+    """
+    Get merged configuration for an icon (category defaults + icon overrides).
+
+    Args:
+        subject: Deployment subject name (e.g., "AP - Cisco MR36H")
+
+    Returns:
+        Dictionary with merged configuration including:
+        - All category default parameters
+        - Any per-icon overrides applied on top
+        - image_path: Path to gear icon image (or None)
+        - category: Category name
+        Returns empty dict if subject not found in configuration.
+    """
+    category = ICON_CATEGORIES.get(subject)
+    if not category:
+        return {}
+
+    # Start with category defaults
+    config = CATEGORY_DEFAULTS.get(category, {}).copy()
+
+    # Apply per-icon overrides
+    overrides = ICON_OVERRIDES.get(subject, {})
+    config.update(overrides)
+
+    # Add image path and category
+    config["image_path"] = ICON_IMAGE_PATHS.get(subject)
+    config["category"] = category
+
+    return config
+
+
+def get_model_text(subject: str) -> str:
+    """
+    Extract model text from deployment subject.
+
+    Parses the subject name to extract just the model identifier,
+    removing category prefixes and brand names.
+
+    Args:
+        subject: Deployment subject (e.g., "AP - Cisco MR36H")
+
+    Returns:
+        Model text for display (e.g., "MR36H")
+
+    Examples:
+        >>> get_model_text("AP - Cisco MR36H")
+        'MR36H'
+        >>> get_model_text("HL - Artist")
+        'Artist'
+        >>> get_model_text("P2P - Ubiquiti NanoBeam")
+        'NanoBeam'
+        >>> get_model_text("DIST - Mini NOC")
+        'Mini NOC'
+    """
+    if " - " in subject:
+        parts = subject.split(" - ")
+        if len(parts) >= 2:
+            # Get the model part (after the prefix)
+            model_part = parts[-1]
+            # Remove brand prefix if present
+            for brand in ["Cisco ", "Ubiquiti ", "Axis ", "Yealink ", "BrightSign "]:
+                if model_part.startswith(brand):
+                    return model_part[len(brand):]
+            return model_part
+    return subject
+
+
+def get_brand_for_icon(subject: str) -> str:
+    """
+    Get the brand name for an icon.
+
+    Args:
+        subject: Deployment subject name
+
+    Returns:
+        Brand name string or empty string if no brand
+    """
+    config = get_icon_config(subject)
+    return config.get("brand_text", "")
