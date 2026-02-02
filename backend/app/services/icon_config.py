@@ -11,8 +11,13 @@ Provides configuration data for rendering deployment icons including:
 
 from pathlib import Path
 
-# Base paths (relative to project root)
-SAMPLES_ICONS_DIR = Path("samples/icons")
+# Base paths - use absolute paths relative to this file's location
+# This file is at: backend/app/services/icon_config.py
+# Project root is 3 levels up: backend/app/services -> backend/app -> backend -> project_root
+_THIS_FILE = Path(__file__).resolve()
+_PROJECT_ROOT = _THIS_FILE.parent.parent.parent.parent  # Go up to project root
+
+SAMPLES_ICONS_DIR = _PROJECT_ROOT / "samples" / "icons"
 GEAR_ICONS_DIR = SAMPLES_ICONS_DIR / "gearIcons"
 DEPLOYMENT_ICONS_DIR = SAMPLES_ICONS_DIR / "deploymentIcons"
 
@@ -94,7 +99,7 @@ CATEGORY_DEFAULTS: dict[str, dict] = {
         "img_scale_ratio": 0.70,
         "brand_text": "CISCO",
         "brand_font_size": 1.9,
-        "brand_y_offset": -4.0,  # from circle top
+        "brand_y_offset": -3.0,  # from circle top (moved down 1px from -4.0)
         "brand_x_offset": -0.2,
         "model_font_size": 1.6,
         "model_y_offset": 2.5,  # from circle bottom
@@ -113,7 +118,7 @@ CATEGORY_DEFAULTS: dict[str, dict] = {
         "img_scale_ratio": 0.70,
         "brand_text": "",  # Many switches/NOCs have no brand text
         "brand_font_size": 1.9,
-        "brand_y_offset": -4.0,
+        "brand_y_offset": -3.0,  # moved down 1px
         "brand_x_offset": -0.2,
         "model_font_size": 1.6,
         "model_y_offset": 2.5,
@@ -132,7 +137,7 @@ CATEGORY_DEFAULTS: dict[str, dict] = {
         "img_scale_ratio": 0.70,
         "brand_text": "UBIQUITI",
         "brand_font_size": 1.9,
-        "brand_y_offset": -4.0,
+        "brand_y_offset": -3.0,  # moved down 1px
         "brand_x_offset": -0.2,
         "model_font_size": 1.6,
         "model_y_offset": 2.5,
@@ -151,7 +156,7 @@ CATEGORY_DEFAULTS: dict[str, dict] = {
         "img_scale_ratio": 0.70,
         "brand_text": "",  # Varies by device
         "brand_font_size": 1.9,
-        "brand_y_offset": -4.0,
+        "brand_y_offset": -3.0,  # moved down 1px
         "brand_x_offset": -0.2,
         "model_font_size": 1.6,
         "model_y_offset": 2.5,
@@ -161,23 +166,23 @@ CATEGORY_DEFAULTS: dict[str, dict] = {
         "id_text_color": None,
     },
     "Hardlines": {
-        "circle_color": (0.3, 0.3, 0.3),  # Gray
+        "circle_color": (0.8, 0.2, 0.2),  # Red background for hardlines
         "circle_border_width": 0.5,
         "circle_border_color": (0.0, 0.0, 0.0),
         "id_box_height": 4.0,
         "id_box_width_ratio": 0.55,
         "id_box_border_width": 0.6,
         "img_scale_ratio": 0.70,
-        "brand_text": "",  # No brand text for hardlines
+        "brand_text": "CAT6",  # CAT6 text above gear icon
         "brand_font_size": 1.9,
-        "brand_y_offset": -4.0,
+        "brand_y_offset": -3.0,  # moved down 1px
         "brand_x_offset": -0.2,
         "model_font_size": 1.6,
         "model_y_offset": 2.5,
         "model_x_offset": -0.7,
         "font_name": "/Helvetica-Bold",
         "text_color": (1.0, 1.0, 1.0),
-        "id_text_color": None,
+        "id_text_color": None,  # Same as circle_color (red)
     },
     "Cables": {
         "circle_color": (0.8, 0.6, 0.0),  # Yellow/orange for fiber
@@ -189,7 +194,7 @@ CATEGORY_DEFAULTS: dict[str, dict] = {
         "img_scale_ratio": 0.70,
         "brand_text": "",
         "brand_font_size": 1.9,
-        "brand_y_offset": -4.0,
+        "brand_y_offset": -3.0,  # moved down 1px
         "brand_x_offset": -0.2,
         "model_font_size": 1.6,
         "model_y_offset": 2.5,
@@ -209,7 +214,7 @@ CATEGORY_DEFAULTS: dict[str, dict] = {
         "img_scale_ratio": 0.70,
         "brand_text": "",
         "brand_font_size": 1.9,
-        "brand_y_offset": -4.0,
+        "brand_y_offset": -3.0,  # moved down 1px
         "brand_x_offset": -0.2,
         "model_font_size": 1.6,
         "model_y_offset": 2.5,

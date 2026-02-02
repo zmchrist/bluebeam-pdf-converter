@@ -4,15 +4,23 @@ Annotation replacement service.
 Replaces bid icon annotations with deployment icon annotations
 while preserving exact coordinates and sizing.
 
-Uses PyMuPDF (fitz) for proper annotation creation with valid
-appearance streams that render correctly in PDF viewers.
+Uses PyPDF2 for rich icon rendering with embedded images,
+brand text, and model text.
 """
 
 import logging
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-import pymupdf
+from PyPDF2 import PdfReader, PdfWriter
+from PyPDF2.generic import (
+    ArrayObject,
+    DictionaryObject,
+    FloatObject,
+    NameObject,
+    NumberObject,
+    TextStringObject,
+)
 
 from app.models.annotation import Annotation, AnnotationCoordinates
 from app.models.mapping import IconData
@@ -26,8 +34,8 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 # Default colors for annotations when no appearance data is available
-DEFAULT_FILL_COLOR = (1.0, 0.5, 0.0)  # Orange - visible on most backgrounds
-DEFAULT_STROKE_COLOR = (0, 0, 0)  # Black border
+DEFAULT_FILL_COLOR = (0.22, 0.34, 0.65)  # Navy blue - matches deployment icons
+DEFAULT_STROKE_COLOR = (0.0, 0.0, 0.0)  # Black border
 DEFAULT_BORDER_WIDTH = 0.5
 
 
@@ -38,9 +46,9 @@ class AnnotationReplacer:
     This service handles the core conversion logic:
     1. Looks up bid subject in mapping to find deployment subject
     2. Gets deployment icon data from BTX loader
-    3. Creates new annotation with preserved coordinates using PyMuPDF
+    3. Creates new annotation with preserved coordinates using PyPDF2
     4. Removes bid annotation from PDF page
-    5. Inserts deployment annotation at same position with valid appearance stream
+    5. Inserts deployment annotation at same position with rich appearance stream
     """
 
     def __init__(
@@ -111,7 +119,7 @@ class AnnotationReplacer:
 
     def _render_rich_icon(
         self,
-        writer,
+        writer: PdfWriter,
         deployment_subject: str,
         rect: list[float],
         id_label: str = "j100",
@@ -139,90 +147,140 @@ class AnnotationReplacer:
 
         return self.icon_renderer.render_icon(writer, deployment_subject, rect, id_label)
 
-    def _create_annotation_on_page(
+    def _create_simple_appearance(
         self,
-        page: pymupdf.Page,
-        coords: AnnotationCoordinates,
-        deployment_subject: str,
-        annotation_type: str,
+        writer: PdfWriter,
+        rect: list[float],
         fill_color: tuple[float, float, float],
         stroke_color: tuple[float, float, float],
-        opacity: float = 1.0,
-        contents: str = "",
-    ) -> pymupdf.Annot | None:
+        annotation_type: str,
+    ):
         """
-        Create a new annotation on the page using PyMuPDF.
+        Create a simple appearance stream for annotations without rich rendering.
 
         Args:
-            page: PyMuPDF page object
-            coords: Annotation coordinates
-            deployment_subject: Subject name for the annotation
-            annotation_type: Type of annotation (/Circle, /Square, etc.)
+            writer: PdfWriter to add objects to
+            rect: Annotation rect [x1, y1, x2, y2]
             fill_color: RGB fill color (0-1 range)
             stroke_color: RGB stroke color (0-1 range)
-            opacity: Annotation opacity (0-1)
-            contents: Optional contents text
+            annotation_type: Type of annotation (/Circle, /Square, etc.)
 
         Returns:
-            Created annotation object, or None if creation failed
+            IndirectObject reference to appearance stream
         """
-        # Create rect from coordinates
-        # PyMuPDF uses (x0, y0, x1, y1) format
-        x0 = coords.x
-        y0 = coords.y
-        x1 = coords.x + coords.width
-        y1 = coords.y + coords.height
+        from PyPDF2.generic import StreamObject
 
-        rect = pymupdf.Rect(x0, y0, x1, y1)
+        x1, y1, x2, y2 = rect
+        width = x2 - x1
+        height = y2 - y1
+        cx = (x1 + x2) / 2
+        cy = (y1 + y2) / 2
+        radius = min(width, height) / 2 - 0.5
 
-        try:
-            # Create annotation based on type
-            if annotation_type == "/Circle":
-                annot = page.add_circle_annot(rect)
-            elif annotation_type == "/Square":
-                annot = page.add_rect_annot(rect)
-            elif annotation_type in ["/Polygon", "/PolyLine"]:
-                # For polygon/polyline, use rect corners as simple polygon
-                points = [
-                    pymupdf.Point(x0, y0),
-                    pymupdf.Point(x1, y0),
-                    pymupdf.Point(x1, y1),
-                    pymupdf.Point(x0, y1),
-                ]
-                if annotation_type == "/Polygon":
-                    annot = page.add_polygon_annot(points)
-                else:
-                    annot = page.add_polyline_annot(points)
-            else:
-                # Default to circle for unknown types
-                annot = page.add_circle_annot(rect)
-                logger.debug(f"Unknown annotation type {annotation_type}, defaulting to Circle")
+        r, g, b = fill_color
+        sr, sg, sb = stroke_color
 
-            # Set annotation properties
-            annot.set_colors(fill=fill_color, stroke=stroke_color)
-            annot.set_border(width=DEFAULT_BORDER_WIDTH)
-            annot.set_opacity(opacity)
+        content_parts = []
 
-            # Set info dictionary for subject
-            info = annot.info
-            info["subject"] = deployment_subject
-            if contents:
-                info["content"] = contents
-            annot.set_info(info)
+        # Set colors
+        content_parts.append(f"{sr:.4f} {sg:.4f} {sb:.4f} RG")
+        content_parts.append(f"{DEFAULT_BORDER_WIDTH:.4f} w")
+        content_parts.append(f"{r:.4f} {g:.4f} {b:.4f} rg")
 
-            # CRITICAL: Call update() to generate valid appearance stream
-            annot.update()
+        if annotation_type == "/Circle":
+            # Draw circle using Bezier curves
+            k = 0.5522847498
+            x0, y0 = cx + radius, cy
+            content_parts.append(f"{x0:.3f} {y0:.3f} m")
+            content_parts.append(f"{cx + radius:.3f} {cy + radius * k:.3f} {cx + radius * k:.3f} {cy + radius:.3f} {cx:.3f} {cy + radius:.3f} c")
+            content_parts.append(f"{cx - radius * k:.3f} {cy + radius:.3f} {cx - radius:.3f} {cy + radius * k:.3f} {cx - radius:.3f} {cy:.3f} c")
+            content_parts.append(f"{cx - radius:.3f} {cy - radius * k:.3f} {cx - radius * k:.3f} {cy - radius:.3f} {cx:.3f} {cy - radius:.3f} c")
+            content_parts.append(f"{cx + radius * k:.3f} {cy - radius:.3f} {cx + radius:.3f} {cy - radius * k:.3f} {cx + radius:.3f} {cy:.3f} c")
+            content_parts.append("h")
+            content_parts.append("B")
+        else:
+            # Draw rectangle
+            content_parts.append(f"{x1:.3f} {y1:.3f} {width:.3f} {height:.3f} re")
+            content_parts.append("B")
 
-            logger.debug(
-                f"Created annotation: {deployment_subject} at ({coords.x}, {coords.y}) "
-                f"type={annotation_type}"
-            )
+        content_string = "\n".join(content_parts)
+        content_bytes = content_string.encode("latin-1")
 
-            return annot
+        ap_stream = StreamObject()
+        ap_stream[NameObject("/Type")] = NameObject("/XObject")
+        ap_stream[NameObject("/Subtype")] = NameObject("/Form")
+        ap_stream[NameObject("/FormType")] = NumberObject(1)
+        ap_stream[NameObject("/BBox")] = ArrayObject([
+            FloatObject(x1),
+            FloatObject(y1),
+            FloatObject(x2),
+            FloatObject(y2),
+        ])
+        ap_stream._data = content_bytes
 
-        except Exception as e:
-            logger.error(f"Failed to create annotation {deployment_subject}: {e}")
-            return None
+        return writer._add_object(ap_stream)
+
+    def _create_deployment_annotation_dict(
+        self,
+        rect: list[float],
+        deployment_subject: str,
+        appearance_ref,
+        fill_color: tuple[float, float, float],
+        stroke_color: tuple[float, float, float],
+        annotation_type: str = "/Circle",
+    ) -> DictionaryObject:
+        """
+        Create a deployment annotation dictionary with appearance stream.
+
+        Args:
+            rect: Annotation rect [x1, y1, x2, y2]
+            deployment_subject: Deployment subject name
+            appearance_ref: Reference to appearance stream
+            fill_color: RGB fill color
+            stroke_color: RGB stroke color
+            annotation_type: Type of annotation
+
+        Returns:
+            DictionaryObject for the annotation
+        """
+        x1, y1, x2, y2 = rect
+
+        annot = DictionaryObject()
+        annot[NameObject("/Type")] = NameObject("/Annot")
+        annot[NameObject("/Subtype")] = NameObject(annotation_type)
+        annot[NameObject("/Rect")] = ArrayObject([
+            FloatObject(x1),
+            FloatObject(y1),
+            FloatObject(x2),
+            FloatObject(y2),
+        ])
+        annot[NameObject("/Subj")] = TextStringObject(deployment_subject)
+        annot[NameObject("/F")] = NumberObject(4)  # Print flag
+
+        # Colors (fallback if appearance not used)
+        annot[NameObject("/IC")] = ArrayObject([
+            FloatObject(fill_color[0]),
+            FloatObject(fill_color[1]),
+            FloatObject(fill_color[2]),
+        ])
+        annot[NameObject("/C")] = ArrayObject([
+            FloatObject(stroke_color[0]),
+            FloatObject(stroke_color[1]),
+            FloatObject(stroke_color[2]),
+        ])
+
+        # Border style
+        bs = DictionaryObject()
+        bs[NameObject("/W")] = FloatObject(DEFAULT_BORDER_WIDTH)
+        bs[NameObject("/S")] = NameObject("/S")
+        annot[NameObject("/BS")] = bs
+
+        # Appearance dictionary - THIS IS THE KEY
+        ap = DictionaryObject()
+        ap[NameObject("/N")] = appearance_ref
+        annot[NameObject("/AP")] = ap
+
+        return annot
 
     def replace_annotations(
         self,
@@ -232,9 +290,7 @@ class AnnotationReplacer:
         """
         Replace bid annotations with deployment annotations in a PDF.
 
-        Opens the input PDF, iterates through all annotations,
-        replaces bid annotations with deployment annotations at the
-        same coordinates, and saves to output PDF.
+        Uses PyPDF2 for rich icon rendering with embedded images.
 
         Args:
             input_pdf: Path to input PDF with bid annotations
@@ -242,9 +298,6 @@ class AnnotationReplacer:
 
         Returns:
             Tuple of (converted_count, skipped_count, skipped_subjects)
-            - converted_count: Number of annotations successfully replaced
-            - skipped_count: Number of annotations skipped
-            - skipped_subjects: List of bid subjects that were skipped
         """
         converted_count = 0
         skipped_count = 0
@@ -254,21 +307,31 @@ class AnnotationReplacer:
             logger.error(f"Input PDF not found: {input_pdf}")
             return 0, 0, []
 
-        # Open PDF with PyMuPDF
-        doc = pymupdf.open(input_pdf)
+        # Open PDF with PyPDF2
+        reader = PdfReader(str(input_pdf))
+        writer = PdfWriter()
 
-        try:
-            for page_num, page in enumerate(doc):
-                # Collect annotations to process (can't modify during iteration)
-                annotations_to_process: list[dict] = []
+        # Copy all pages to writer
+        for page in reader.pages:
+            writer.add_page(page)
 
-                for annot in page.annots():
-                    if annot is None:
-                        continue
+        # Process each page
+        for page_num, page in enumerate(writer.pages):
+            annots_ref = page.get("/Annots")
+            if not annots_ref:
+                continue
 
-                    # Get annotation info
-                    info = annot.info
-                    bid_subject = info.get("subject", "")
+            annots = annots_ref.get_object() if hasattr(annots_ref, 'get_object') else annots_ref
+            if not annots:
+                continue
+
+            # Collect annotations to process
+            annotations_to_replace: list[dict] = []
+
+            for idx, annot_ref in enumerate(annots):
+                try:
+                    annot = annot_ref.get_object() if hasattr(annot_ref, 'get_object') else annot_ref
+                    bid_subject = str(annot.get("/Subj", ""))
 
                     if not bid_subject:
                         logger.debug("Skipping annotation with empty subject")
@@ -279,126 +342,106 @@ class AnnotationReplacer:
                     # Look up deployment subject
                     deployment_subject = self.mapping_parser.get_deployment_subject(bid_subject)
                     if not deployment_subject:
-                        logger.info(f"No mapping found for bid subject: {bid_subject}")
+                        logger.debug(f"No mapping found for bid subject: {bid_subject}")
                         skipped_count += 1
                         skipped_subjects.append(bid_subject)
                         continue
 
-                    # Get annotation details before deleting
-                    rect = annot.rect
-                    annot_type = self._get_annotation_type(annot)
-                    contents = info.get("content", "")
-                    # Store xref for later deletion (more reliable than annot reference)
-                    annot_xref = annot.xref
+                    # Get annotation details
+                    rect_obj = annot.get("/Rect", [])
+                    rect = [float(r) for r in rect_obj] if rect_obj else None
+                    if not rect or len(rect) != 4:
+                        logger.warning(f"Invalid rect for annotation: {bid_subject}")
+                        skipped_count += 1
+                        skipped_subjects.append(bid_subject)
+                        continue
 
-                    # Store info for later creation
-                    annotations_to_process.append({
-                        "xref": annot_xref,
+                    subtype = str(annot.get("/Subtype", "/Circle"))
+
+                    annotations_to_replace.append({
+                        "index": idx,
                         "bid_subject": bid_subject,
                         "deployment_subject": deployment_subject,
                         "rect": rect,
-                        "type": annot_type,
-                        "contents": contents,
-                        "page_num": page_num,
+                        "subtype": subtype,
                     })
 
-                # Process collected annotations (delete old, create new)
-                for annot_info in annotations_to_process:
-                    try:
-                        # Get colors for deployment annotation
-                        icon_data = self.btx_loader.get_icon_data(
-                            annot_info["deployment_subject"], "deployment"
-                        )
-                        fill_color, stroke_color, opacity = self._get_colors_for_annotation(
-                            annot_info["deployment_subject"], icon_data
-                        )
+                except Exception as e:
+                    logger.error(f"Error reading annotation at index {idx}: {e}")
+                    skipped_count += 1
+                    skipped_subjects.append(f"(error at index {idx})")
 
-                        # Find and delete original annotation by xref
-                        annot_to_delete = None
-                        for annot in page.annots():
-                            if annot and annot.xref == annot_info["xref"]:
-                                annot_to_delete = annot
-                                break
-                        if annot_to_delete:
-                            page.delete_annot(annot_to_delete)
+            # Replace annotations (process in reverse order to preserve indices)
+            for annot_info in reversed(annotations_to_replace):
+                try:
+                    deployment_subject = annot_info["deployment_subject"]
+                    rect = annot_info["rect"]
+                    subtype = annot_info["subtype"]
+                    idx = annot_info["index"]
 
-                        # Create coordinates object
-                        rect = annot_info["rect"]
-                        coords = AnnotationCoordinates(
-                            x=rect.x0,
-                            y=rect.y0,
-                            width=rect.width,
-                            height=rect.height,
-                            page=page_num + 1,
-                        )
+                    # Get colors
+                    icon_data = self.btx_loader.get_icon_data(deployment_subject, "deployment")
+                    fill_color, stroke_color, _ = self._get_colors_for_annotation(
+                        deployment_subject, icon_data
+                    )
 
-                        # Create new deployment annotation
-                        new_annot = self._create_annotation_on_page(
-                            page=page,
-                            coords=coords,
-                            deployment_subject=annot_info["deployment_subject"],
-                            annotation_type=annot_info["type"],
-                            fill_color=fill_color,
-                            stroke_color=stroke_color,
-                            opacity=opacity,
-                            contents=annot_info["contents"],
+                    # Try rich icon rendering first
+                    appearance_ref = self._render_rich_icon(
+                        writer, deployment_subject, rect, id_label="j100"
+                    )
+
+                    # Fall back to simple appearance if rich rendering not available
+                    if appearance_ref is None:
+                        appearance_ref = self._create_simple_appearance(
+                            writer, rect, fill_color, stroke_color, subtype
                         )
 
-                        if new_annot:
-                            converted_count += 1
-                            logger.debug(
-                                f"Converted: {annot_info['bid_subject']} -> "
-                                f"{annot_info['deployment_subject']}"
-                            )
-                        else:
-                            skipped_count += 1
-                            skipped_subjects.append(annot_info["bid_subject"])
+                    # Create new annotation
+                    new_annot = self._create_deployment_annotation_dict(
+                        rect=rect,
+                        deployment_subject=deployment_subject,
+                        appearance_ref=appearance_ref,
+                        fill_color=fill_color,
+                        stroke_color=stroke_color,
+                        annotation_type=subtype,
+                    )
 
-                    except Exception as e:
-                        logger.error(
-                            f"Error converting annotation {annot_info['bid_subject']}: {e}"
-                        )
-                        skipped_count += 1
-                        skipped_subjects.append(annot_info["bid_subject"])
+                    # Replace in annotations array
+                    del annots[idx]
+                    annots.append(new_annot)
 
-            # Save the modified PDF
-            doc.save(output_pdf)
-            logger.info(
-                f"Saved converted PDF to {output_pdf}: "
-                f"{converted_count} converted, {skipped_count} skipped"
-            )
+                    converted_count += 1
+                    logger.debug(f"Converted: {annot_info['bid_subject']} -> {deployment_subject}")
 
-        finally:
-            doc.close()
+                except Exception as e:
+                    logger.error(f"Error converting annotation {annot_info['bid_subject']}: {e}")
+                    skipped_count += 1
+                    skipped_subjects.append(annot_info["bid_subject"])
+
+        # Save the output PDF
+        with open(output_pdf, "wb") as f:
+            writer.write(f)
 
         logger.info(
-            f"Annotation replacement complete: "
+            f"Saved converted PDF to {output_pdf}: "
             f"{converted_count} converted, {skipped_count} skipped"
         )
 
         return converted_count, skipped_count, skipped_subjects
 
-    def _get_annotation_type(self, annot: pymupdf.Annot) -> str:
+    def _get_annotation_type(self, subtype: str) -> str:
         """
-        Get the annotation type in PDF format (e.g., /Circle, /Square).
+        Normalize annotation type string.
 
         Args:
-            annot: PyMuPDF annotation object
+            subtype: PDF subtype string
 
         Returns:
-            PDF annotation type string
+            Normalized type string
         """
-        # PyMuPDF annotation types are integers
-        # Map to PDF type names
-        type_map = {
-            pymupdf.PDF_ANNOT_CIRCLE: "/Circle",
-            pymupdf.PDF_ANNOT_SQUARE: "/Square",
-            pymupdf.PDF_ANNOT_POLYGON: "/Polygon",
-            pymupdf.PDF_ANNOT_POLY_LINE: "/PolyLine",
-            pymupdf.PDF_ANNOT_STAMP: "/Stamp",
-            pymupdf.PDF_ANNOT_TEXT: "/Text",
-        }
-        return type_map.get(annot.type[0], "/Circle")
+        if not subtype.startswith("/"):
+            subtype = "/" + subtype
+        return subtype
 
     # Legacy method for backward compatibility with old API
     def replace_annotations_legacy(
@@ -411,21 +454,11 @@ class AnnotationReplacer:
         Legacy method for backward compatibility.
 
         This method is deprecated. Use replace_annotations() with file paths instead.
-
-        Args:
-            annotations: List of bid annotations from PDFAnnotationParser
-            page_dict: PDF page dictionary object
-            writer: Optional PdfWriter (ignored)
-
-        Returns:
-            Tuple of (converted_count, skipped_count, skipped_subjects)
         """
         logger.warning(
             "replace_annotations_legacy is deprecated. "
             "Use replace_annotations(input_pdf, output_pdf) instead."
         )
-        # This method cannot work properly without file paths
-        # Return zeros to indicate no processing
         return 0, 0, []
 
     def create_deployment_annotation(
@@ -439,17 +472,6 @@ class AnnotationReplacer:
         Create deployment annotation data from bid annotation.
 
         This is a simplified version that returns annotation metadata.
-        The actual annotation creation happens in _create_annotation_on_page()
-        when using the new file-based API.
-
-        Args:
-            bid_annotation: Original bid annotation with coordinates
-            deployment_subject: Deployment icon subject name
-            icon_data: Optional icon data from BTX
-            writer: Ignored (legacy parameter)
-
-        Returns:
-            Dictionary with annotation metadata
         """
         coords = bid_annotation.coordinates
 

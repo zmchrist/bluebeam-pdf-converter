@@ -1,6 +1,6 @@
-# Bluebeam BTX Icon Converter
+# Bluebeam PDF Map Converter
 
-A web application for converting Bluebeam Revu tool icons (.btx files) from custom "bid icons" to custom "deployment icons" within PDF markup workflows. When estimators mark equipment locations on venue maps (sports arenas, concert halls, festivals) with bid icons during the bidding phase, this tool converts those BTX definitions so the same markup locations automatically display as deployment icons after bid acceptance—eliminating hours of manual re-marking. Built with Python backend (FastAPI) and React frontend.
+A web application for converting PDF venue maps from "bid phase" to "deployment phase" by replacing icon annotations. When estimators mark equipment locations on venue maps (sports arenas, concert halls, festivals) with bid icons during the bidding phase, this tool converts those PDF annotations to deployment icons after bid acceptance—eliminating hours of manual re-marking. Built with Python backend (FastAPI, PyMuPDF) and React frontend (planned).
 
 ## Prerequisites
 
@@ -89,22 +89,22 @@ Bluebeam Conversion/
 
 ## Features
 
-- **BTX File Conversion** — Convert bid icons to deployment icons with one click
-- **Batch Processing** — Upload and convert multiple BTX files simultaneously
-- **Visual Preview** — See bid → deployment icon mappings before conversion
-- **Pattern Matching** — Automatic icon set recognition and mapping
-- **Progress Tracking** — Real-time conversion progress indicators
-- **Download Management** — Download converted files individually or as batch
+- **PDF Map Conversion** — Convert bid icon annotations to deployment icons automatically
+- **Rich Icon Rendering** — Deployment icons include gear images, brand text, and model labels
+- **High Conversion Rate** — 93.5% annotation conversion (376/402 on sample BidMap.pdf)
+- **Fast Processing** — Full conversion in ~1 second
+- **Coordinate Preservation** — Icons remain at exact same positions after conversion
+- **Download Ready** — Download converted PDF immediately after processing
 
 ## API Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/api/upload` | Upload BTX files for conversion |
-| POST | `/api/convert` | Convert bid icons to deployment icons |
-| GET | `/api/preview/{file_id}` | Preview icon mappings before conversion |
-| GET | `/api/download/{file_id}` | Download converted BTX file |
-| POST | `/api/batch-convert` | Batch convert multiple BTX files |
+| GET | `/health` | Health check with mapping/toolchest status |
+| GET | `/` | Root endpoint with API info |
+| POST | `/api/upload` | Upload PDF venue map for conversion |
+| POST | `/api/convert/{upload_id}` | Convert bid annotations to deployment icons |
+| GET | `/api/download/{file_id}` | Download converted PDF file |
 
 Full API documentation available at http://localhost:8000/docs when backend is running.
 
@@ -136,9 +136,21 @@ Slash commands for Claude Code to assist with development workflows. The AI codi
 | `/github_bug_fix:rca` | Create root cause analysis document for a GitHub issue |
 | `/github_bug_fix:implement-fix` | Implement fix based on RCA document |
 
+### Documentation
+| Command | Description |
+|---------|-------------|
+| `/update` | Sync project docs (PRD.md, CLAUDE.md, README.md, memories.md) based on recent changes |
+| `/create-prd` | Generate Product Requirements Document from conversation |
+| `/create-claude` | Generate CLAUDE.md project documentation |
+| `/create-readme` | Generate README.md based on project details |
+
+### Git
+| Command | Description |
+|---------|-------------|
+| `/git:commit` | Stage files and commit with conventional commit message |
+| `/git:push` | Push commits to remote |
+
 ### Misc
 | Command | Description |
 |---------|-------------|
-| `/commit` | Create atomic commit with appropriate tag (feat, fix, docs, etc.) |
 | `/init-project` | Install dependencies, start backend and frontend servers |
-| `/create-prd` | Generate Product Requirements Document from conversation |

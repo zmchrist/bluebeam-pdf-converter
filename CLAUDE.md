@@ -30,11 +30,11 @@ bluebeam-pdf-converter/
 │   │   │   ├── appearance_extractor.py # Extract colors from reference PDFs
 │   │   │   ├── icon_config.py    # Config for 39 deployment icons
 │   │   │   ├── icon_renderer.py  # Create PDF appearance streams
-│   │   │   └── pdf_reconstructor.py  # Write modified PDFs (stub)
+│   │   │   └── file_manager.py   # Manage uploaded/converted file storage
 │   │   ├── routers/
-│   │   │   ├── upload.py         # POST /api/upload (stub)
-│   │   │   ├── convert.py        # POST /api/convert/{upload_id} (stub)
-│   │   │   └── download.py       # GET /api/download/{file_id} (stub)
+│   │   │   ├── upload.py         # POST /api/upload
+│   │   │   ├── convert.py        # POST /api/convert/{upload_id}
+│   │   │   └── download.py       # GET /api/download/{file_id}
 │   │   └── utils/
 │   │       ├── validation.py     # PDF and file validators
 │   │       └── errors.py         # Custom exception classes
@@ -197,7 +197,8 @@ backend/tests/
 ├── test_btx_loader.py          # BTX parsing (24 tests)
 ├── test_annotation_replacer.py # Annotation replacement
 ├── test_icon_renderer.py       # Appearance streams (24 tests)
-└── test_api.py                 # API endpoint tests
+├── test_file_manager.py        # File storage (8 tests)
+└── test_api.py                 # API endpoint tests (9 tests)
 ```
 
 ### Running Tests
@@ -245,6 +246,12 @@ Central configuration for 39 deployment icons:
 - `ICON_OVERRIDES`: Per-icon tuning (offsets, colors)
 - `ICON_IMAGE_PATHS`: Subject→PNG file mapping
 
+### FileManager
+Manages temporary file storage for uploads and conversions:
+- UUID-based file naming
+- Expiration tracking (1 hour default)
+- Cleanup of expired files
+
 ## Implementation Status
 
 **Phase 1-3: ✅ Complete**
@@ -255,8 +262,12 @@ Central configuration for 39 deployment icons:
 - Annotation replacement with PyMuPDF
 - Config-driven icon rendering
 
-**Phase 4: ⏳ Not Started**
-- FastAPI endpoints (upload, convert, download)
-- Temporary file management
-- React frontend
-- Integration testing
+**Phase 4 Backend: ✅ Complete**
+- FileManager service for upload/download storage
+- FastAPI endpoints (upload, convert, download) - all implemented
+- Health check with mapping/toolchest validation
+- End-to-end conversion via API working (376/402 annotations, ~1 second)
+
+**Phase 4 Frontend: ⏳ Not Started**
+- React frontend UI
+- Upload/download workflow
