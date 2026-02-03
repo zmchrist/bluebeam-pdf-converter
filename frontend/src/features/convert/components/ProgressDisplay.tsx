@@ -42,8 +42,8 @@ export function ProgressDisplay({ currentStep }: ProgressDisplayProps) {
                   className={cn(
                     'w-10 h-10 rounded-full flex items-center justify-center transition-all',
                     status === 'complete' && 'bg-green-500',
-                    status === 'current' && 'bg-primary-500',
-                    status === 'pending' && 'bg-gray-200'
+                    status === 'current' && 'bg-purple-500',
+                    status === 'pending' && 'bg-gray-200 dark:bg-gray-700'
                   )}
                 >
                   {status === 'complete' ? (
@@ -51,15 +51,15 @@ export function ProgressDisplay({ currentStep }: ProgressDisplayProps) {
                   ) : status === 'current' ? (
                     <Loader2 className="h-5 w-5 text-white animate-spin" />
                   ) : (
-                    <span className="text-sm text-gray-500">{index + 1}</span>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">{index + 1}</span>
                   )}
                 </div>
                 <span
                   className={cn(
                     'mt-2 text-xs font-medium text-center',
-                    status === 'complete' && 'text-green-600',
-                    status === 'current' && 'text-primary-600',
-                    status === 'pending' && 'text-gray-400'
+                    status === 'complete' && 'text-green-600 dark:text-green-400',
+                    status === 'current' && 'text-purple-600 dark:text-purple-400',
+                    status === 'pending' && 'text-gray-400 dark:text-gray-500'
                   )}
                 >
                   {step.label}
@@ -70,7 +70,7 @@ export function ProgressDisplay({ currentStep }: ProgressDisplayProps) {
                 <div
                   className={cn(
                     'flex-1 h-1 mx-2 rounded',
-                    status === 'complete' ? 'bg-green-500' : 'bg-gray-200'
+                    status === 'complete' ? 'bg-green-500' : 'bg-gray-200 dark:bg-gray-700'
                   )}
                   style={{ minWidth: '40px' }}
                 />

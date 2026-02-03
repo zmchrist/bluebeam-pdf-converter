@@ -96,10 +96,10 @@ function PDFConverter() {
       <div className="space-y-6">
         {/* Title and description */}
         <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold text-gray-900">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
             Convert Your Bid Map
           </h2>
-          <p className="text-gray-600 mt-2">
+          <p className="text-gray-600 dark:text-gray-400 mt-2">
             Upload a PDF bid map to convert all bid icons to deployment icons
           </p>
         </div>
@@ -125,7 +125,7 @@ function PDFConverter() {
         {showDropZone && (
           <Card>
             <Card.Header>
-              <h3 className="text-lg font-semibold text-gray-900">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                 Step 1: Upload PDF
               </h3>
             </Card.Header>
@@ -157,7 +157,7 @@ function PDFConverter() {
         {showDownload && (
           <Card>
             <Card.Header>
-              <h3 className="text-lg font-semibold text-gray-900">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                 Step 3: Download
               </h3>
             </Card.Header>

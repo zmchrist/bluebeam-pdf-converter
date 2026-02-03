@@ -28,7 +28,7 @@ export function ConversionPanel({
   return (
     <Card>
       <Card.Header>
-        <h2 className="text-lg font-semibold text-gray-900">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
           Convert: {uploadData.file_name}
         </h2>
       </Card.Header>
@@ -45,18 +45,18 @@ export function ConversionPanel({
 
         {/* Conversion result summary */}
         {conversionResult && (
-          <div className="p-4 bg-gray-50 rounded-lg space-y-2">
-            <p className="text-sm text-gray-600">
+          <div className="p-4 bg-gray-100/50 dark:bg-gray-800/50 rounded-lg space-y-2">
+            <p className="text-sm text-gray-600 dark:text-gray-300">
               <span className="font-medium">Converted:</span>{' '}
               {conversionResult.annotations_converted} of {conversionResult.annotations_processed} annotations
             </p>
             {conversionResult.annotations_skipped > 0 && (
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
                 <span className="font-medium">Skipped:</span>{' '}
                 {conversionResult.annotations_skipped} (no mapping)
               </p>
             )}
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-500 dark:text-gray-400">
               <span className="font-medium">Processing time:</span>{' '}
               {(conversionResult.processing_time_ms / 1000).toFixed(1)}s
             </p>

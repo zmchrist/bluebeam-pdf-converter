@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'media',
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -18,7 +19,14 @@ export default {
           700: '#1d4ed8',
           800: '#1e40af',
           900: '#1e3a8a',
+          950: '#172554',
         },
+      },
+      boxShadow: {
+        'glass': '0 8px 32px rgba(0, 0, 0, 0.1)',
+        'glass-lg': '0 16px 48px rgba(0, 0, 0, 0.15)',
+        'glow': '0 0 20px rgba(139, 92, 246, 0.3)',
+        'glow-lg': '0 0 40px rgba(139, 92, 246, 0.4)',
       },
     },
   },
