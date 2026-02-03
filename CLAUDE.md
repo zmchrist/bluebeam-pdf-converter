@@ -57,9 +57,36 @@ bluebeam-pdf-converter/
 ├── .claude/
 │   ├── PRD.md                    # Product requirements document
 │   ├── memories.md               # Session history and notes
+│   ├── errors.md                 # Known errors and solutions
 │   └── commands/                 # Claude Code command definitions
 └── .agents/plans/                # Implementation plans
 ```
+
+## Pre-Implementation Checklist
+
+Before starting any new feature implementation, verify the baseline is stable:
+
+```bash
+# Backend verification
+cd backend && uv sync                    # Dependencies install cleanly
+uv run pytest -x --tb=short              # Quick smoke test passes
+
+# Frontend verification
+cd frontend && npm install               # Dependencies install cleanly
+npm run build                            # Build succeeds
+npx tsc --noEmit                         # Type check passes
+```
+
+**If any fail:** Fix first or document as known issue before proceeding with new work.
+
+## Known Test Failures
+
+These failures are expected and should not block development:
+
+- **6 failures in `test_annotation_replacer.py`** - PyMuPDF/PyPDF2 fixture incompatibility (mock vs real PDF objects)
+- **11 skipped tests** - Features not yet implemented or require specific test files
+
+Run `uv run pytest` and expect ~121 passed, 6 failed, 11 skipped.
 
 ## Commands
 
@@ -85,7 +112,7 @@ uv run python scripts/test_icon_render.py "SW - Cisco Micro 4P"
 # End-to-End Conversion Test
 uv run python scripts/test_conversion.py
 
-# Frontend (when implemented)
+# Frontend
 cd frontend && npm install && npm run dev
 ```
 
@@ -99,6 +126,116 @@ Read these documents when working on specific areas:
 | `backend/data/mapping.md` | Icon mapping configuration, bid→deployment subject mappings |
 | `backend/app/services/icon_config.py` | Icon rendering configuration, categories, overrides |
 | `.claude/memories.md` | Recent implementation decisions, technical discoveries |
+| `.claude/errors.md` | Before debugging - check for known solutions |
+
+## Error Handling Protocol
+
+When encountering errors, follow this process:
+
+### 1. Check Known Solutions First
+Before debugging, search `.claude/errors.md` for the error message or keywords. Many errors have documented solutions.
+
+### 2. Diagnose Root Cause
+- Read the full error message and stack trace
+- Identify the **root cause**, not just symptoms
+- Check if the error is in project code vs dependencies
+- Reproduce the error to confirm understanding
+
+### 3. Fix and Verify
+- Apply the fix
+- Run tests to verify: `cd backend && uv run pytest`
+- Confirm the error is resolved
+
+### 4. Document New Solutions (Immediately)
+**Right after fixing** a new error, document it in `.claude/errors.md` while context is fresh.
+
+**Document if ANY of these are true:**
+- Took more than 2 minutes to debug
+- Root cause was non-obvious
+- Likely to recur in this codebase
+- Required searching external resources
+
+**Skip documenting:**
+- Simple typos or syntax errors
+- One-off user mistakes (wrong file path, etc.)
+- Errors already in errors.md
+
+**Template:**
+```markdown
+### [Short descriptive title]
+- **Error:** [Exact error message]
+- **Cause:** [Root cause]
+- **Solution:** [What fixed it]
+- **Files:** [Affected files:line_numbers]
+- **Date Found:** [YYYY-MM-DD]
+```
+
+Include before/after code examples when the fix involves code changes.
+
+### Error Categories
+- **PDF Processing:** PyMuPDF, annotation handling, appearance streams
+- **Configuration:** Paths, settings, environment
+- **BTX Parsing:** XML, zlib decompression, subject extraction
+- **Data Models:** Pydantic, type mismatches
+- **Testing:** pytest, fixtures, async
+- **API:** FastAPI, request validation, responses
+
+## Anti-Patterns to Avoid
+
+### Nested Interactive Elements (Accessibility)
+Never nest interactive elements - this breaks screen readers and keyboard navigation:
+
+```tsx
+// ❌ BAD - nested interactive elements
+<a href="/download">
+  <button>Download</button>
+</a>
+
+// ✅ GOOD - single interactive element styled appropriately
+<a href="/download" className="btn btn-primary">
+  Download
+</a>
+
+// ✅ GOOD - button with click handler
+<button onClick={() => window.location.href = '/download'}>
+  Download
+</button>
+```
+
+### Bare Except Clauses (Python)
+Always catch specific exceptions:
+
+```python
+# ❌ BAD
+try:
+    process_file()
+except:
+    pass
+
+# ✅ GOOD
+try:
+    process_file()
+except FileNotFoundError:
+    logger.warning("File not found")
+except PermissionError:
+    logger.error("Permission denied")
+```
+
+### Unused Function Parameters
+Either use the parameter or remove it from the signature. Don't silence with `void` or `_`:
+
+```typescript
+// ❌ BAD - passing prop but not using it
+function Panel({ data }: { data: Data }) {
+  void data;  // Silencing unused warning
+  return <div>...</div>;
+}
+
+// ✅ GOOD - use the prop or remove it
+function Panel({ data }: { data: Data }) {
+  return <div>{data.name}</div>;
+}
+```
 
 ## Code Conventions
 
@@ -140,11 +277,13 @@ except NoAnnotationsFoundError as e:
 - Use HTTPException with descriptive error codes
 - Interactive docs at `/docs` (Swagger) and `/redoc`
 
-### Frontend (React - Planned)
+### Frontend (React)
 - Feature-based folder structure under `src/features/`
-- Use TanStack Query for API calls
+- TanStack Query for API state management
 - Tailwind CSS for styling
 - TypeScript for type safety
+- Per-request API timeouts (30s default, 120s upload, 60s convert, 5s health)
+- Accessible components (no nested interactive elements)
 
 ## Configuration
 
@@ -211,6 +350,24 @@ uv run pytest tests/test_icon_renderer.py -v
 
 # With coverage report
 uv run pytest --cov=app --cov-report=html
+
+# Quick smoke test (stops on first failure)
+uv run pytest -x --tb=short
+```
+
+### Pre-Commit Validation
+Run before committing changes:
+
+```bash
+# Backend
+cd backend
+uv run ruff check . --fix              # Lint and auto-fix
+uv run pytest -x                        # Quick test
+
+# Frontend
+cd frontend
+npm run build                           # Verify build
+npx tsc --noEmit                        # Type check
 ```
 
 ## Key Services
@@ -268,6 +425,11 @@ Manages temporary file storage for uploads and conversions:
 - Health check with mapping/toolchest validation
 - End-to-end conversion via API working (376/402 annotations, ~1 second)
 
-**Phase 4 Frontend: ⏳ Not Started**
-- React frontend UI
-- Upload/download workflow
+**Phase 4 Frontend: ✅ Complete**
+- React 18 frontend with TypeScript, Vite, Tailwind CSS
+- TanStack Query for API state management
+- Upload component with drag-and-drop (react-dropzone)
+- Conversion progress display
+- Download button with accessibility fixes
+- Feature-based folder structure (`src/features/`)
+- All components type-safe with shared types

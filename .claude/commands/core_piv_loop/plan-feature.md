@@ -80,6 +80,33 @@ So that <benefit/value>
 - Understand database/model patterns if applicable
 - Identify authentication/authorization patterns if relevant
 
+**6. Pre-Implementation Verification**
+
+Before finalizing the plan, verify the baseline is stable:
+
+```bash
+# Backend projects
+cd backend && uv sync
+uv run pytest -x --tb=short
+
+# Frontend projects
+cd frontend && npm install
+npm run build
+```
+
+- Document any pre-existing failures in plan's "Known Issues" section
+- If build/tests fail, either fix first or note as blocker
+- Check for orphaned directories or test artifacts that need cleanup
+
+**7. API Change Tracking**
+
+When service APIs have changed or will change:
+
+- Document old vs new function signatures
+- Search for usages: `grep -r "function_name" --include="*.py"`
+- Add task: "Update all scripts/tests using old API"
+- List affected files explicitly in the plan
+
 **Clarify Ambiguities:**
 
 - If requirements are unclear at this point, ask the user to clarify before you continue
@@ -307,6 +334,21 @@ Design unit tests with fixtures and assertions following existing testing approa
 ### Edge Cases
 
 <List specific edge cases that must be tested for this feature>
+
+### Accessibility Checklist (Frontend Plans)
+
+- [ ] No nested interactive elements (`<a>` around `<button>`, etc.)
+- [ ] All images have alt text
+- [ ] Forms have proper labels and error messages
+- [ ] Focus states are visible
+- [ ] Color contrast meets WCAG AA
+
+### Known Issues
+
+<Document any pre-existing failures or issues that should not block this feature>
+
+- Pre-existing test failures: [list or "none"]
+- Known limitations: [list or "none"]
 
 ---
 
