@@ -5,7 +5,7 @@ Manages environment variables, file paths, and application settings.
 """
 
 from pathlib import Path
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Determine project root relative to this file
 # This file is at: backend/app/config.py
@@ -40,9 +40,11 @@ class Settings(BaseSettings):
     bid_tools_dir: Path = _PROJECT_ROOT / "toolchest" / "bidTools"
     deployment_tools_dir: Path = _PROJECT_ROOT / "toolchest" / "deploymentTools"
 
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
+    # Reference files
+    samples_dir: Path = _PROJECT_ROOT / "samples"
+    deployment_map_path: Path = _PROJECT_ROOT / "samples" / "maps" / "DeploymentMap.pdf"
+
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
 
 # Global settings instance

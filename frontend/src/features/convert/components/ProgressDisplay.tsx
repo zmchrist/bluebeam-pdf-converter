@@ -21,6 +21,9 @@ function getStepStatus(
   const currentIndex = stepOrder.indexOf(currentStep);
   const stepIndex = stepOrder.indexOf(stepKey);
 
+  // Final step shows as complete, not current (checkmark instead of spinner)
+  if (currentStep === 'converted' && stepKey === 'converted') return 'complete';
+
   if (stepIndex < currentIndex) return 'complete';
   if (stepIndex === currentIndex) return 'current';
   return 'pending';

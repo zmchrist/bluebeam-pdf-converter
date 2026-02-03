@@ -147,8 +147,8 @@ class TestAnnotationReplacer:
 
         fill, stroke, opacity = replacer._get_colors_for_annotation("Unknown", None)
 
-        assert fill == (1.0, 0.5, 0.0)  # Default orange
-        assert stroke == (0, 0, 0)  # Default black
+        assert fill == (0.22, 0.34, 0.65)  # Default navy blue (matches deployment icons)
+        assert stroke == (0.0, 0.0, 0.0)  # Default black
         assert opacity == 1.0
 
     def test_get_colors_from_appearance_extractor(self):

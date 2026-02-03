@@ -73,8 +73,8 @@ class UploadNotFoundError(PDFConverterError):
         super().__init__(self.message)
 
 
-class FileNotFoundError(PDFConverterError):
-    """Raised when converted file not found."""
+class ConvertedFileNotFoundError(PDFConverterError):
+    """Raised when converted file not found or expired."""
 
     def __init__(
         self,

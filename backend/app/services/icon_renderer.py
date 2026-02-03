@@ -243,7 +243,6 @@ class IconRenderer:
         """
         x1, y1, x2, y2 = rect
         width = x2 - x1
-        height = y2 - y1
 
         # Extract config parameters with defaults
         circle_color = config.get("circle_color", (0.22, 0.34, 0.65))
