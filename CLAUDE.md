@@ -83,10 +83,10 @@ npx tsc --noEmit                         # Type check passes
 
 These failures are expected and should not block development:
 
-- **6 failures in `test_annotation_replacer.py`** - PyMuPDF/PyPDF2 fixture incompatibility (mock vs real PDF objects)
+- **5 failures in `test_annotation_replacer.py`** - PyMuPDF/PyPDF2 fixture incompatibility (tests create PDFs with PyMuPDF but conversion uses PyPDF2)
 - **11 skipped tests** - Features not yet implemented or require specific test files
 
-Run `uv run pytest` and expect ~121 passed, 6 failed, 11 skipped.
+Run `uv run pytest` and expect ~122 passed, 5 failed, 11 skipped.
 
 ## Commands
 
@@ -220,6 +220,19 @@ except FileNotFoundError:
     logger.warning("File not found")
 except PermissionError:
     logger.error("Permission denied")
+```
+
+### Shadowing Built-in Names (Python)
+Never name custom classes/exceptions the same as Python builtins:
+
+```python
+# ❌ BAD - shadows builtin FileNotFoundError
+class FileNotFoundError(PDFConverterError):
+    pass
+
+# ✅ GOOD - unique name
+class ConvertedFileNotFoundError(PDFConverterError):
+    pass
 ```
 
 ### Unused Function Parameters
