@@ -10,6 +10,15 @@ Provides configuration data for rendering deployment icons including:
 """
 
 from pathlib import Path
+from typing import Literal, TypedDict
+
+
+class IdPrefixConfig(TypedDict, total=False):
+    """Type definition for ID prefix configuration entries."""
+
+    prefix: str  # Required: The prefix letter(s) for the ID (e.g., "j", "aa")
+    start: int  # Required: Starting number for the counter (e.g., 100)
+    format: Literal["prefix_first", "number_first"]  # Optional: ID format
 
 # Base paths - use absolute paths relative to this file's location
 # This file is at: backend/app/services/icon_config.py
@@ -156,17 +165,17 @@ CATEGORY_DEFAULTS: dict[str, dict] = {
         "img_scale_ratio": 0.70,
         "brand_text": "CISCO",
         "brand_font_size": 1.9,
-        "brand_y_offset": -3.0,  # from circle top (moved down 1px from -4.0)
+        "brand_y_offset": -5.0,  # from circle top (moved down 2px: -3.0 -> -5.0)
         "brand_x_offset": -0.2,
         "model_font_size": 1.6,
         "model_y_offset": 2.5,  # from circle bottom
-        "model_x_offset": -0.7,
+        "model_x_offset": -0.2,
         "font_name": "/Helvetica-Bold",
         "text_color": (1.0, 1.0, 1.0),  # White
         "id_text_color": None,  # Same as circle_color if None
     },
     "Switches": {
-        "circle_color": (0.15, 0.45, 0.25),  # Green
+        "circle_color": (0.267, 0.714, 0.290),  # Green from switches.pdf RGB(68, 182, 74)
         "circle_border_width": 0.5,
         "circle_border_color": (0.0, 0.0, 0.0),
         "id_box_height": 4.0,
@@ -175,11 +184,11 @@ CATEGORY_DEFAULTS: dict[str, dict] = {
         "img_scale_ratio": 0.70,
         "brand_text": "",  # Many switches/NOCs have no brand text
         "brand_font_size": 1.9,
-        "brand_y_offset": -3.0,  # moved down 1px
+        "brand_y_offset": -5.0,  # moved down 2px: -3.0 -> -5.0
         "brand_x_offset": -0.2,
         "model_font_size": 1.6,
         "model_y_offset": 2.5,
-        "model_x_offset": -0.7,
+        "model_x_offset": -0.2,
         "font_name": "/Helvetica-Bold",
         "text_color": (1.0, 1.0, 1.0),
         "id_text_color": None,
@@ -194,11 +203,11 @@ CATEGORY_DEFAULTS: dict[str, dict] = {
         "img_scale_ratio": 0.70,
         "brand_text": "UBIQUITI",
         "brand_font_size": 1.9,
-        "brand_y_offset": -3.0,  # moved down 1px
+        "brand_y_offset": -5.0,  # moved down 2px: -3.0 -> -5.0
         "brand_x_offset": -0.2,
         "model_font_size": 1.6,
         "model_y_offset": 2.5,
-        "model_x_offset": -0.7,
+        "model_x_offset": -0.2,  # moved right 0.5px
         "font_name": "/Helvetica-Bold",
         "text_color": (1.0, 1.0, 1.0),
         "id_text_color": None,
@@ -213,11 +222,11 @@ CATEGORY_DEFAULTS: dict[str, dict] = {
         "img_scale_ratio": 0.70,
         "brand_text": "",  # Varies by device
         "brand_font_size": 1.9,
-        "brand_y_offset": -3.0,  # moved down 1px
+        "brand_y_offset": -5.0,  # moved down 2px: -3.0 -> -5.0
         "brand_x_offset": -0.2,
         "model_font_size": 1.6,
         "model_y_offset": 2.5,
-        "model_x_offset": -0.7,
+        "model_x_offset": -0.2,  # moved right 0.5px
         "font_name": "/Helvetica-Bold",
         "text_color": (1.0, 1.0, 1.0),
         "id_text_color": None,
@@ -229,17 +238,19 @@ CATEGORY_DEFAULTS: dict[str, dict] = {
         "id_box_height": 4.0,
         "id_box_width_ratio": 0.55,
         "id_box_border_width": 0.6,
-        "img_scale_ratio": 0.70,
+        "img_scale_ratio": 1.2075,  # 1.5x bigger (0.805 * 1.5)
+        "img_y_offset": -0.5,  # Move image down 0.5px
         "brand_text": "CAT6",  # CAT6 text above gear icon
         "brand_font_size": 1.9,
-        "brand_y_offset": -3.0,  # moved down 1px
-        "brand_x_offset": -0.2,
+        "brand_y_offset": -5.0,  # moved down 2px: -3.0 -> -5.0
+        "brand_x_offset": -0.5,  # 0.2px left from -0.3
         "model_font_size": 1.6,
         "model_y_offset": 2.5,
-        "model_x_offset": -0.7,
+        "model_x_offset": -0.4,  # 0.2px left from -0.2
         "font_name": "/Helvetica-Bold",
         "text_color": (1.0, 1.0, 1.0),
         "id_text_color": None,  # Same as circle_color (red)
+        "model_uppercase": True,  # Capitalize all hardline model text
     },
     "Cables": {
         "circle_color": (0.8, 0.6, 0.0),  # Yellow/orange for fiber
@@ -251,11 +262,11 @@ CATEGORY_DEFAULTS: dict[str, dict] = {
         "img_scale_ratio": 0.70,
         "brand_text": "",
         "brand_font_size": 1.9,
-        "brand_y_offset": -3.0,  # moved down 1px
+        "brand_y_offset": -5.0,  # moved down 2px: -3.0 -> -5.0
         "brand_x_offset": -0.2,
         "model_font_size": 1.6,
         "model_y_offset": 2.5,
-        "model_x_offset": -0.7,
+        "model_x_offset": -0.2,  # moved right 0.5px
         "font_name": "/Helvetica-Bold",
         "text_color": (1.0, 1.0, 1.0),
         "id_text_color": None,
@@ -271,11 +282,11 @@ CATEGORY_DEFAULTS: dict[str, dict] = {
         "img_scale_ratio": 0.70,
         "brand_text": "",
         "brand_font_size": 1.9,
-        "brand_y_offset": -3.0,  # moved down 1px
+        "brand_y_offset": -5.0,  # moved down 2px: -3.0 -> -5.0
         "brand_x_offset": -0.2,
         "model_font_size": 1.6,
         "model_y_offset": 2.5,
-        "model_x_offset": -0.7,
+        "model_x_offset": -0.2,  # moved right 0.5px
         "font_name": "/Helvetica-Bold",
         "text_color": (1.0, 1.0, 1.0),
         "id_text_color": None,
@@ -291,11 +302,11 @@ CATEGORY_DEFAULTS: dict[str, dict] = {
         "img_scale_ratio": 0.70,
         "brand_text": "",
         "brand_font_size": 1.9,
-        "brand_y_offset": -3.0,
+        "brand_y_offset": -5.0,  # moved down 2px: -3.0 -> -5.0
         "brand_x_offset": -0.2,
         "model_font_size": 1.6,
         "model_y_offset": 2.5,
-        "model_x_offset": -0.7,
+        "model_x_offset": -0.2,  # moved right 0.5px
         "font_name": "/Helvetica-Bold",
         "text_color": (1.0, 1.0, 1.0),
         "id_text_color": None,
@@ -310,11 +321,11 @@ CATEGORY_DEFAULTS: dict[str, dict] = {
         "img_scale_ratio": 0.70,
         "brand_text": "FIBER",
         "brand_font_size": 1.9,
-        "brand_y_offset": -3.0,
+        "brand_y_offset": -5.0,  # moved down 2px: -3.0 -> -5.0
         "brand_x_offset": -0.2,
         "model_font_size": 1.6,
         "model_y_offset": 2.5,
-        "model_x_offset": -0.7,
+        "model_x_offset": -0.2,  # moved right 0.5px
         "font_name": "/Helvetica-Bold",
         "text_color": (1.0, 1.0, 1.0),
         "id_text_color": None,
@@ -329,11 +340,11 @@ CATEGORY_DEFAULTS: dict[str, dict] = {
         "img_scale_ratio": 0.70,
         "brand_text": "",
         "brand_font_size": 1.9,
-        "brand_y_offset": -3.0,
+        "brand_y_offset": -5.0,  # moved down 2px: -3.0 -> -5.0
         "brand_x_offset": -0.2,
         "model_font_size": 1.6,
         "model_y_offset": 2.5,
-        "model_x_offset": -0.7,
+        "model_x_offset": -0.2,  # moved right 0.5px
         "font_name": "/Helvetica-Bold",
         "text_color": (1.0, 1.0, 1.0),
         "id_text_color": None,
@@ -344,13 +355,16 @@ CATEGORY_DEFAULTS: dict[str, dict] = {
 # Per-icon override configurations (only values that differ from category defaults)
 ICON_OVERRIDES: dict[str, dict] = {
     # === Access Points ===
-    # MR36H uses category defaults - no overrides needed
+    "AP - Cisco MR36H": {
+        "model_x_offset": -0.3,  # 0.1px left from default -0.2
+    },
     "AP - Cisco 9120": {
         "model_y_offset": 3.0,  # Taller image needs adjustment
         "img_scale_ratio": 0.65,
     },
     "AP - Cisco 9166I": {
         "model_y_offset": 2.8,
+        "model_x_offset": 0.0,  # 0.2px right from default -0.2
     },
     "AP - Cisco 9166D": {
         "model_y_offset": 2.8,
@@ -358,17 +372,28 @@ ICON_OVERRIDES: dict[str, dict] = {
     "AP - Cisco DB10": {
         "img_scale_ratio": 0.60,  # Larger device image
     },
+    "AP - Cisco Marlin 4": {
+        "model_x_offset": 0.3,  # 0.5px right from default -0.2
+    },
     # === Switches with brand text ===
     "SW - Cisco Micro 4P": {
         "brand_text": "CISCO",
     },
     "SW - Cisco 9200 12P": {
         "brand_text": "CISCO",
+        "img_scale_ratio": 1.575,  # 2.5x bigger then 10% smaller (1.75 * 0.90)
     },
     "SW - IDF Cisco 9300 24X": {
-        "brand_text": "CISCO",
+        "brand_text": "IDF 6U",  # IDF rack label instead of CISCO
+        "img_scale_ratio": 1.3125,  # 1.25x bigger (1.05 * 1.25)
+        "img_y_offset": -0.5,  # Move image down 0.5px
+        "img_x_offset": -0.2,  # Move image left 0.2px
+        "model_text_override": "9300 24X",
     },
     # === Distribution with brand text ===
+    "DIST - Micro NOC": {
+        "img_scale_ratio": 1.4,  # 2x bigger (0.70 * 2)
+    },
     "DIST - MikroTik Hex": {
         "brand_text": "MIKROTIK",
     },
@@ -414,16 +439,32 @@ ICON_OVERRIDES: dict[str, dict] = {
         "brand_text": "FORTINET",
     },
     "SW - IDF Cisco 9300 12X36M": {
-        "brand_text": "CISCO",
+        "brand_text": "IDF 6U",
+        "img_scale_ratio": 1.3125,  # 1.25x bigger
+        "img_y_offset": -0.5,
+        "img_x_offset": -0.2,
+        "model_text_override": "9300 12X36M",
     },
     "SW - IDF Cisco 9300X 24X": {
-        "brand_text": "CISCO",
+        "brand_text": "IDF 6U",
+        "img_scale_ratio": 1.3125,  # 1.25x bigger
+        "img_y_offset": -0.5,
+        "img_x_offset": -0.2,
+        "model_text_override": "9300X 24X",
     },
     "SW - IDF Cisco 9300X 24Y": {
-        "brand_text": "CISCO",
+        "brand_text": "IDF 6U",
+        "img_scale_ratio": 1.3125,  # 1.25x bigger
+        "img_y_offset": -0.5,
+        "img_x_offset": -0.2,
+        "model_text_override": "9300X 24Y",
     },
     "SW - IDF Cisco 9500 48Y4C": {
-        "brand_text": "CISCO",
+        "brand_text": "IDF 6U",
+        "img_scale_ratio": 1.3125,  # 1.25x bigger
+        "img_y_offset": -0.5,
+        "img_x_offset": -0.2,
+        "model_text_override": "9500 48Y4C",
     },
     # === Additional IoT with brand text ===
     "CCTV - AXIS M5526-E": {
@@ -448,8 +489,13 @@ ICON_OVERRIDES: dict[str, dict] = {
     "PWR - Liebert UPS": {
         "brand_text": "LIEBERT",
     },
-    # Hardlines use category defaults - no overrides needed
-    # All hardlines use same image and color, differentiated by model text
+    # === Hardline text overrides ===
+    "HL - Emergency Announce System": {
+        "model_text_override": "EAS",
+    },
+    "HL - General Internet": {
+        "model_text_override": "GENERAL\nINTERNET",  # Stacked text
+    },
 }
 
 
@@ -466,7 +512,7 @@ ICON_IMAGE_PATHS: dict[str, str | None] = {
     # === Switches / Distribution ===
     "SW - Cisco Micro 4P": "Switches/Cisco Micro 4-P.png",
     "SW - Cisco 9200 12P": "Switches/Cisco 9200 12-P.png",
-    "SW - IDF Cisco 9300 24X": "Switches/Cisco 9300 24-P.png",
+    "SW - IDF Cisco 9300 24X": "Switches/IDF.png",
     "DIST - Mini NOC": "Switches/Mini NOC.png",
     "DIST - Micro NOC": "Switches/Mini NOC.png",  # Same as Mini NOC
     "DIST - Standard NOC": "Switches/NOC.png",
@@ -485,10 +531,10 @@ ICON_IMAGE_PATHS: dict[str, str | None] = {
     "SW - Cisco 9300X 24Y": "Switches/Cisco 9300 24-P.png",
     "SW - Cisco 9500 48Y4C": "Switches/Cisco 9500 48-P.png",
     "SW - Fortinet 108F 8P": "Switches/Fortinet 108F 8-P.png",
-    "SW - IDF Cisco 9300 12X36M": "Switches/Cisco 9300 24-P.png",
-    "SW - IDF Cisco 9300X 24X": "Switches/Cisco 9300 24-P.png",
-    "SW - IDF Cisco 9300X 24Y": "Switches/Cisco 9300 24-P.png",
-    "SW - IDF Cisco 9500 48Y4C": "Switches/Cisco 9500 48-P.png",
+    "SW - IDF Cisco 9300 12X36M": "Switches/IDF.png",
+    "SW - IDF Cisco 9300X 24X": "Switches/IDF.png",
+    "SW - IDF Cisco 9300X 24Y": "Switches/IDF.png",
+    "SW - IDF Cisco 9500 48Y4C": "Switches/IDF.png",
     "SW - Raspberry Pi": "Switches/Raspberry Pi.png",
     # === Point-to-Points ===
     "P2P - Ubiquiti NanoBeam": "P2Ps/P2P - Ubiquiti NanoBeam.png",
@@ -561,6 +607,75 @@ ICON_IMAGE_PATHS: dict[str, str | None] = {
     "INFRA - Conduit": "Misc/Conduit.png",
     "INFRA - Conduit Well": "Misc/Conduit Well.png",
     "MISC - Bike Rack": "Misc/Bike Rack.png",
+}
+
+
+# ID prefix configuration for device types
+# format: "prefix_first" = "j100", "number_first" = "100a"
+ID_PREFIX_CONFIG: dict[str, IdPrefixConfig] = {
+    # === Access Points (prefix first: j100, k100, etc.) ===
+    "AP - Cisco MR36H": {"prefix": "j", "start": 100},
+    "AP - Cisco MR78": {"prefix": "k", "start": 100},
+    "AP - Cisco 9166I": {"prefix": "l", "start": 100},
+    "AP - Cisco 9166D": {"prefix": "m", "start": 100},
+    "AP - Cisco 9120": {"prefix": "n", "start": 100},
+    "AP - Cisco Marlin 4": {"prefix": "o", "start": 100},
+    "AP - Cisco DB10": {"prefix": "p", "start": 100},
+
+    # === Cameras (number first: 100a, 101a, etc.) ===
+    "CCTV - Cisco MV93X": {"prefix": "a", "start": 100, "format": "number_first"},
+    "CCTV - AXIS P5655-E": {"prefix": "b", "start": 100, "format": "number_first"},
+    "CCTV - AXIS M5526-E": {"prefix": "c", "start": 100, "format": "number_first"},
+
+    # === Hardlines (double letter prefix: aa100, bb100, etc.) ===
+    "HL - Access Control": {"prefix": "aa", "start": 100},
+    "HL - Artist": {"prefix": "bb", "start": 100},
+    "HL - Audio": {"prefix": "cc", "start": 100},
+    "HL - CCTV": {"prefix": "dd", "start": 100},
+    "HL - Clair": {"prefix": "ee", "start": 100},
+    "HL - Emergency Announce System": {"prefix": "ff", "start": 100},
+    "HL - General Internet": {"prefix": "gg", "start": 100},
+    "HL - IPTV": {"prefix": "hh", "start": 100},
+    "HL - Lighting": {"prefix": "ii", "start": 100},
+    "HL - Media": {"prefix": "jj", "start": 100},
+    "HL - PoS": {"prefix": "kk", "start": 100},
+    "HL - Production": {"prefix": "ll", "start": 100},
+    "HL - Radios": {"prefix": "mm", "start": 100},
+    "HL - Sponsor": {"prefix": "nn", "start": 100},
+    "HL - Streaming": {"prefix": "oo", "start": 100},
+    "HL - Video": {"prefix": "pp", "start": 100},
+
+    # === P2Ps (single letter prefix: s100, t100, etc.) ===
+    "P2P - Ubiquiti NanoBeam": {"prefix": "s", "start": 100},
+    "P2P - Ubiquiti LiteAP": {"prefix": "t", "start": 100},
+    "P2P - Ubiquiti Wave Nano": {"prefix": "u", "start": 100},
+    "P2P - Ubiquiti Wave Pico": {"prefix": "v", "start": 100},
+    "P2P - Ubiquiti Wave AP Micro": {"prefix": "w", "start": 100},
+    "P2P - Ubiquiti GigaBeam": {"prefix": "x", "start": 100},
+    "P2P - Ubiquiti GigaBeam LR": {"prefix": "y", "start": 100},
+
+    # === Switches (single letter, various starts for independent counters) ===
+    "SW - Cisco Micro 4P": {"prefix": "a", "start": 100},
+    "SW - Fortinet 108F 8P": {"prefix": "b", "start": 100},
+    "SW - Cisco 9200 12P": {"prefix": "c", "start": 100},
+    "SW - Cisco 9300X 24X": {"prefix": "d", "start": 300},
+    "SW - Cisco 9300 12X36M": {"prefix": "d", "start": 500},
+    "SW - Cisco 9300X 24Y": {"prefix": "d", "start": 700},
+    "SW - Cisco 9500 48Y4C": {"prefix": "d", "start": 900},
+
+    # === IDFs (e prefix, various starts) ===
+    "SW - IDF Cisco 9300 24X": {"prefix": "e", "start": 100},
+    "SW - IDF Cisco 9300X 24X": {"prefix": "e", "start": 300},
+    "SW - IDF Cisco 9300 12X36M": {"prefix": "e", "start": 500},
+    "SW - IDF Cisco 9300X 24Y": {"prefix": "e", "start": 700},
+    "SW - IDF Cisco 9500 48Y4C": {"prefix": "e", "start": 900},
+
+    # === NOCs (all share f prefix, same counter) ===
+    "DIST - Micro NOC": {"prefix": "f", "start": 100},
+    "DIST - Mini NOC": {"prefix": "f", "start": 100},
+    "DIST - Standard NOC": {"prefix": "f", "start": 100},
+    "DIST - Mega NOC": {"prefix": "f", "start": 100},
+    "DIST - Pelican NOC": {"prefix": "f", "start": 100},
 }
 
 
@@ -648,3 +763,77 @@ def get_brand_for_icon(subject: str) -> str:
     """
     config = get_icon_config(subject)
     return config.get("brand_text", "")
+
+
+def get_id_prefix_config(subject: str) -> IdPrefixConfig | None:
+    """
+    Get ID prefix configuration for a deployment subject.
+
+    Args:
+        subject: Deployment subject name (e.g., "AP - Cisco MR36H")
+
+    Returns:
+        IdPrefixConfig with prefix config or None if no ID configured.
+        Example: {"prefix": "j", "start": 100, "format": "prefix_first"}
+    """
+    return ID_PREFIX_CONFIG.get(subject)
+
+
+class IconIdAssigner:
+    """
+    Assigns sequential IDs to icons during PDF conversion.
+
+    Each device type has a unique prefix and starting number.
+    Counters are tracked independently for each prefix+start combination.
+
+    Example:
+        assigner = IconIdAssigner()
+        assigner.get_next_id("AP - Cisco MR36H")  # Returns "j100"
+        assigner.get_next_id("AP - Cisco MR36H")  # Returns "j101"
+        assigner.get_next_id("CCTV - Cisco MV93X")  # Returns "100a" (number-first format)
+    """
+
+    def __init__(self):
+        """Initialize with empty counters."""
+        self._counters: dict[str, int] = {}
+
+    def get_next_id(self, deployment_subject: str) -> str | None:
+        """
+        Get next sequential ID for a deployment subject.
+
+        Args:
+            deployment_subject: Deployment subject name (e.g., "AP - Cisco MR36H")
+
+        Returns:
+            Sequential ID string (e.g., "j100", "100a", "aa100") or None if no ID configured.
+        """
+        config = ID_PREFIX_CONFIG.get(deployment_subject)
+        if not config:
+            return None
+
+        prefix = config["prefix"]
+        start = config["start"]
+        format_type = config.get("format", "prefix_first")
+
+        # Counter key includes start to handle d100/d300/d500 independently
+        counter_key = f"{prefix}_{start}"
+
+        if counter_key not in self._counters:
+            self._counters[counter_key] = start
+        else:
+            self._counters[counter_key] += 1
+
+        current_num = self._counters[counter_key]
+
+        if format_type == "number_first":
+            return f"{current_num}{prefix}"
+        else:
+            return f"{prefix}{current_num}"
+
+    def reset(self):
+        """Reset all counters for a new conversion."""
+        self._counters.clear()
+
+    def get_current_counts(self) -> dict[str, int]:
+        """Get current counter values (for debugging/logging)."""
+        return self._counters.copy()

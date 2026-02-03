@@ -10,6 +10,7 @@ from PyPDF2 import PdfWriter
 from app.services.icon_config import (
     CATEGORY_DEFAULTS,
     ICON_CATEGORIES,
+    IconIdAssigner,
     get_icon_config,
     get_model_text,
 )
@@ -396,3 +397,94 @@ class TestIconRendererIntegration:
 
         # Should have at least some renderable icons
         assert renderable_count > 0
+
+
+class TestIconIdAssigner:
+    """Tests for IconIdAssigner service."""
+
+    def test_init_empty_counters(self):
+        """Test assigner initializes with empty counters."""
+        assigner = IconIdAssigner()
+        assert assigner._counters == {}
+
+    def test_get_next_id_ap_prefix_first(self):
+        """Test AP icons get j-prefix IDs."""
+        assigner = IconIdAssigner()
+        assert assigner.get_next_id("AP - Cisco MR36H") == "j100"
+        assert assigner.get_next_id("AP - Cisco MR36H") == "j101"
+        assert assigner.get_next_id("AP - Cisco MR36H") == "j102"
+
+    def test_get_next_id_camera_number_first(self):
+        """Test cameras get number-first format (100a, 101a)."""
+        assigner = IconIdAssigner()
+        assert assigner.get_next_id("CCTV - Cisco MV93X") == "100a"
+        assert assigner.get_next_id("CCTV - Cisco MV93X") == "101a"
+        assert assigner.get_next_id("CCTV - Cisco MV93X") == "102a"
+
+    def test_get_next_id_hardline_double_letter(self):
+        """Test hardlines get double-letter prefix (bb100)."""
+        assigner = IconIdAssigner()
+        assert assigner.get_next_id("HL - Artist") == "bb100"
+        assert assigner.get_next_id("HL - Artist") == "bb101"
+
+    def test_get_next_id_p2p_single_letter(self):
+        """Test P2Ps get single-letter prefix."""
+        assigner = IconIdAssigner()
+        assert assigner.get_next_id("P2P - Ubiquiti NanoBeam") == "s100"
+        assert assigner.get_next_id("P2P - Ubiquiti GigaBeam") == "x100"
+
+    def test_get_next_id_switches_independent_counters(self):
+        """Test switches with shared prefix but different starts increment independently."""
+        assigner = IconIdAssigner()
+        # d prefix with different starts
+        assert assigner.get_next_id("SW - Cisco 9300X 24X") == "d300"
+        assert assigner.get_next_id("SW - Cisco 9300 12X36M") == "d500"
+        assert assigner.get_next_id("SW - Cisco 9300X 24X") == "d301"
+        assert assigner.get_next_id("SW - Cisco 9300 12X36M") == "d501"
+
+    def test_get_next_id_nocs_share_counter(self):
+        """Test all NOCs share same f100 counter."""
+        assigner = IconIdAssigner()
+        assert assigner.get_next_id("DIST - Micro NOC") == "f100"
+        assert assigner.get_next_id("DIST - Mini NOC") == "f101"
+        assert assigner.get_next_id("DIST - Standard NOC") == "f102"
+
+    def test_get_next_id_unknown_returns_none(self):
+        """Test unknown device returns None."""
+        assigner = IconIdAssigner()
+        assert assigner.get_next_id("Unknown Device") is None
+        assert assigner.get_next_id("PWR - EcoFlow Battery") is None  # No ID configured
+
+    def test_reset_clears_counters(self):
+        """Test reset clears all counters."""
+        assigner = IconIdAssigner()
+        assigner.get_next_id("AP - Cisco MR36H")
+        assigner.get_next_id("AP - Cisco MR36H")
+        assigner.reset()
+        assert assigner._counters == {}
+        assert assigner.get_next_id("AP - Cisco MR36H") == "j100"
+
+    def test_get_current_counts(self):
+        """Test get_current_counts returns copy of counters."""
+        assigner = IconIdAssigner()
+        assigner.get_next_id("AP - Cisco MR36H")
+        counts = assigner.get_current_counts()
+        assert counts == {"j_100": 100}
+        # Verify it's a copy
+        counts["j_100"] = 999
+        assert assigner._counters["j_100"] == 100
+
+    def test_multiple_device_types_independent(self):
+        """Test different device types have independent counters."""
+        assigner = IconIdAssigner()
+        assert assigner.get_next_id("AP - Cisco MR36H") == "j100"
+        assert assigner.get_next_id("AP - Cisco MR78") == "k100"
+        assert assigner.get_next_id("AP - Cisco MR36H") == "j101"
+        assert assigner.get_next_id("AP - Cisco MR78") == "k101"
+
+    def test_idf_independent_counters(self):
+        """Test IDF switches have independent e-prefix counters."""
+        assigner = IconIdAssigner()
+        assert assigner.get_next_id("SW - IDF Cisco 9300 24X") == "e100"
+        assert assigner.get_next_id("SW - IDF Cisco 9300X 24X") == "e300"
+        assert assigner.get_next_id("SW - IDF Cisco 9300 24X") == "e101"

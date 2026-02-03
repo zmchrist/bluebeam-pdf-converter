@@ -25,6 +25,7 @@ from PyPDF2.generic import (
 from app.models.annotation import Annotation
 from app.models.mapping import IconData
 from app.services.btx_loader import BTXReferenceLoader
+from app.services.icon_config import IconIdAssigner
 from app.services.mapping_parser import MappingParser
 
 if TYPE_CHECKING:
@@ -71,6 +72,7 @@ class AnnotationReplacer:
         self.btx_loader = btx_loader
         self.appearance_extractor = appearance_extractor
         self.icon_renderer = icon_renderer
+        self.id_assigner = IconIdAssigner()
 
     def _get_colors_for_annotation(
         self,
@@ -303,6 +305,9 @@ class AnnotationReplacer:
         skipped_count = 0
         skipped_subjects: list[str] = []
 
+        # Reset ID counters for new conversion
+        self.id_assigner.reset()
+
         if not input_pdf.exists():
             logger.error(f"Input PDF not found: {input_pdf}")
             return 0, 0, []
@@ -327,6 +332,7 @@ class AnnotationReplacer:
 
             # Collect annotations to process
             annotations_to_replace: list[dict] = []
+            annotations_to_delete: list[int] = []  # Indices of legends to delete
 
             for idx, annot_ref in enumerate(annots):
                 try:
@@ -337,6 +343,12 @@ class AnnotationReplacer:
                         logger.debug("Skipping annotation with empty subject")
                         skipped_count += 1
                         skipped_subjects.append("(empty subject)")
+                        continue
+
+                    # Delete legend annotations
+                    if "Legend" in bid_subject:
+                        logger.debug(f"Marking legend for deletion: {bid_subject}")
+                        annotations_to_delete.append(idx)
                         continue
 
                     # Look up deployment subject
@@ -385,9 +397,12 @@ class AnnotationReplacer:
                         deployment_subject, icon_data
                     )
 
+                    # Get dynamic ID for this device (or empty string if none configured)
+                    id_label = self.id_assigner.get_next_id(deployment_subject) or ""
+
                     # Try rich icon rendering first
                     appearance_ref = self._render_rich_icon(
-                        writer, deployment_subject, rect, id_label="j100"
+                        writer, deployment_subject, rect, id_label=id_label
                     )
 
                     # Fall back to simple appearance if rich rendering not available
@@ -417,6 +432,18 @@ class AnnotationReplacer:
                     logger.error(f"Error converting annotation {annot_info['bid_subject']}: {e}")
                     skipped_count += 1
                     skipped_subjects.append(annot_info["bid_subject"])
+
+            # Delete legend annotations (in reverse order to preserve indices)
+            deleted_count = 0
+            for idx in reversed(annotations_to_delete):
+                try:
+                    del annots[idx]
+                    deleted_count += 1
+                except Exception as e:
+                    logger.error(f"Error deleting legend at index {idx}: {e}")
+
+            if deleted_count > 0:
+                logger.info(f"Deleted {deleted_count} legend annotations")
 
         # Save the output PDF
         with open(output_pdf, "wb") as f:

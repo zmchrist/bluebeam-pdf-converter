@@ -197,7 +197,11 @@ class IconRenderer:
         img_xobject_ref = self.create_image_xobject(writer, img_data, img_width, img_height)
 
         # Build appearance stream
-        model_text = get_model_text(subject)
+        # Check for model text override, otherwise use extracted model
+        model_text = config.get("model_text_override") or get_model_text(subject)
+        # Apply uppercase if configured
+        if config.get("model_uppercase"):
+            model_text = model_text.upper()
         brand_text = config.get("brand_text", "")
 
         return self._create_appearance_stream(
@@ -279,8 +283,10 @@ class IconRenderer:
         img_scale = (radius * img_scale_ratio) / max(img_width, img_height)
         img_draw_width = img_width * img_scale
         img_draw_height = img_height * img_scale
-        img_x = cx - img_draw_width / 2
-        img_y = cy - img_draw_height / 2
+        img_x_offset = config.get("img_x_offset", 0.0)
+        img_y_offset = config.get("img_y_offset", 0.0)
+        img_x = cx - img_draw_width / 2 + img_x_offset
+        img_y = cy - img_draw_height / 2 + img_y_offset
 
         # Build content stream
         content_parts = self._build_content_stream(
@@ -483,21 +489,31 @@ class IconRenderer:
             parts.append(f"({brand_text}) Tj")
             parts.append("ET")
 
-        # 5. Draw model text
+        # 5. Draw model text (supports multi-line with \n, max 3 lines)
         if model_text:
             model_char_width = 0.52
-            model_chars = len(model_text)
-            model_text_width = model_chars * model_char_width * model_font_size
-            text_x_model = cx - model_text_width / 2 + model_x_offset
-            text_y_model = cy - radius + model_y_offset
+            lines = model_text.split("\n")[:3]  # Limit to 3 lines max
+            line_height = model_font_size * 1.2  # Line spacing
 
-            parts.append("BT")
-            parts.append(
-                f"{text_color[0]:.4f} {text_color[1]:.4f} {text_color[2]:.4f} rg"
-            )
-            parts.append(f"/Helv {model_font_size:.2f} Tf")
-            parts.append(f"{text_x_model:.3f} {text_y_model:.3f} Td")
-            parts.append(f"({model_text}) Tj")
-            parts.append("ET")
+            # Calculate base Y position - adjust up if multiple lines
+            base_y = cy - radius + model_y_offset
+            if len(lines) > 1:
+                # Move up to center the stack
+                base_y += (len(lines) - 1) * line_height / 2
+
+            for i, line in enumerate(lines):
+                line_chars = len(line)
+                line_text_width = line_chars * model_char_width * model_font_size
+                text_x_model = cx - line_text_width / 2 + model_x_offset
+                text_y_model = base_y - i * line_height
+
+                parts.append("BT")
+                parts.append(
+                    f"{text_color[0]:.4f} {text_color[1]:.4f} {text_color[2]:.4f} rg"
+                )
+                parts.append(f"/Helv {model_font_size:.2f} Tf")
+                parts.append(f"{text_x_model:.3f} {text_y_model:.3f} Td")
+                parts.append(f"({line}) Tj")
+                parts.append("ET")
 
         return parts

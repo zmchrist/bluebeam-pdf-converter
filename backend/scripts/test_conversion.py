@@ -18,6 +18,7 @@ from app.services.mapping_parser import MappingParser
 from app.services.btx_loader import BTXReferenceLoader
 from app.services.annotation_replacer import AnnotationReplacer
 from app.services.appearance_extractor import AppearanceExtractor
+from app.services.icon_renderer import IconRenderer
 
 
 def main():
@@ -83,7 +84,9 @@ def main():
 
     # Step 5: Convert annotations using new API
     print("\n[5/6] Converting annotations...")
-    replacer = AnnotationReplacer(mapping_parser, btx_loader, appearance_extractor)
+    gear_icons_dir = project_root / "samples" / "icons" / "gearIcons"
+    icon_renderer = IconRenderer(gear_icons_dir)
+    replacer = AnnotationReplacer(mapping_parser, btx_loader, appearance_extractor, icon_renderer)
 
     # Use the new API that takes input/output paths
     converted, skipped, skipped_subjects = replacer.replace_annotations(input_pdf, output_pdf)
