@@ -98,10 +98,10 @@ function PDFConverter() {
         {/* Title and description */}
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Convert Your Bid Map
+            Convert Your PDF Map
           </h2>
           <p className="text-gray-600 dark:text-gray-400 mt-2">
-            Upload a PDF bid map to convert all bid icons to deployment icons
+            Upload a PDF map to convert your bid map to a deployment map, or your deployment map to an as-built
           </p>
         </div>
 

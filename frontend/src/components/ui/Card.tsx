@@ -8,11 +8,11 @@ interface CardProps {
 export function Card({ children, className }: CardProps) {
   return (
     <div className={cn(
-      'backdrop-blur-xl bg-white/80 dark:bg-gray-900/80',
+      'backdrop-blur-xl bg-white/60 dark:bg-gray-900/70',
       'rounded-2xl',
-      'border border-white/50 dark:border-gray-700/50',
+      'border border-white/60 dark:border-gray-700/50',
       'shadow-glass dark:shadow-glass-lg',
-      'ring-1 ring-black/5 dark:ring-white/10',
+      'ring-1 ring-white/20 dark:ring-white/10',
       className
     )}>
       {children}

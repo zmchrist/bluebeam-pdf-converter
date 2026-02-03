@@ -54,7 +54,7 @@ export function DirectionSelector({ value, onChange, disabled }: DirectionSelect
           <div className="flex items-center gap-2">
             <span className="font-medium text-gray-400 dark:text-gray-500">Deployment</span>
             <ArrowRight className="h-4 w-4 text-gray-300 dark:text-gray-600" />
-            <span className="font-medium text-gray-400 dark:text-gray-500">Bid</span>
+            <span className="font-medium text-gray-400 dark:text-gray-500">As Built</span>
           </div>
           <span className="ml-auto text-xs text-gray-400 dark:text-gray-500">(Coming soon)</span>
         </label>
