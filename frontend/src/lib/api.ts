@@ -52,9 +52,13 @@ export async function uploadPDF(file: File): Promise<PDFUploadResponse> {
  */
 export async function convertPDF(
   uploadId: string,
-  direction: string = 'bid_to_deployment'
+  direction: string = 'bid_to_deployment',
+  outputFilename?: string
 ): Promise<ConversionResponse> {
   const request: ConversionRequest = { direction };
+  if (outputFilename) {
+    request.output_filename = outputFilename;
+  }
 
   try {
     const response = await api.post<ConversionResponse>(

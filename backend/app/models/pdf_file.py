@@ -32,6 +32,7 @@ class ConversionRequest(BaseModel):
     """Request model for PDF conversion endpoint."""
 
     direction: str  # "bid_to_deployment" or "deployment_to_bid"
+    output_filename: str | None = None  # Custom output filename (without .pdf extension)
 
 
 class ConversionResponse(BaseModel):

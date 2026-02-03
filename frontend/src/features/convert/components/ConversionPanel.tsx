@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from '../../../components/ui/Card';
 import { Button } from '../../../components/ui/Button';
 import { DirectionSelector } from './DirectionSelector';
@@ -10,7 +10,7 @@ interface ConversionPanelProps {
   workflowStep: WorkflowStep;
   isConverting: boolean;
   conversionResult: ConversionResponse | null;
-  onConvert: (direction: ConversionDirection) => void;
+  onConvert: (direction: ConversionDirection, outputFilename: string) => void;
 }
 
 export function ConversionPanel({
@@ -21,6 +21,15 @@ export function ConversionPanel({
   onConvert,
 }: ConversionPanelProps) {
   const [direction, setDirection] = useState<ConversionDirection>('bid_to_deployment');
+  const [outputFilename, setOutputFilename] = useState('');
+
+  // Initialize output filename from upload data
+  useEffect(() => {
+    if (uploadData?.file_name) {
+      const baseName = uploadData.file_name.replace(/\.pdf$/i, '');
+      setOutputFilename(`${baseName}_deployment`);
+    }
+  }, [uploadData?.file_name]);
 
   const showConvertButton = workflowStep === 'uploaded';
   const showProgress = workflowStep === 'converting' || workflowStep === 'converted';
@@ -63,10 +72,34 @@ export function ConversionPanel({
           </div>
         )}
 
+        {/* Output filename input */}
+        <div className="space-y-2">
+          <label
+            htmlFor="output-filename"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+          >
+            Output Filename
+          </label>
+          <div className="flex items-center">
+            <input
+              type="text"
+              id="output-filename"
+              value={outputFilename}
+              onChange={(e) => setOutputFilename(e.target.value)}
+              disabled={isConverting || workflowStep === 'converted'}
+              className="flex-1 rounded-l-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+              placeholder="Enter filename"
+            />
+            <span className="inline-flex items-center px-3 py-2 border border-l-0 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-600 text-gray-600 dark:text-gray-300 rounded-r-lg">
+              .pdf
+            </span>
+          </div>
+        </div>
+
         {/* Convert button */}
         {showConvertButton && (
           <Button
-            onClick={() => onConvert(direction)}
+            onClick={() => onConvert(direction, outputFilename)}
             isLoading={isConverting}
             className="w-full"
             size="lg"

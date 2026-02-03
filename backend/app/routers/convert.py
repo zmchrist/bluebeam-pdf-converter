@@ -6,7 +6,6 @@ Handles PDF annotation conversion from bid to deployment icons.
 
 import logging
 import time
-from pathlib import Path
 
 from fastapi import APIRouter, HTTPException, Path as PathParam
 
@@ -86,7 +85,7 @@ async def convert_pdf(
 
         # 5. Optional: Load appearance extractor
         appearance_extractor = None
-        deployment_map = Path("samples/maps/DeploymentMap.pdf")
+        deployment_map = settings.deployment_map_path
         if deployment_map.exists():
             appearance_extractor = AppearanceExtractor()
             appearance_extractor.load_from_pdf(deployment_map)
@@ -121,10 +120,12 @@ async def convert_pdf(
 
         # 11. Store converted file
         converted_content = output_path.read_bytes()
+        custom_filename = request.output_filename if request else None
         converted_metadata = file_manager.store_converted(
             converted_content,
             upload_metadata.original_name,
             upload_id,
+            custom_filename=custom_filename,
         )
 
         # Remove temporary output file (we stored it with proper naming)

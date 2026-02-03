@@ -100,14 +100,16 @@ class FileManager:
         content: bytes,
         original_name: str,
         upload_id: str,
+        custom_filename: str | None = None,
     ) -> FileMetadata:
         """
         Store a converted file.
 
         Args:
             content: File content as bytes
-            original_name: Original filename (will add _deployment suffix)
+            original_name: Original filename (will add _deployment suffix if no custom name)
             upload_id: Related upload ID for tracking
+            custom_filename: Optional custom output filename (sanitized, .pdf auto-appended)
 
         Returns:
             FileMetadata with file_id and storage info
@@ -115,8 +117,17 @@ class FileManager:
         file_id = str(uuid4())
 
         # Create deployment filename
-        base_name = Path(original_name).stem
-        converted_name = f"{base_name}_deployment.pdf"
+        if custom_filename and custom_filename.strip():
+            # Use custom filename (sanitize and ensure .pdf extension)
+            sanitized = self._sanitize_filename(custom_filename.strip())
+            # Remove .pdf extension if provided (we'll add it back)
+            if sanitized.lower().endswith('.pdf'):
+                sanitized = sanitized[:-4]
+            converted_name = f"{sanitized}.pdf"
+        else:
+            # Default: original name + _deployment suffix
+            base_name = Path(original_name).stem
+            converted_name = f"{base_name}_deployment.pdf"
         file_path = self.temp_dir / f"{file_id}_{converted_name}"
 
         # Write file
@@ -218,4 +229,7 @@ class FileManager:
 
 
 # Global file manager instance (singleton pattern)
+# NOTE: File metadata is stored in memory and will be lost on server restart.
+# For MVP, this is acceptable since files expire after 1 hour anyway.
+# For production, consider persisting metadata to disk or database.
 file_manager = FileManager()

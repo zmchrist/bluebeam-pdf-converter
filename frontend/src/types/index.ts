@@ -17,6 +17,7 @@ export interface PDFUploadResponse {
 // Request body for POST /api/convert/{upload_id}
 export interface ConversionRequest {
   direction: string;
+  output_filename?: string;
 }
 
 // Response from POST /api/convert/{upload_id}

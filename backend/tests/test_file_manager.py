@@ -64,6 +64,48 @@ class TestFileManager:
             assert metadata.file_path.exists()
             assert "_deployment.pdf" in str(metadata.file_path)
 
+    def test_store_converted_with_custom_filename(self):
+        """Test storing a converted file with custom filename."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            manager = FileManager(Path(temp_dir))
+            content = b"Converted PDF content"
+
+            metadata = manager.store_converted(
+                content, "original.pdf", "upload-123", custom_filename="my_custom_file"
+            )
+
+            assert metadata.file_id is not None
+            assert metadata.original_name == "my_custom_file.pdf"
+            assert metadata.file_path.exists()
+            assert "my_custom_file.pdf" in str(metadata.file_path)
+
+    def test_store_converted_custom_filename_with_pdf_extension(self):
+        """Test custom filename already has .pdf extension."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            manager = FileManager(Path(temp_dir))
+            content = b"Converted PDF content"
+
+            metadata = manager.store_converted(
+                content, "original.pdf", "upload-123", custom_filename="my_file.pdf"
+            )
+
+            assert metadata.original_name == "my_file.pdf"
+            # Should not have double extension like my_file.pdf.pdf
+            assert "my_file.pdf.pdf" not in str(metadata.file_path)
+
+    def test_store_converted_empty_custom_filename(self):
+        """Test empty custom filename falls back to default."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            manager = FileManager(Path(temp_dir))
+            content = b"Converted PDF content"
+
+            metadata = manager.store_converted(
+                content, "original.pdf", "upload-123", custom_filename="   "
+            )
+
+            # Should use default naming
+            assert metadata.original_name == "original_deployment.pdf"
+
     def test_get_file_exists(self):
         """Test retrieving an existing file."""
         with tempfile.TemporaryDirectory() as temp_dir:

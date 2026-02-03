@@ -5,10 +5,12 @@ import type { ConversionResponse } from '../../../types';
 interface ConvertParams {
   uploadId: string;
   direction: string;
+  outputFilename?: string;
 }
 
 export function useConvert() {
   return useMutation<ConversionResponse, Error, ConvertParams>({
-    mutationFn: ({ uploadId, direction }) => convertPDF(uploadId, direction),
+    mutationFn: ({ uploadId, direction, outputFilename }) =>
+      convertPDF(uploadId, direction, outputFilename),
   });
 }

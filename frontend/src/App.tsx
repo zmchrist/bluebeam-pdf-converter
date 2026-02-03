@@ -54,7 +54,7 @@ function PDFConverter() {
 
   // Handle conversion
   const handleConvert = useCallback(
-    async (direction: ConversionDirection) => {
+    async (direction: ConversionDirection, outputFilename: string) => {
       if (!uploadData) return;
 
       setError(null);
@@ -64,6 +64,7 @@ function PDFConverter() {
         const result = await convertMutation.mutateAsync({
           uploadId: uploadData.upload_id,
           direction,
+          outputFilename: outputFilename || undefined,
         });
         setConversionResult(result);
         setWorkflowStep('converted');
