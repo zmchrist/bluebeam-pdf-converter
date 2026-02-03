@@ -73,7 +73,7 @@ def render_test_icon(subject: str):
 
         config = get_icon_config(subject)
         if not config:
-            print(f"  - No config found for subject")
+            print("  - No config found for subject")
         else:
             print(f"  - Config found, category: {config.get('category')}")
             image_path = config.get("image_path")

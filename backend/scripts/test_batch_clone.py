@@ -256,12 +256,12 @@ def main():
     print("=" * 60)
 
     # Load deployment templates
-    print(f"\n1. Loading deployment templates from DeploymentMap.pdf...")
+    print("\n1. Loading deployment templates from DeploymentMap.pdf...")
     templates = load_deployment_templates(DEPLOYMENT_PDF)
     print(f"   Loaded {len(templates)} unique templates")
 
     # Load BidMap and create writer
-    print(f"\n2. Loading BidMap.pdf...")
+    print("\n2. Loading BidMap.pdf...")
     bid_reader = PdfReader(str(BID_PDF))
     writer = PdfWriter()
     for page in bid_reader.pages:
@@ -276,7 +276,7 @@ def main():
         annots = annots_ref
 
     # Find all bid annotations to convert
-    print(f"\n3. Finding bid annotations to convert...")
+    print("\n3. Finding bid annotations to convert...")
     total_annotations = len(annots)
     to_convert = []
 
@@ -305,7 +305,7 @@ def main():
     print(f"   To convert: {len(to_convert)}")
 
     # Convert annotations (remove old, add new)
-    print(f"\n4. Converting annotations...")
+    print("\n4. Converting annotations...")
     converted = 0
     skipped = 0
 
@@ -338,7 +338,7 @@ def main():
     print(f"   Skipped: {skipped}")
 
     # Breakdown by type
-    print(f"\n   By type:")
+    print("\n   By type:")
     by_type = {}
     for item in to_convert:
         t = item['deploy_subject']
@@ -354,7 +354,7 @@ def main():
         writer.write(f)
 
     # Verify
-    print(f"\n6. Verifying output...")
+    print("\n6. Verifying output...")
     verify_reader = PdfReader(str(OUTPUT_PDF))
     verify_page = verify_reader.pages[0]
     verify_annots = verify_page.get('/Annots')

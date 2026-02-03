@@ -1,6 +1,5 @@
 """Tests for subject extractor."""
 
-import pytest
 from app.services.subject_extractor import SubjectExtractor
 
 

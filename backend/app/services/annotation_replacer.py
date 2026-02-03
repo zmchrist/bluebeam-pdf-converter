@@ -22,7 +22,7 @@ from PyPDF2.generic import (
     TextStringObject,
 )
 
-from app.models.annotation import Annotation, AnnotationCoordinates
+from app.models.annotation import Annotation
 from app.models.mapping import IconData
 from app.services.btx_loader import BTXReferenceLoader
 from app.services.mapping_parser import MappingParser

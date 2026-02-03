@@ -127,6 +127,7 @@ Read these documents when working on specific areas:
 | `backend/app/services/icon_config.py` | Icon rendering configuration, categories, overrides |
 | `.claude/memories.md` | Recent implementation decisions, technical discoveries |
 | `.claude/errors.md` | Before debugging - check for known solutions |
+| `.claude/recommended-workflow.md` | Command workflow for feature implementations |
 
 ## Error Handling Protocol
 

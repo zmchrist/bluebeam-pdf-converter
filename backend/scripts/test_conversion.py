@@ -13,8 +13,6 @@ from pathlib import Path
 # Add backend to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from PyPDF2 import PdfReader, PdfWriter
-
 from app.services.pdf_parser import PDFAnnotationParser
 from app.services.mapping_parser import MappingParser
 from app.services.btx_loader import BTXReferenceLoader
@@ -66,9 +64,9 @@ def main():
         print(f"  Loaded {num_appearances} appearance streams from DeploymentMap.pdf")
     else:
         print(f"  WARNING: Reference PDF not found: {reference_pdf}")
-        print(f"  Proceeding without visual appearance data")
+        print("  Proceeding without visual appearance data")
 
-    # Step 4: Parse input PDF annotations
+    # Step 4: Parse input PDF annotations (for info only)
     print("\n[4/6] Parsing input PDF annotations...")
     pdf_parser = PDFAnnotationParser()
     annotations = pdf_parser.parse_pdf(input_pdf)
@@ -83,35 +81,28 @@ def main():
     if len(unique_subjects) > 5:
         print(f"    ... and {len(unique_subjects) - 5} more")
 
-    # Step 5: Convert annotations
+    # Step 5: Convert annotations using new API
     print("\n[5/6] Converting annotations...")
     replacer = AnnotationReplacer(mapping_parser, btx_loader, appearance_extractor)
 
-    # Load PDF with PdfWriter to enable modification
-    reader = PdfReader(input_pdf)
-    writer = PdfWriter()
-
-    # Clone the page to writer
-    writer.add_page(reader.pages[0])
-    page = writer.pages[0]
-
-    # Run replacement (pass writer for appearance stream cloning)
-    converted, skipped, skipped_subjects = replacer.replace_annotations(
-        annotations, page, writer
-    )
+    # Use the new API that takes input/output paths
+    converted, skipped, skipped_subjects = replacer.replace_annotations(input_pdf, output_pdf)
 
     print(f"  Converted: {converted}")
     print(f"  Skipped:   {skipped}")
     if skipped_subjects:
-        print(f"  Skipped subjects:")
+        print("  Skipped subjects:")
         for subj in sorted(set(skipped_subjects))[:10]:
             print(f"    - {subj}")
 
-    # Step 6: Write output PDF
-    print("\n[6/6] Writing output PDF...")
-    with output_pdf.open("wb") as f:
-        writer.write(f)
-    print(f"  Written to: {output_pdf}")
+    # Step 6: Verify output
+    print("\n[6/6] Verifying output PDF...")
+    if output_pdf.exists():
+        print(f"  Written to: {output_pdf}")
+        print(f"  File size: {output_pdf.stat().st_size:,} bytes")
+    else:
+        print("  ERROR: Output file not created!")
+        sys.exit(1)
 
     # Summary
     print("\n" + "=" * 60)

@@ -7,7 +7,6 @@ registers API routers, and sets up the health check endpoint.
 
 import logging
 from datetime import datetime
-from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware

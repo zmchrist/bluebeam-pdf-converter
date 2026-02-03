@@ -13,7 +13,6 @@ The appearance stream includes:
 - Model number text
 """
 
-import io
 import zlib
 from pathlib import Path
 from PIL import Image
@@ -27,7 +26,6 @@ from PyPDF2.generic import (
     NumberObject,
     StreamObject,
     TextStringObject,
-    create_string_object,
 )
 
 # Paths
@@ -379,7 +377,7 @@ def main():
     print(f"  Size: {rect[2] - rect[0]:.2f} x {rect[3] - rect[1]:.2f} PDF units")
 
     # Load and prepare the image
-    print(f"\nLoading gear icon image...")
+    print("\nLoading gear icon image...")
     img_data, img_width, img_height = load_image_as_xobject(GEAR_ICON)
     print(f"  Original size: {img_width} x {img_height} pixels")
     print(f"  Data size: {len(img_data)} bytes")
@@ -420,12 +418,12 @@ def main():
     print("\n" + "=" * 60)
     print("SUCCESS! Open the output PDF to verify the icon appearance.")
     print("=" * 60)
-    print(f"\nCompare this annotation to others in the PDF.")
-    print(f"The converted icon should show:")
-    print(f"  - Blue circle background")
-    print(f"  - 'CISCO' text at top")
-    print(f"  - Product image in center")
-    print(f"  - '9120' model number at bottom")
+    print("\nCompare this annotation to others in the PDF.")
+    print("The converted icon should show:")
+    print("  - Blue circle background")
+    print("  - 'CISCO' text at top")
+    print("  - Product image in center")
+    print("  - '9120' model number at bottom")
 
 
 if __name__ == "__main__":

@@ -13,13 +13,10 @@ from PyPDF2 import PdfReader, PdfWriter
 from PyPDF2.generic import (
     ArrayObject, DictionaryObject, FloatObject,
     NameObject, StreamObject, TextStringObject,
-    NumberObject, IndirectObject, DecodedStreamObject,
-    EncodedStreamObject, ContentStream
+    NumberObject, DecodedStreamObject
 )
-import copy
 import re
 import uuid
-import zlib
 
 # Project paths
 PROJECT_ROOT = Path(__file__).parent.parent.parent
@@ -192,7 +189,7 @@ def find_template_annotation_partial(pdf_path: Path, partial_subject: str):
                                 best_ap = ap_obj
                         except:
                             pass
-        except Exception as e:
+        except Exception:
             pass
 
     if best_annot:
@@ -427,7 +424,7 @@ def main():
     print("=" * 60)
 
     # First, list available subjects in DeploymentMap.pdf
-    print(f"\n1. Scanning DeploymentMap.pdf for available subjects...")
+    print("\n1. Scanning DeploymentMap.pdf for available subjects...")
     subjects = list_deployment_subjects(DEPLOYMENT_PDF)
 
     ap_subjects = [s for s, info in subjects.items() if info['has_ap']]
@@ -445,7 +442,7 @@ def main():
     reader, template_annot, template_ap = find_template_annotation(DEPLOYMENT_PDF, DEPLOYMENT_SUBJECT)
 
     if not template_annot:
-        print(f"   Exact match not found, trying partial match...")
+        print("   Exact match not found, trying partial match...")
         # Try variations
         for partial in ["MR36H", "9120", "Cisco"]:
             reader, template_annot, template_ap = find_template_annotation_partial(DEPLOYMENT_PDF, partial)
@@ -470,10 +467,10 @@ def main():
     stream_data = template_ap.get_data()
     try:
         stream_text = stream_data.decode('latin-1')
-        print(f"   Stream preview (first 200 chars):")
+        print("   Stream preview (first 200 chars):")
         print(f"   {stream_text[:200]}...")
     except:
-        print(f"   (binary stream)")
+        print("   (binary stream)")
 
     # Load BidMap.pdf and find target annotation
     print(f"\n3. Loading BidMap.pdf and finding: {BID_SUBJECT}")
@@ -535,7 +532,7 @@ def main():
     del annots[target_idx]
 
     # Clone deployment annotation to target position
-    print(f"\n5. Cloning deployment annotation to bid position...")
+    print("\n5. Cloning deployment annotation to bid position...")
     clone_annotation_to_position(
         writer, 0, template_annot, template_ap,
         target_rect, DEPLOYMENT_SUBJECT
@@ -547,7 +544,7 @@ def main():
         writer.write(f)
 
     # Verify
-    print(f"\n7. Verifying output...")
+    print("\n7. Verifying output...")
     verify_reader = PdfReader(str(OUTPUT_PDF))
     verify_page = verify_reader.pages[0]
     verify_annots = verify_page.get('/Annots')

@@ -5,7 +5,6 @@ Handles PDF file uploads and validation.
 """
 
 import logging
-from pathlib import Path
 
 from fastapi import APIRouter, UploadFile, File, HTTPException
 

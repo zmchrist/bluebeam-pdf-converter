@@ -1,11 +1,9 @@
 """Integration tests for API endpoints."""
 
-import io
 import tempfile
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
-import pytest
 from fastapi.testclient import TestClient
 from app.main import app
 
@@ -124,7 +122,6 @@ class TestDownloadEndpoint:
     def test_download_valid_file(self):
         """Test download with valid file returns PDF."""
         from app.services.file_manager import file_manager
-        import tempfile
 
         # Create a real temp file
         with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as f:

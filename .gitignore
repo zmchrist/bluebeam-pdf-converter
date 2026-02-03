@@ -41,6 +41,10 @@ backend/data/temp/*
 *.tmp
 *.temp
 
+# Test outputs
+samples/maps/BidMap_converted_*.pdf
+samples/maps/test_icon_output.pdf
+
 # OS
 .DS_Store
 Thumbs.db

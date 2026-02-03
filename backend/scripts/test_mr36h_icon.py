@@ -13,7 +13,6 @@ The appearance stream includes:
 - "MR36H" model text (white)
 """
 
-import io
 import zlib
 from pathlib import Path
 from PIL import Image
@@ -429,7 +428,7 @@ def main():
     print(f"Reference PDF: {REFERENCE_PDF}")
     print(f"Output: {OUTPUT_PDF}")
     print(f"\nConverting: '{BID_SUBJECT}' -> '{DEPLOYMENT_SUBJECT}'")
-    print(f"\nVisual settings:")
+    print("\nVisual settings:")
     print(f"  Circle fill: RGB{CIRCLE_COLOR_RGB}")
     print(f"  Border: {CIRCLE_BORDER_WIDTH}pt, RGB{CIRCLE_BORDER_COLOR}")
 
@@ -458,7 +457,7 @@ def main():
     print(f"  Size: {rect[2] - rect[0]:.2f} x {rect[3] - rect[1]:.2f} PDF units")
 
     # Load and prepare the image
-    print(f"\nLoading gear icon image...")
+    print("\nLoading gear icon image...")
     img_data, img_width, img_height = load_image_as_xobject(GEAR_ICON)
     print(f"  Original size: {img_width} x {img_height} pixels")
     print(f"  Data size: {len(img_data)} bytes")
@@ -500,16 +499,16 @@ def main():
     print("\n" + "=" * 60)
     print("SUCCESS! Open the output PDF to verify the icon appearance.")
     print("=" * 60)
-    print(f"\nTo compare with reference:")
+    print("\nTo compare with reference:")
     print(f"  1. Open: {OUTPUT_PDF}")
     print(f"  2. Compare to 'j100' icon in: {REFERENCE_PDF}")
-    print(f"\nThe converted icon should show:")
-    print(f"  - ID box on top ('j100' in blue text, white background)")
-    print(f"  - Navy blue circle (RGB 0.22, 0.34, 0.65)")
-    print(f"  - 'CISCO' text (white, above gear image)")
-    print(f"  - MR36H product image in center (on blue background)")
-    print(f"  - 'MR36H' text (white, below gear image)")
-    print(f"  - Thin dark border (~0.5pt)")
+    print("\nThe converted icon should show:")
+    print("  - ID box on top ('j100' in blue text, white background)")
+    print("  - Navy blue circle (RGB 0.22, 0.34, 0.65)")
+    print("  - 'CISCO' text (white, above gear image)")
+    print("  - MR36H product image in center (on blue background)")
+    print("  - 'MR36H' text (white, below gear image)")
+    print("  - Thin dark border (~0.5pt)")
 
 
 if __name__ == "__main__":

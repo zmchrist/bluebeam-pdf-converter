@@ -5,7 +5,6 @@ Rebuilds PDF files with converted annotations and prepares for download.
 """
 
 from pathlib import Path
-from uuid import uuid4
 
 
 class PDFReconstructor:

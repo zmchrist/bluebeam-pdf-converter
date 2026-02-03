@@ -113,7 +113,7 @@ def analyze_subjects(annotations: list[dict]):
             subjects.append("")
             subject_sources["<empty>"] += 1
 
-    print(f"\nSubject field sources:")
+    print("\nSubject field sources:")
     for source, count in subject_sources.most_common():
         print(f"  {source}: {count}")
 
@@ -202,7 +202,7 @@ def check_mappings(subject_counts: Counter, mapping_file: Path):
     unmatched_annot_count = sum(count for _, count in unmatched)
     empty_count = subject_counts.get("", 0)
 
-    print(f"\n--- SUMMARY ---")
+    print("\n--- SUMMARY ---")
     print(f"Annotations with matching subjects: {matched_annot_count}")
     print(f"Annotations without matching subjects: {unmatched_annot_count}")
     print(f"Annotations with empty subjects: {empty_count}")
