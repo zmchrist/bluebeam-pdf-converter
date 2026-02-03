@@ -53,11 +53,32 @@ ICON_CATEGORIES: dict[str, str] = {
     "DIST - Pelican NOC": "Switches",
     "DIST - MikroTik Hex": "Switches",
     "DIST - Starlink": "Switches",
+    # === Additional Switches ===
+    "DIST - Cisco MX": "Switches",
+    "DIST - Fortinet FortiGate": "Switches",
+    "DIST - Mega NOC": "Switches",
+    "SW - 1G 60W PoE Extender": "Switches",
+    "SW - 1G PoE+ Injectors": "Switches",
+    "SW - 1G PoE+ Media Converter": "Switches",
+    "SW - Cisco 9300 12X36M": "Switches",
+    "SW - Cisco 9300X 24X": "Switches",
+    "SW - Cisco 9300X 24Y": "Switches",
+    "SW - Cisco 9500 48Y4C": "Switches",
+    "SW - Fortinet 108F 8P": "Switches",
+    "SW - IDF Cisco 9300 12X36M": "Switches",
+    "SW - IDF Cisco 9300X 24X": "Switches",
+    "SW - IDF Cisco 9300X 24Y": "Switches",
+    "SW - IDF Cisco 9500 48Y4C": "Switches",
+    "SW - Raspberry Pi": "Switches",
     # === Point-to-Points ===
     "P2P - Ubiquiti NanoBeam": "P2Ps",
     "P2P - Ubiquiti LiteAP": "P2Ps",
     "P2P - Ubiquiti GigaBeam": "P2Ps",
     "P2P - Ubiquiti GigaBeam LR": "P2Ps",
+    # === Additional Point-to-Points ===
+    "P2P - Ubiquiti Wave AP Micro": "P2Ps",
+    "P2P - Ubiquiti Wave Nano": "P2Ps",
+    "P2P - Ubiquiti Wave Pico": "P2Ps",
     # === IoT / VoIP ===
     "VOIP - Yealink T29G": "IoT",
     "VOIP - Yealink CP965": "IoT",
@@ -70,6 +91,12 @@ ICON_CATEGORIES: dict[str, str] = {
     "EAS - Trigger Box": "IoT",
     # === IoT / IPTV ===
     "IPTV - BrightSign XT1144": "IoT",
+    # === Additional IoT / CCTV ===
+    "CCTV - AXIS M5526-E": "IoT",
+    "CCTV - Cisco MV93X": "IoT",
+    # === IoT / Sensors ===
+    "SEN - Meraki MT15": "IoT",
+    "SEN - Meraki MT40": "IoT",
     # === Hardlines (all use same image, different model text) ===
     "HL - Artist": "Hardlines",
     "HL - Production": "Hardlines",
@@ -80,10 +107,40 @@ ICON_CATEGORIES: dict[str, str] = {
     "HL - Audio": "Hardlines",
     "HL - Emergency Announce System": "Hardlines",
     "HL - WAN": "Hardlines",
+    # === Additional Hardlines (copper) ===
+    "HL -": "Hardlines",  # Empty suffix variant
+    "HL - CCTV": "Hardlines",
+    "HL - Clair": "Hardlines",
+    "HL - IPTV": "Hardlines",
+    "HL - Lighting": "Hardlines",
+    "HL - Media": "Hardlines",
+    "HL - Radios": "Hardlines",
+    "HL - Streaming": "Hardlines",
+    "HL - Video": "Hardlines",
+    # === Fiber Connectors (use Fiber category) ===
+    "HL - LC SM": "Fiber",
+    "HL - SC SM": "Fiber",
+    "HL - ST SM": "Fiber",
     # === Cables (no gear images) ===
     "FIBER": "Cables",
     # === Miscellaneous (no gear images) ===
     "INFRA - Fiber Patch Panel": "Misc",
+    # === Boxes (junction boxes, lock boxes) ===
+    "BOX - Dri Box": "Boxes",
+    "BOX - Lock Box": "Boxes",
+    "BOX - Patch Box": "Boxes",
+    "BOX - Zarges Box": "Boxes",
+    "BOX - Zarges XL Box": "Boxes",
+    # === Power Equipment ===
+    "PWR - EcoFlow Battery": "Power",
+    "PWR - EcoFlow Solar Panel": "Power",
+    "PWR - Liebert UPS": "Power",
+    "PWR - Pinty Battery": "Power",
+    "PWR - Quad Box": "Power",
+    # === Infrastructure (with images) ===
+    "INFRA - Conduit": "Misc",
+    "INFRA - Conduit Well": "Misc",
+    "MISC - Bike Rack": "Misc",
 }
 
 
@@ -224,6 +281,63 @@ CATEGORY_DEFAULTS: dict[str, dict] = {
         "id_text_color": None,
         "no_image": True,  # No gear image for misc infra
     },
+    "Power": {
+        "circle_color": (0.4, 0.25, 0.1),  # Dark brown for power equipment
+        "circle_border_width": 0.5,
+        "circle_border_color": (0.0, 0.0, 0.0),
+        "id_box_height": 4.0,
+        "id_box_width_ratio": 0.55,
+        "id_box_border_width": 0.6,
+        "img_scale_ratio": 0.70,
+        "brand_text": "",
+        "brand_font_size": 1.9,
+        "brand_y_offset": -3.0,
+        "brand_x_offset": -0.2,
+        "model_font_size": 1.6,
+        "model_y_offset": 2.5,
+        "model_x_offset": -0.7,
+        "font_name": "/Helvetica-Bold",
+        "text_color": (1.0, 1.0, 1.0),
+        "id_text_color": None,
+    },
+    "Fiber": {
+        "circle_color": (0.9, 0.5, 0.0),  # Orange for fiber connections
+        "circle_border_width": 0.5,
+        "circle_border_color": (0.0, 0.0, 0.0),
+        "id_box_height": 4.0,
+        "id_box_width_ratio": 0.55,
+        "id_box_border_width": 0.6,
+        "img_scale_ratio": 0.70,
+        "brand_text": "FIBER",
+        "brand_font_size": 1.9,
+        "brand_y_offset": -3.0,
+        "brand_x_offset": -0.2,
+        "model_font_size": 1.6,
+        "model_y_offset": 2.5,
+        "model_x_offset": -0.7,
+        "font_name": "/Helvetica-Bold",
+        "text_color": (1.0, 1.0, 1.0),
+        "id_text_color": None,
+    },
+    "Boxes": {
+        "circle_color": (0.35, 0.35, 0.4),  # Dark gray for boxes
+        "circle_border_width": 0.5,
+        "circle_border_color": (0.0, 0.0, 0.0),
+        "id_box_height": 4.0,
+        "id_box_width_ratio": 0.55,
+        "id_box_border_width": 0.6,
+        "img_scale_ratio": 0.70,
+        "brand_text": "",
+        "brand_font_size": 1.9,
+        "brand_y_offset": -3.0,
+        "brand_x_offset": -0.2,
+        "model_font_size": 1.6,
+        "model_y_offset": 2.5,
+        "model_x_offset": -0.7,
+        "font_name": "/Helvetica-Bold",
+        "text_color": (1.0, 1.0, 1.0),
+        "id_text_color": None,
+    },
 }
 
 
@@ -277,6 +391,63 @@ ICON_OVERRIDES: dict[str, dict] = {
     "IPTV - BrightSign XT1144": {
         "brand_text": "BRIGHTSIGN",
     },
+    # === Additional Switches with brand text ===
+    "DIST - Cisco MX": {
+        "brand_text": "CISCO",
+    },
+    "DIST - Fortinet FortiGate": {
+        "brand_text": "FORTINET",
+    },
+    "SW - Cisco 9300 12X36M": {
+        "brand_text": "CISCO",
+    },
+    "SW - Cisco 9300X 24X": {
+        "brand_text": "CISCO",
+    },
+    "SW - Cisco 9300X 24Y": {
+        "brand_text": "CISCO",
+    },
+    "SW - Cisco 9500 48Y4C": {
+        "brand_text": "CISCO",
+    },
+    "SW - Fortinet 108F 8P": {
+        "brand_text": "FORTINET",
+    },
+    "SW - IDF Cisco 9300 12X36M": {
+        "brand_text": "CISCO",
+    },
+    "SW - IDF Cisco 9300X 24X": {
+        "brand_text": "CISCO",
+    },
+    "SW - IDF Cisco 9300X 24Y": {
+        "brand_text": "CISCO",
+    },
+    "SW - IDF Cisco 9500 48Y4C": {
+        "brand_text": "CISCO",
+    },
+    # === Additional IoT with brand text ===
+    "CCTV - AXIS M5526-E": {
+        "brand_text": "AXIS",
+    },
+    "CCTV - Cisco MV93X": {
+        "brand_text": "CISCO",
+    },
+    "SEN - Meraki MT15": {
+        "brand_text": "MERAKI",
+    },
+    "SEN - Meraki MT40": {
+        "brand_text": "MERAKI",
+    },
+    # === Power with brand text ===
+    "PWR - EcoFlow Battery": {
+        "brand_text": "ECOFLOW",
+    },
+    "PWR - EcoFlow Solar Panel": {
+        "brand_text": "ECOFLOW",
+    },
+    "PWR - Liebert UPS": {
+        "brand_text": "LIEBERT",
+    },
     # Hardlines use category defaults - no overrides needed
     # All hardlines use same image and color, differentiated by model text
 }
@@ -302,17 +473,44 @@ ICON_IMAGE_PATHS: dict[str, str | None] = {
     "DIST - Pelican NOC": "Switches/NOC.png",  # Use standard NOC image
     "DIST - MikroTik Hex": "Switches/MikroTik Hex.png",
     "DIST - Starlink": "Switches/Starlink.png",
+    # === Additional Switches / Distribution ===
+    "DIST - Cisco MX": "Switches/Cisco MX.png",
+    "DIST - Fortinet FortiGate": "Switches/Fortinet FortiGate.png",
+    "DIST - Mega NOC": "Switches/NOC.png",  # Reuse standard NOC image
+    "SW - 1G 60W PoE Extender": "Switches/1x4 PoE Extender.png",
+    "SW - 1G PoE+ Injectors": "Switches/48V PoE Injector.png",
+    "SW - 1G PoE+ Media Converter": "Switches/Media Converter.png",
+    "SW - Cisco 9300 12X36M": "Switches/Cisco 9300 24-P.png",  # Similar model
+    "SW - Cisco 9300X 24X": "Switches/Cisco 9300 24-P.png",
+    "SW - Cisco 9300X 24Y": "Switches/Cisco 9300 24-P.png",
+    "SW - Cisco 9500 48Y4C": "Switches/Cisco 9500 48-P.png",
+    "SW - Fortinet 108F 8P": "Switches/Fortinet 108F 8-P.png",
+    "SW - IDF Cisco 9300 12X36M": "Switches/Cisco 9300 24-P.png",
+    "SW - IDF Cisco 9300X 24X": "Switches/Cisco 9300 24-P.png",
+    "SW - IDF Cisco 9300X 24Y": "Switches/Cisco 9300 24-P.png",
+    "SW - IDF Cisco 9500 48Y4C": "Switches/Cisco 9500 48-P.png",
+    "SW - Raspberry Pi": "Switches/Raspberry Pi.png",
     # === Point-to-Points ===
     "P2P - Ubiquiti NanoBeam": "P2Ps/P2P - Ubiquiti NanoBeam.png",
     "P2P - Ubiquiti LiteAP": "P2Ps/P2P - Ubiquiti LiteAP AC.png",
     "P2P - Ubiquiti GigaBeam": "P2Ps/P2P - Ubiquiti GigaBeam.png",
     "P2P - Ubiquiti GigaBeam LR": "P2Ps/P2P - Ubiquiti GigaBeam LR.png",
+    # === Additional Point-to-Points ===
+    "P2P - Ubiquiti Wave AP Micro": "P2Ps/P2P - Ubiquiti Wave AP Micro.png",
+    "P2P - Ubiquiti Wave Nano": "P2Ps/P2P - Ubiquiti Wave Nano.png",
+    "P2P - Ubiquiti Wave Pico": "P2Ps/P2P - Ubiquiti Wave Pico.png",
     # === IoT / VoIP ===
     "VOIP - Yealink T29G": "Misc/Yealink T29G.png",
     "VOIP - Yealink CP965": "Misc/Yealink P965.png",  # Note: filename is "P965" not "CP965"
     # === IoT / CCTV ===
     "CCTV - AXIS P5655-E": "Misc/AXIS P5655-E.png",
     "CCTV - AXIS S9302": "Misc/AXIS S9302 Workstation.png",
+    # === Additional IoT / CCTV ===
+    "CCTV - AXIS M5526-E": "Misc/AXIS M5526-E.png",
+    "CCTV - Cisco MV93X": "Misc/MV93X.png",
+    # === IoT / Sensors ===
+    "SEN - Meraki MT15": "Misc/Meraki MT15.png",
+    "SEN - Meraki MT40": "Misc/Meraki MT40.png",
     # === IoT / Emergency Announce ===
     "EAS - Command Unit": "Misc/Emergency Announce Command Unit.png",
     "EAS - Laptop": "Misc/EAS Laptop.png",
@@ -329,10 +527,40 @@ ICON_IMAGE_PATHS: dict[str, str | None] = {
     "HL - Audio": "Hardlines/CAT6 Cable.png",
     "HL - Emergency Announce System": "Hardlines/CAT6 Cable.png",
     "HL - WAN": "Hardlines/CAT6 Cable.png",
+    # === Additional Hardlines (copper - use CAT6 Cable) ===
+    "HL -": "Hardlines/CAT6 Cable.png",
+    "HL - CCTV": "Hardlines/CAT6 Cable.png",
+    "HL - Clair": "Hardlines/CAT6 Cable.png",
+    "HL - IPTV": "Hardlines/CAT6 Cable.png",
+    "HL - Lighting": "Hardlines/CAT6 Cable.png",
+    "HL - Media": "Hardlines/CAT6 Cable.png",
+    "HL - Radios": "Hardlines/CAT6 Cable.png",
+    "HL - Streaming": "Hardlines/CAT6 Cable.png",
+    "HL - Video": "Hardlines/CAT6 Cable.png",
+    # === Fiber Connectors (specific images) ===
+    "HL - LC SM": "Hardlines/LC SM.png",
+    "HL - SC SM": "Hardlines/SC SM.png",
+    "HL - ST SM": "Hardlines/ST SM.png",
     # === Cables (NO gear images) ===
     "FIBER": None,
     # === Miscellaneous (NO gear images) ===
     "INFRA - Fiber Patch Panel": None,
+    # === Boxes ===
+    "BOX - Dri Box": "Misc/Dri Box.png",
+    "BOX - Lock Box": "Misc/Lock Box.png",
+    "BOX - Patch Box": "Misc/Patch Box.png",
+    "BOX - Zarges Box": "Misc/Zarges Junction Box.png",
+    "BOX - Zarges XL Box": "Misc/Zarges XL Junction Box.png",
+    # === Power Equipment ===
+    "PWR - EcoFlow Battery": "Misc/EcoFlow Battery.png",
+    "PWR - EcoFlow Solar Panel": "Misc/EcoFlow Solar Panel.png",
+    "PWR - Liebert UPS": "Misc/Liebert UPS.png",
+    "PWR - Pinty Battery": "Misc/Pinty Battery.png",
+    "PWR - Quad Box": "Misc/Quad Box.png",
+    # === Infrastructure ===
+    "INFRA - Conduit": "Misc/Conduit.png",
+    "INFRA - Conduit Well": "Misc/Conduit Well.png",
+    "MISC - Bike Rack": "Misc/Bike Rack.png",
 }
 
 
@@ -398,7 +626,10 @@ def get_model_text(subject: str) -> str:
             # Get the model part (after the prefix)
             model_part = parts[-1]
             # Remove brand prefix if present
-            for brand in ["Cisco ", "Ubiquiti ", "Axis ", "Yealink ", "BrightSign "]:
+            for brand in [
+                "Cisco ", "Ubiquiti ", "Axis ", "Yealink ", "BrightSign ",
+                "Fortinet ", "Meraki ", "EcoFlow ", "Liebert ", "Netgear ", "Netonix ",
+            ]:
                 if model_part.startswith(brand):
                     return model_part[len(brand):]
             return model_part

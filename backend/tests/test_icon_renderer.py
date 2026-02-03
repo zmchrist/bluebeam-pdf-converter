@@ -88,6 +88,85 @@ class TestIconConfig:
             for key in required_keys:
                 assert key in defaults, f"Missing {key} in {cat_name} defaults"
 
+    def test_new_category_defaults_exist(self):
+        """Test that new categories have defaults."""
+        new_categories = ["Power", "Fiber", "Boxes"]
+        for cat in new_categories:
+            assert cat in CATEGORY_DEFAULTS, f"Missing defaults for {cat}"
+
+    def test_power_category_has_brown_color(self):
+        """Test Power category has brown color."""
+        power = CATEGORY_DEFAULTS["Power"]
+        assert power["circle_color"][0] > 0.3  # Brown has higher red
+        assert power["circle_color"][1] < 0.4  # Lower green
+
+    def test_fiber_category_has_orange_color(self):
+        """Test Fiber category has orange color."""
+        fiber = CATEGORY_DEFAULTS["Fiber"]
+        assert fiber["circle_color"][0] > 0.8  # Orange has high red
+        assert fiber["brand_text"] == "FIBER"
+
+    def test_new_switch_icons_configured(self):
+        """Test new switch icons return valid config."""
+        new_switches = [
+            "DIST - Cisco MX",
+            "SW - Fortinet 108F 8P",
+            "SW - Raspberry Pi",
+        ]
+        for subject in new_switches:
+            config = get_icon_config(subject)
+            assert config != {}, f"{subject} not configured"
+            assert config["category"] == "Switches"
+
+    def test_new_p2p_icons_configured(self):
+        """Test new P2P icons return valid config."""
+        new_p2ps = [
+            "P2P - Ubiquiti Wave AP Micro",
+            "P2P - Ubiquiti Wave Nano",
+            "P2P - Ubiquiti Wave Pico",
+        ]
+        for subject in new_p2ps:
+            config = get_icon_config(subject)
+            assert config != {}, f"{subject} not configured"
+            assert config["category"] == "P2Ps"
+
+    def test_fiber_hardlines_use_fiber_category(self):
+        """Test fiber connector hardlines use Fiber category."""
+        fiber_types = ["HL - LC SM", "HL - SC SM", "HL - ST SM"]
+        for subject in fiber_types:
+            config = get_icon_config(subject)
+            assert config["category"] == "Fiber", f"{subject} should be Fiber"
+
+    def test_power_icons_configured(self):
+        """Test power equipment icons return valid config."""
+        power_icons = [
+            "PWR - EcoFlow Battery",
+            "PWR - Liebert UPS",
+        ]
+        for subject in power_icons:
+            config = get_icon_config(subject)
+            assert config != {}, f"{subject} not configured"
+            assert config["category"] == "Power"
+
+    def test_box_icons_configured(self):
+        """Test box icons return valid config."""
+        box_icons = [
+            "BOX - Dri Box",
+            "BOX - Zarges Box",
+        ]
+        for subject in box_icons:
+            config = get_icon_config(subject)
+            assert config != {}, f"{subject} not configured"
+            assert config["category"] == "Boxes"
+
+    def test_get_model_text_fortinet(self):
+        """Test model text extraction for Fortinet device."""
+        assert get_model_text("SW - Fortinet 108F 8P") == "108F 8P"
+
+    def test_get_model_text_meraki(self):
+        """Test model text extraction for Meraki device."""
+        assert get_model_text("SEN - Meraki MT15") == "MT15"
+
 
 class TestIconRenderer:
     """Tests for IconRenderer service."""
