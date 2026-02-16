@@ -17,7 +17,7 @@ backend_dir = Path(__file__).parent.parent
 sys.path.insert(0, str(backend_dir))
 
 from collections import Counter
-from PyPDF2 import PdfReader
+from pypdf import PdfReader
 
 
 def analyze_pdf_annotations(pdf_path: Path) -> list[dict]:

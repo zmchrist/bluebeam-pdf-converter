@@ -4,7 +4,7 @@ Annotation replacement service.
 Replaces bid icon annotations with deployment icon annotations
 while preserving exact coordinates and sizing.
 
-Uses PyPDF2 for rich icon rendering with embedded images,
+Uses pypdf for rich icon rendering with embedded images,
 brand text, and model text.
 """
 
@@ -12,8 +12,8 @@ import logging
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from PyPDF2 import PdfReader, PdfWriter
-from PyPDF2.generic import (
+from pypdf import PdfReader, PdfWriter
+from pypdf.generic import (
     ArrayObject,
     DictionaryObject,
     FloatObject,
@@ -47,7 +47,7 @@ class AnnotationReplacer:
     This service handles the core conversion logic:
     1. Looks up bid subject in mapping to find deployment subject
     2. Gets deployment icon data from BTX loader
-    3. Creates new annotation with preserved coordinates using PyPDF2
+    3. Creates new annotation with preserved coordinates using pypdf
     4. Removes bid annotation from PDF page
     5. Inserts deployment annotation at same position with rich appearance stream
     """
@@ -170,7 +170,7 @@ class AnnotationReplacer:
         Returns:
             IndirectObject reference to appearance stream
         """
-        from PyPDF2.generic import StreamObject
+        from pypdf.generic import StreamObject
 
         x1, y1, x2, y2 = rect
         width = x2 - x1
@@ -292,7 +292,7 @@ class AnnotationReplacer:
         """
         Replace bid annotations with deployment annotations in a PDF.
 
-        Uses PyPDF2 for rich icon rendering with embedded images.
+        Uses pypdf for rich icon rendering with embedded images.
 
         Args:
             input_pdf: Path to input PDF with bid annotations
@@ -312,7 +312,7 @@ class AnnotationReplacer:
             logger.error(f"Input PDF not found: {input_pdf}")
             return 0, 0, []
 
-        # Open PDF with PyPDF2
+        # Open PDF with pypdf
         reader = PdfReader(str(input_pdf))
         writer = PdfWriter()
 

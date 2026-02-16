@@ -15,8 +15,8 @@ from pathlib import Path
 from typing import Any
 
 from PIL import Image
-from PyPDF2 import PdfWriter
-from PyPDF2.generic import (
+from pypdf import PdfWriter
+from pypdf.generic import (
     ArrayObject,
     DictionaryObject,
     FloatObject,

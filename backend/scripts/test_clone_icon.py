@@ -9,8 +9,8 @@ This script implements the clone-based approach to icon conversion:
 """
 
 from pathlib import Path
-from PyPDF2 import PdfReader, PdfWriter
-from PyPDF2.generic import (
+from pypdf import PdfReader, PdfWriter
+from pypdf.generic import (
     ArrayObject, DictionaryObject, FloatObject,
     NameObject, StreamObject, TextStringObject,
     NumberObject, DecodedStreamObject
@@ -315,7 +315,7 @@ def transform_coordinates(
 
     # Create new appearance stream using DecodedStreamObject
     # Note: Do NOT copy /Filter - DecodedStreamObject contains uncompressed data
-    # and PyPDF2 will handle compression during write if needed
+    # and pypdf will handle compression during write if needed
     new_ap = DecodedStreamObject()
     new_ap._data = transformed_stream
 

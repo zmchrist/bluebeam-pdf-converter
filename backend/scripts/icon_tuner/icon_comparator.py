@@ -11,8 +11,8 @@ from unittest.mock import patch
 
 import fitz  # PyMuPDF
 from PIL import Image, ImageDraw, ImageFont
-from PyPDF2 import PdfWriter
-from PyPDF2.generic import (
+from pypdf import PdfWriter
+from pypdf.generic import (
     ArrayObject,
     DictionaryObject,
     FloatObject,

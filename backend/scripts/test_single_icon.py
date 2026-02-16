@@ -16,8 +16,8 @@ The appearance stream includes:
 import zlib
 from pathlib import Path
 from PIL import Image
-from PyPDF2 import PdfReader, PdfWriter
-from PyPDF2.generic import (
+from pypdf import PdfReader, PdfWriter
+from pypdf.generic import (
     ArrayObject,
     DictionaryObject,
     FloatObject,

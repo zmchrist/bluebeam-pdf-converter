@@ -5,7 +5,7 @@ Extracts markup annotations from PDF files to identify icon locations and subjec
 """
 
 from pathlib import Path
-from PyPDF2 import PdfReader
+from pypdf import PdfReader
 from app.models.annotation import Annotation, AnnotationCoordinates
 from app.services.subject_extractor import SubjectExtractor
 from app.utils.errors import (
@@ -19,7 +19,7 @@ class PDFAnnotationParser:
     """
     Service for parsing PDF files and extracting annotation data.
 
-    Uses PyPDF2 for PDF parsing.
+    Uses pypdf for PDF parsing.
     """
 
     def __init__(self):
@@ -168,7 +168,7 @@ class PDFAnnotationParser:
         Extract subject string from annotation object.
 
         Args:
-            annot: PyPDF2 annotation object
+            annot: pypdf annotation object
 
         Returns:
             Subject string or empty string if not found
@@ -200,7 +200,7 @@ class PDFAnnotationParser:
         Convert annotation object to dictionary for storage.
 
         Args:
-            annot: PyPDF2 annotation object
+            annot: pypdf annotation object
 
         Returns:
             Dictionary representation or None if conversion fails

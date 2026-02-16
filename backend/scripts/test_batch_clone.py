@@ -6,8 +6,8 @@ templates from DeploymentMap.pdf.
 """
 
 from pathlib import Path
-from PyPDF2 import PdfReader, PdfWriter
-from PyPDF2.generic import (
+from pypdf import PdfReader, PdfWriter
+from pypdf.generic import (
     ArrayObject, DictionaryObject, FloatObject,
     NameObject, TextStringObject, NumberObject,
     DecodedStreamObject

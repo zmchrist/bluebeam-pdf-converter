@@ -5,7 +5,7 @@ from unittest.mock import patch
 
 import pytest
 from PIL import Image
-from PyPDF2 import PdfWriter
+from pypdf import PdfWriter
 
 from app.services.icon_config import (
     CATEGORY_DEFAULTS,
