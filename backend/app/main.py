@@ -5,7 +5,9 @@ This module initializes the FastAPI application, configures CORS,
 registers API routers, and sets up the health check endpoint.
 """
 
+import asyncio
 import logging
+from contextlib import asynccontextmanager
 from datetime import datetime
 
 from fastapi import FastAPI
@@ -13,6 +15,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.routers import upload, convert, download
 from app.config import settings
+from app.services.file_manager import file_manager
 from app.services.mapping_parser import MappingParser
 from app.services.btx_loader import BTXReferenceLoader
 
@@ -23,10 +26,46 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+CLEANUP_INTERVAL_SECONDS = 15 * 60
+
+
+async def _periodic_cleanup() -> None:
+    while True:
+        try:
+            count = file_manager.cleanup_expired()
+            if count > 0:
+                logger.info(f"Background cleanup removed {count} expired file(s)")
+        except Exception as e:
+            logger.error(f"Error during background cleanup: {e}")
+        await asyncio.sleep(CLEANUP_INTERVAL_SECONDS)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup cleanup
+    try:
+        count = file_manager.cleanup_expired()
+        if count > 0:
+            logger.info(f"Startup cleanup removed {count} expired file(s)")
+    except Exception as e:
+        logger.error(f"Error during startup cleanup: {e}")
+    # Start periodic task
+    cleanup_task = asyncio.create_task(_periodic_cleanup())
+    logger.info("Background file cleanup task started (interval: 15 minutes)")
+    yield
+    # Shutdown
+    cleanup_task.cancel()
+    try:
+        await cleanup_task
+    except asyncio.CancelledError:
+        pass
+
+
 app = FastAPI(
     title="Bluebeam PDF Map Converter",
     description="Convert PDF venue maps from bid icons to deployment icons",
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 # Configure CORS for frontend communication
