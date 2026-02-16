@@ -101,10 +101,10 @@ class TestIconConfig:
         assert power["circle_color"][0] > 0.3  # Brown has higher red
         assert power["circle_color"][1] < 0.4  # Lower green
 
-    def test_fiber_category_has_orange_color(self):
-        """Test Fiber category has orange color."""
+    def test_fiber_category_has_red_color(self):
+        """Test Fiber category has red color (same as hardlines per reference)."""
         fiber = CATEGORY_DEFAULTS["Fiber"]
-        assert fiber["circle_color"][0] > 0.8  # Orange has high red
+        assert fiber["circle_color"][0] > 0.7  # Red has high red
         assert fiber["brand_text"] == "FIBER"
 
     def test_new_switch_icons_configured(self):
@@ -131,12 +131,13 @@ class TestIconConfig:
             assert config != {}, f"{subject} not configured"
             assert config["category"] == "P2Ps"
 
-    def test_fiber_hardlines_use_fiber_category(self):
-        """Test fiber connector hardlines use Fiber category."""
+    def test_fiber_hardlines_use_hardlines_category(self):
+        """Test fiber connector hardlines use Hardlines category (red like reference)."""
         fiber_types = ["HL - LC SM", "HL - SC SM", "HL - ST SM"]
         for subject in fiber_types:
             config = get_icon_config(subject)
-            assert config["category"] == "Fiber", f"{subject} should be Fiber"
+            assert config["category"] == "Hardlines", f"{subject} should be Hardlines"
+            assert config.get("brand_text") == "FIBER", f"{subject} should have FIBER brand"
 
     def test_power_icons_configured(self):
         """Test power equipment icons return valid config."""

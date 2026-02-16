@@ -25,10 +25,10 @@ def main():
     """Run test conversion."""
     # Paths
     project_root = Path(__file__).parent.parent.parent
-    input_pdf = project_root / "samples" / "maps" / "BidMap.pdf"
+    input_pdf = project_root / "samples" / "maps" / "BidMap2.pdf"
     reference_pdf = project_root / "samples" / "maps" / "DeploymentMap.pdf"
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    output_pdf = project_root / "samples" / "maps" / f"BidMap_converted_{timestamp}.pdf"
+    output_pdf = project_root / "samples" / "maps" / f"BidMap2_converted_{timestamp}.pdf"
     mapping_file = Path(__file__).parent.parent / "data" / "mapping.md"
     toolchest_dir = project_root / "toolchest"
 

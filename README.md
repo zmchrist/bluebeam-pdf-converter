@@ -91,6 +91,8 @@ Bluebeam Conversion/
 
 - **PDF Map Conversion** — Convert bid icon annotations to deployment icons automatically
 - **Rich Icon Rendering** — Deployment icons include gear images, brand text, and model labels
+- **Device ID Assignment** — Sequential IDs assigned per device type (j100, k101, aa100, etc.)
+- **Legend Cleanup** — Automatically removes legend and gear list annotations during conversion
 - **High Conversion Rate** — 93.5% annotation conversion (376/402 on sample BidMap.pdf)
 - **Fast Processing** — Full conversion in ~1 second
 - **Coordinate Preservation** — Icons remain at exact same positions after conversion

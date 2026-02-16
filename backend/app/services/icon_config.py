@@ -91,18 +91,18 @@ ICON_CATEGORIES: dict[str, str] = {
     # === IoT / VoIP ===
     "VOIP - Yealink T29G": "IoT",
     "VOIP - Yealink CP965": "IoT",
-    # === IoT / CCTV ===
-    "CCTV - AXIS P5655-E": "IoT",
-    "CCTV - AXIS S9302": "IoT",
+    # === CCTV / Cameras ===
+    "CCTV - AXIS P5655-E": "Cameras",
+    "CCTV - AXIS S9302": "Cameras",
     # === IoT / Emergency Announce ===
     "EAS - Command Unit": "IoT",
     "EAS - Laptop": "IoT",
     "EAS - Trigger Box": "IoT",
     # === IoT / IPTV ===
     "IPTV - BrightSign XT1144": "IoT",
-    # === Additional IoT / CCTV ===
-    "CCTV - AXIS M5526-E": "IoT",
-    "CCTV - Cisco MV93X": "IoT",
+    # === Additional CCTV / Cameras ===
+    "CCTV - AXIS M5526-E": "Cameras",
+    "CCTV - Cisco MV93X": "Cameras",
     # === IoT / Sensors ===
     "SEN - Meraki MT15": "IoT",
     "SEN - Meraki MT40": "IoT",
@@ -126,10 +126,10 @@ ICON_CATEGORIES: dict[str, str] = {
     "HL - Radios": "Hardlines",
     "HL - Streaming": "Hardlines",
     "HL - Video": "Hardlines",
-    # === Fiber Connectors (use Fiber category) ===
-    "HL - LC SM": "Fiber",
-    "HL - SC SM": "Fiber",
-    "HL - ST SM": "Fiber",
+    # === Fiber Connectors (same red as hardlines in reference PDF) ===
+    "HL - LC SM": "Hardlines",
+    "HL - SC SM": "Hardlines",
+    "HL - ST SM": "Hardlines",
     # === Cables (no gear images) ===
     "FIBER": "Cables",
     # === Miscellaneous (no gear images) ===
@@ -156,37 +156,39 @@ ICON_CATEGORIES: dict[str, str] = {
 # Category-level default rendering parameters
 CATEGORY_DEFAULTS: dict[str, dict] = {
     "APs": {
-        "circle_color": (0.22, 0.34, 0.65),  # Navy blue from MR36H reference
-        "circle_border_width": 0.5,
+        "circle_color": (0.2157, 0.3412, 0.6431),  # Navy blue from reference PDF
+        "circle_border_width": 0.75,
         "circle_border_color": (0.0, 0.0, 0.0),
-        "id_box_height": 4.0,
-        "id_box_width_ratio": 0.55,
-        "id_box_border_width": 0.6,
+        "id_box_height": 2.3,
+        "id_box_width_ratio": 0.41,
+        "id_box_border_width": 0.35,
+        "id_font_size": 3.9,
         "img_scale_ratio": 0.70,
         "brand_text": "CISCO",
-        "brand_font_size": 1.9,
-        "brand_y_offset": -5.0,  # from circle top (moved down 2px: -3.0 -> -5.0)
+        "brand_font_size": 1.8,
+        "brand_y_offset": -3.2,
         "brand_x_offset": -0.2,
-        "model_font_size": 1.6,
-        "model_y_offset": 2.5,  # from circle bottom
+        "model_font_size": 2.2,
+        "model_y_offset": 2.5,
         "model_x_offset": -0.2,
         "font_name": "/Helvetica-Bold",
-        "text_color": (1.0, 1.0, 1.0),  # White
-        "id_text_color": None,  # Same as circle_color if None
+        "text_color": (1.0, 1.0, 1.0),
+        "id_text_color": None,
     },
     "Switches": {
-        "circle_color": (0.267, 0.714, 0.290),  # Green from switches.pdf RGB(68, 182, 74)
-        "circle_border_width": 0.5,
+        "circle_color": (0.267, 0.714, 0.290),  # Green from switches.pdf
+        "circle_border_width": 0.75,
         "circle_border_color": (0.0, 0.0, 0.0),
-        "id_box_height": 4.0,
+        "id_box_height": 3.5,
         "id_box_width_ratio": 0.55,
-        "id_box_border_width": 0.6,
+        "id_box_border_width": 0.45,
+        "id_font_size": 3.2,
         "img_scale_ratio": 0.70,
-        "brand_text": "",  # Many switches/NOCs have no brand text
-        "brand_font_size": 1.9,
-        "brand_y_offset": -5.0,  # moved down 2px: -3.0 -> -5.0
+        "brand_text": "",
+        "brand_font_size": 1.8,
+        "brand_y_offset": -3.2,
         "brand_x_offset": -0.2,
-        "model_font_size": 1.6,
+        "model_font_size": 2.2,
         "model_y_offset": 2.5,
         "model_x_offset": -0.2,
         "font_name": "/Helvetica-Bold",
@@ -194,157 +196,185 @@ CATEGORY_DEFAULTS: dict[str, dict] = {
         "id_text_color": None,
     },
     "P2Ps": {
-        "circle_color": (0.4, 0.2, 0.6),  # Purple
-        "circle_border_width": 0.5,
+        "circle_color": (0.9843, 0.6392, 0.1059),  # Orange/amber from reference PDF
+        "circle_border_width": 0.75,
         "circle_border_color": (0.0, 0.0, 0.0),
-        "id_box_height": 4.0,
-        "id_box_width_ratio": 0.55,
-        "id_box_border_width": 0.6,
+        "id_box_height": 2.3,
+        "id_box_width_ratio": 0.41,
+        "id_box_border_width": 0.35,
+        "id_font_size": 3.9,
         "img_scale_ratio": 0.70,
         "brand_text": "UBIQUITI",
-        "brand_font_size": 1.9,
-        "brand_y_offset": -5.0,  # moved down 2px: -3.0 -> -5.0
+        "brand_font_size": 1.8,
+        "brand_y_offset": -3.2,
         "brand_x_offset": -0.2,
-        "model_font_size": 1.6,
+        "model_font_size": 2.2,
         "model_y_offset": 2.5,
-        "model_x_offset": -0.2,  # moved right 0.5px
+        "model_x_offset": -0.2,
         "font_name": "/Helvetica-Bold",
         "text_color": (1.0, 1.0, 1.0),
         "id_text_color": None,
     },
     "IoT": {
-        "circle_color": (0.6, 0.3, 0.1),  # Brown/orange
-        "circle_border_width": 0.5,
+        "circle_color": (0.6, 0.3, 0.1),  # Brown/orange (non-camera IoT devices)
+        "circle_border_width": 0.75,
         "circle_border_color": (0.0, 0.0, 0.0),
-        "id_box_height": 4.0,
-        "id_box_width_ratio": 0.55,
-        "id_box_border_width": 0.6,
+        "id_box_height": 2.3,
+        "id_box_width_ratio": 0.41,
+        "id_box_border_width": 0.35,
+        "id_font_size": 3.9,
         "img_scale_ratio": 0.70,
-        "brand_text": "",  # Varies by device
-        "brand_font_size": 1.9,
-        "brand_y_offset": -5.0,  # moved down 2px: -3.0 -> -5.0
+        "brand_text": "",
+        "brand_font_size": 1.8,
+        "brand_y_offset": -3.2,
         "brand_x_offset": -0.2,
-        "model_font_size": 1.6,
+        "model_font_size": 2.2,
         "model_y_offset": 2.5,
-        "model_x_offset": -0.2,  # moved right 0.5px
+        "model_x_offset": -0.2,
         "font_name": "/Helvetica-Bold",
         "text_color": (1.0, 1.0, 1.0),
         "id_text_color": None,
     },
     "Hardlines": {
-        "circle_color": (0.8, 0.2, 0.2),  # Red background for hardlines
-        "circle_border_width": 0.5,
+        "circle_color": (0.7882, 0.1294, 0.1529),  # Red from reference PDF
+        "circle_border_width": 0.75,
         "circle_border_color": (0.0, 0.0, 0.0),
         "id_box_height": 4.0,
-        "id_box_width_ratio": 0.55,
-        "id_box_border_width": 0.6,
-        "img_scale_ratio": 1.2075,  # 1.5x bigger (0.805 * 1.5)
-        "img_y_offset": -0.5,  # Move image down 0.5px
-        "brand_text": "CAT6",  # CAT6 text above gear icon
-        "brand_font_size": 1.9,
-        "brand_y_offset": -5.0,  # moved down 2px: -3.0 -> -5.0
-        "brand_x_offset": -0.5,  # 0.2px left from -0.3
-        "model_font_size": 1.6,
+        "id_box_width_ratio": 0.65,
+        "id_box_border_width": 0.5,
+        "id_font_size": 3.0,
+        "img_scale_ratio": 1.2075,
+        "img_y_offset": -0.5,
+        "brand_text": "CAT6",
+        "brand_font_size": 1.8,
+        "brand_y_offset": -3.2,
+        "brand_x_offset": -0.5,
+        "model_font_size": 2.2,
         "model_y_offset": 2.5,
-        "model_x_offset": -0.4,  # 0.2px left from -0.2
+        "model_x_offset": -0.4,
         "font_name": "/Helvetica-Bold",
         "text_color": (1.0, 1.0, 1.0),
-        "id_text_color": None,  # Same as circle_color (red)
-        "model_uppercase": True,  # Capitalize all hardline model text
+        "id_text_color": None,
+        "model_uppercase": True,
     },
     "Cables": {
-        "circle_color": (0.8, 0.6, 0.0),  # Yellow/orange for fiber
-        "circle_border_width": 0.5,
+        "circle_color": (0.8, 0.6, 0.0),
+        "circle_border_width": 0.75,
         "circle_border_color": (0.0, 0.0, 0.0),
-        "id_box_height": 4.0,
-        "id_box_width_ratio": 0.55,
-        "id_box_border_width": 0.6,
+        "id_box_height": 2.3,
+        "id_box_width_ratio": 0.41,
+        "id_box_border_width": 0.35,
+        "id_font_size": 3.9,
         "img_scale_ratio": 0.70,
         "brand_text": "",
-        "brand_font_size": 1.9,
-        "brand_y_offset": -5.0,  # moved down 2px: -3.0 -> -5.0
+        "brand_font_size": 1.8,
+        "brand_y_offset": -3.2,
         "brand_x_offset": -0.2,
-        "model_font_size": 1.6,
+        "model_font_size": 2.2,
         "model_y_offset": 2.5,
-        "model_x_offset": -0.2,  # moved right 0.5px
+        "model_x_offset": -0.2,
         "font_name": "/Helvetica-Bold",
         "text_color": (1.0, 1.0, 1.0),
         "id_text_color": None,
-        "no_image": True,  # No gear image for cables
+        "no_image": True,
     },
     "Misc": {
-        "circle_color": (0.5, 0.5, 0.5),  # Gray
-        "circle_border_width": 0.5,
+        "circle_color": (0.5, 0.5, 0.5),
+        "circle_border_width": 0.75,
         "circle_border_color": (0.0, 0.0, 0.0),
-        "id_box_height": 4.0,
-        "id_box_width_ratio": 0.55,
-        "id_box_border_width": 0.6,
+        "id_box_height": 2.3,
+        "id_box_width_ratio": 0.41,
+        "id_box_border_width": 0.35,
+        "id_font_size": 3.9,
         "img_scale_ratio": 0.70,
         "brand_text": "",
-        "brand_font_size": 1.9,
-        "brand_y_offset": -5.0,  # moved down 2px: -3.0 -> -5.0
+        "brand_font_size": 1.8,
+        "brand_y_offset": -3.2,
         "brand_x_offset": -0.2,
-        "model_font_size": 1.6,
+        "model_font_size": 2.2,
         "model_y_offset": 2.5,
-        "model_x_offset": -0.2,  # moved right 0.5px
+        "model_x_offset": -0.2,
         "font_name": "/Helvetica-Bold",
         "text_color": (1.0, 1.0, 1.0),
         "id_text_color": None,
-        "no_image": True,  # No gear image for misc infra
+        "no_image": True,
     },
     "Power": {
-        "circle_color": (0.4, 0.25, 0.1),  # Dark brown for power equipment
-        "circle_border_width": 0.5,
+        "circle_color": (0.4, 0.25, 0.1),
+        "circle_border_width": 0.75,
         "circle_border_color": (0.0, 0.0, 0.0),
-        "id_box_height": 4.0,
-        "id_box_width_ratio": 0.55,
-        "id_box_border_width": 0.6,
+        "id_box_height": 2.3,
+        "id_box_width_ratio": 0.41,
+        "id_box_border_width": 0.35,
+        "id_font_size": 3.9,
         "img_scale_ratio": 0.70,
         "brand_text": "",
-        "brand_font_size": 1.9,
-        "brand_y_offset": -5.0,  # moved down 2px: -3.0 -> -5.0
+        "brand_font_size": 1.8,
+        "brand_y_offset": -3.2,
         "brand_x_offset": -0.2,
-        "model_font_size": 1.6,
+        "model_font_size": 2.2,
         "model_y_offset": 2.5,
-        "model_x_offset": -0.2,  # moved right 0.5px
+        "model_x_offset": -0.2,
+        "font_name": "/Helvetica-Bold",
+        "text_color": (1.0, 1.0, 1.0),
+        "id_text_color": None,
+    },
+    "Cameras": {
+        "circle_color": (0.3176, 0.4980, 0.9098),  # Blue from cameras.pdf reference
+        "circle_border_width": 0.75,
+        "circle_border_color": (0.0, 0.0, 0.0),
+        "id_box_height": 2.3,
+        "id_box_width_ratio": 0.41,
+        "id_box_border_width": 0.35,
+        "id_font_size": 3.9,
+        "img_scale_ratio": 0.70,
+        "brand_text": "",
+        "brand_font_size": 1.8,
+        "brand_y_offset": -3.2,
+        "brand_x_offset": -0.2,
+        "model_font_size": 2.2,
+        "model_y_offset": 2.5,
+        "model_x_offset": -0.2,
         "font_name": "/Helvetica-Bold",
         "text_color": (1.0, 1.0, 1.0),
         "id_text_color": None,
     },
     "Fiber": {
-        "circle_color": (0.9, 0.5, 0.0),  # Orange for fiber connections
-        "circle_border_width": 0.5,
+        "circle_color": (0.7882, 0.1294, 0.1529),  # Red, same as hardlines in reference
+        "circle_border_width": 0.75,
         "circle_border_color": (0.0, 0.0, 0.0),
-        "id_box_height": 4.0,
-        "id_box_width_ratio": 0.55,
-        "id_box_border_width": 0.6,
+        "id_box_height": 2.3,
+        "id_box_width_ratio": 0.41,
+        "id_box_border_width": 0.35,
+        "id_font_size": 3.9,
         "img_scale_ratio": 0.70,
         "brand_text": "FIBER",
-        "brand_font_size": 1.9,
-        "brand_y_offset": -5.0,  # moved down 2px: -3.0 -> -5.0
+        "brand_font_size": 1.8,
+        "brand_y_offset": -3.2,
         "brand_x_offset": -0.2,
-        "model_font_size": 1.6,
+        "model_font_size": 2.2,
         "model_y_offset": 2.5,
-        "model_x_offset": -0.2,  # moved right 0.5px
+        "model_x_offset": -0.2,
         "font_name": "/Helvetica-Bold",
         "text_color": (1.0, 1.0, 1.0),
         "id_text_color": None,
     },
     "Boxes": {
-        "circle_color": (0.35, 0.35, 0.4),  # Dark gray for boxes
-        "circle_border_width": 0.5,
+        "circle_color": (0.35, 0.35, 0.4),
+        "circle_border_width": 0.75,
         "circle_border_color": (0.0, 0.0, 0.0),
-        "id_box_height": 4.0,
-        "id_box_width_ratio": 0.55,
-        "id_box_border_width": 0.6,
+        "id_box_height": 2.3,
+        "id_box_width_ratio": 0.41,
+        "id_box_border_width": 0.35,
+        "id_font_size": 3.9,
         "img_scale_ratio": 0.70,
         "brand_text": "",
-        "brand_font_size": 1.9,
-        "brand_y_offset": -5.0,  # moved down 2px: -3.0 -> -5.0
+        "brand_font_size": 1.8,
+        "brand_y_offset": -3.2,
         "brand_x_offset": -0.2,
-        "model_font_size": 1.6,
+        "model_font_size": 2.2,
         "model_y_offset": 2.5,
-        "model_x_offset": -0.2,  # moved right 0.5px
+        "model_x_offset": -0.2,
         "font_name": "/Helvetica-Bold",
         "text_color": (1.0, 1.0, 1.0),
         "id_text_color": None,
@@ -354,26 +384,57 @@ CATEGORY_DEFAULTS: dict[str, dict] = {
 
 # Per-icon override configurations (only values that differ from category defaults)
 ICON_OVERRIDES: dict[str, dict] = {
-    # === Access Points ===
+    # === Access Points (tuned) ===
     "AP - Cisco MR36H": {
-        "model_x_offset": -0.3,  # 0.1px left from default -0.2
+        "img_scale_ratio": 0.64,
+        "model_x_offset": -1.0,
+        "model_y_offset": 3.0,
     },
     "AP - Cisco 9120": {
-        "model_y_offset": 3.0,  # Taller image needs adjustment
-        "img_scale_ratio": 0.65,
+        "img_scale_ratio": 1.04,
+        "img_x_offset": 0.2,
+        "img_y_offset": 0.8,
+        "model_font_size": 1.1,
+        "model_x_offset": 2.0,
+        "model_y_offset": 0.0,
     },
     "AP - Cisco 9166I": {
-        "model_y_offset": 2.8,
-        "model_x_offset": 0.0,  # 0.2px right from default -0.2
+        "img_scale_ratio": 0.98,
+        "model_y_offset": 3.0,
+        "model_x_offset": 0.0,
     },
     "AP - Cisco 9166D": {
-        "model_y_offset": 2.8,
+        "img_scale_ratio": 0.98,
+        "img_x_offset": -0.2,
+        "img_y_offset": 0.6,
+        "model_font_size": 1.0,
+        "model_x_offset": 2.0,
+        "model_y_offset": 0.0,
     },
     "AP - Cisco DB10": {
-        "img_scale_ratio": 0.60,  # Larger device image
+        "img_scale_ratio": 1.40,
+        "img_x_offset": -0.2,
+        "img_y_offset": -1.6,
+        "brand_font_size": 3.9,
+        "id_box_height": 5.5,
+        "id_box_width_ratio": 0.73,
+        "id_font_size": 1.7,
+        "id_box_border_width": 0.7,
+        "model_x_offset": -0.6,
+    },
+    "AP - Cisco MR78": {
+        "img_scale_ratio": 1.04,
+        "img_x_offset": -0.2,
+        "img_y_offset": 0.6,
+        "model_x_offset": -0.8,
+        "model_y_offset": 3.2,
     },
     "AP - Cisco Marlin 4": {
-        "model_x_offset": 0.3,  # 0.5px right from default -0.2
+        "img_scale_ratio": 1.32,
+        "img_x_offset": -0.2,
+        "img_y_offset": 0.4,
+        "model_x_offset": -0.8,
+        "model_y_offset": 3.2,
     },
     # === Switches with brand text ===
     "SW - Cisco Micro 4P": {
@@ -381,7 +442,9 @@ ICON_OVERRIDES: dict[str, dict] = {
     },
     "SW - Cisco 9200 12P": {
         "brand_text": "CISCO",
-        "img_scale_ratio": 1.575,  # 2.5x bigger then 10% smaller (1.75 * 0.90)
+        "img_scale_ratio": 1.37,
+        "img_x_offset": -0.8,
+        "img_y_offset": -2.0,
     },
     "SW - IDF Cisco 9300 24X": {
         "brand_text": "IDF 6U",  # IDF rack label instead of CISCO
@@ -408,10 +471,10 @@ ICON_OVERRIDES: dict[str, dict] = {
         "brand_text": "YEALINK",
     },
     "CCTV - AXIS P5655-E": {
-        "brand_text": "AXIS",
+        "brand_text": "AXIS",  # From cameras.pdf reference
     },
     "CCTV - AXIS S9302": {
-        "brand_text": "AXIS",
+        "brand_text": "AXIS",  # From cameras.pdf reference
     },
     "IPTV - BrightSign XT1144": {
         "brand_text": "BRIGHTSIGN",
@@ -472,6 +535,9 @@ ICON_OVERRIDES: dict[str, dict] = {
     },
     "CCTV - Cisco MV93X": {
         "brand_text": "CISCO",
+        "img_scale_ratio": 1.40,
+        "img_x_offset": -0.2,
+        "img_y_offset": -0.2,
     },
     "SEN - Meraki MT15": {
         "brand_text": "MERAKI",
@@ -495,6 +561,16 @@ ICON_OVERRIDES: dict[str, dict] = {
     },
     "HL - General Internet": {
         "model_text_override": "GENERAL\nINTERNET",  # Stacked text
+    },
+    # === Fiber connectors (use FIBER brand instead of CAT6) ===
+    "HL - LC SM": {
+        "brand_text": "FIBER",
+    },
+    "HL - SC SM": {
+        "brand_text": "FIBER",
+    },
+    "HL - ST SM": {
+        "brand_text": "FIBER",
     },
 }
 

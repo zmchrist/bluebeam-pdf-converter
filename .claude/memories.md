@@ -1,6 +1,51 @@
 # Bluebeam Conversion Project Memory
 
-**Last Updated:** February 3, 2026 (Phase 4 Frontend COMPLETE + Code Review Fixes)
+**Last Updated:** February 4, 2026 (Device ID Assignment + Icon Tuning + Legend Deletion)
+
+---
+
+## Session Update: 2026-02-04 - Device ID Assignment System + Icon Refinements
+
+### Completed
+- Implemented device ID assignment system with sequential numbering (j100, k100, aa100, etc.)
+- Added `IconIdAssigner` class and `ID_PREFIX_CONFIG` to icon_config.py
+- Extensive icon tuning based on reference PDFs in `samples/icons/deploymentIcons/`
+- Added legend and gear list deletion during conversion
+- Fixed test_conversion.py to use IconRenderer (was producing white circles)
+
+### Device ID Assignment System
+New system assigns unique sequential IDs to each device type during conversion:
+- **Access Points**: j100, k100, l100... (prefix-first format)
+- **Cameras**: 100a, 101a... (number-first format)
+- **Hardlines**: aa100, bb100... (double-letter prefix)
+- **Switches/IDFs**: Various prefixes with independent counters
+
+### Icon Tuning Changes
+- **Brand text (CISCO, CAT6)**: Adjusted y-offset for proper positioning
+- **Model text**: Fine-tuned x-offset per icon type
+- **Switch green**: Extracted exact color from switches.pdf (0.267, 0.714, 0.290)
+- **Image positioning**: Added `img_x_offset` and `img_y_offset` support
+- **IDF icons**: Use IDF.png with "IDF 6U" brand text
+- **Hardlines**: Uppercase model text, "EAS" abbreviation, stacked "GENERAL\nINTERNET"
+
+### Conversion Cleanup
+- Legend annotations now deleted (not just skipped)
+- CLAIR GEAR LIST annotations now deleted
+- Skipped count reduced from 26 to 20
+
+### Files Modified
+- `backend/app/services/icon_config.py` - Major expansion (ID config, 87+ icons)
+- `backend/app/services/icon_renderer.py` - Image offset support, multi-line text
+- `backend/app/services/annotation_replacer.py` - Legend/gear list deletion, ID assignment
+- `backend/scripts/test_conversion.py` - Added IconRenderer initialization
+
+### Test Results
+- **163 tests collected**
+- **147 passed, 5 failed (known), 11 skipped**
+- E2E conversion: 376/402 annotations, 20 skipped (down from 26)
+
+### Status
+**Icon rendering system mature.** Device IDs assigned, icons match reference PDFs.
 
 ---
 

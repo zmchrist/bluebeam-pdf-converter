@@ -28,7 +28,7 @@ bluebeam-pdf-converter/
 │   │   │   ├── btx_loader.py     # Load BTX toolchest icon data
 │   │   │   ├── annotation_replacer.py # Replace bid→deployment icons
 │   │   │   ├── appearance_extractor.py # Extract colors from reference PDFs
-│   │   │   ├── icon_config.py    # Config for 39 deployment icons
+│   │   │   ├── icon_config.py    # Config for 87+ deployment icons, ID assignment
 │   │   │   ├── icon_renderer.py  # Create PDF appearance streams
 │   │   │   └── file_manager.py   # Manage uploaded/converted file storage
 │   │   ├── routers/
@@ -86,7 +86,7 @@ These failures are expected and should not block development:
 - **5 failures in `test_annotation_replacer.py`** - PyMuPDF/PyPDF2 fixture incompatibility (tests create PDFs with PyMuPDF but conversion uses PyPDF2)
 - **11 skipped tests** - Features not yet implemented or require specific test files
 
-Run `uv run pytest` and expect ~122 passed, 5 failed, 11 skipped.
+Run `uv run pytest` and expect ~147 passed, 5 failed, 11 skipped.
 
 ## Commands
 
@@ -251,6 +251,12 @@ function Panel({ data }: { data: Data }) {
 }
 ```
 
+## Conversion Rules
+
+### Annotation Handling During Bid → Deployment Conversion
+- **Always delete** Legend annotations and CLAIR GEAR LIST annotations — these are bid-phase artifacts that must not appear in deployment output
+- **Always preserve** `/Line` annotations (e.g., P2P link lines) — pass through unchanged, do not convert to deployment icons
+
 ## Code Conventions
 
 ### Backend (Python)
@@ -411,11 +417,13 @@ Creates PDF appearance streams for deployment icons:
 - ID boxes, brand text, model text
 
 ### IconConfig
-Central configuration for 39 deployment icons:
+Central configuration for 87+ deployment icons:
 - `ICON_CATEGORIES`: Subject→category mapping
 - `CATEGORY_DEFAULTS`: Rendering parameters per category
-- `ICON_OVERRIDES`: Per-icon tuning (offsets, colors)
+- `ICON_OVERRIDES`: Per-icon tuning (offsets, colors, text overrides)
 - `ICON_IMAGE_PATHS`: Subject→PNG file mapping
+- `ID_PREFIX_CONFIG`: Device ID prefixes and numbering (j100, aa100, etc.)
+- `IconIdAssigner`: Class for sequential ID assignment during conversion
 
 ### FileManager
 Manages temporary file storage for uploads and conversions:

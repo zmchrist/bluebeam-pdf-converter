@@ -43,7 +43,12 @@ backend/data/temp/*
 
 # Test outputs
 samples/maps/BidMap_converted_*.pdf
+samples/maps/BidMap2*.pdf
 samples/maps/test_icon_output.pdf
+samples/maps/test_icon_*.pdf
+
+# Icon tuner output
+icon_tuner_output/
 
 # OS
 .DS_Store

@@ -264,12 +264,13 @@ class IconRenderer:
         model_x_offset = config.get("model_x_offset", -0.7)
         text_color = config.get("text_color", (1.0, 1.0, 1.0))
         id_text_color = config.get("id_text_color") or circle_color
+        id_font_size = config.get("id_font_size", 2.5)
 
         # Layout calculations
         cx = (x1 + x2) / 2
         id_box_width = width * id_box_width_ratio
         id_box_x1 = cx - id_box_width / 2
-        id_box_y1 = y2 - id_box_height - 1
+        id_box_y1 = y2 - id_box_height
 
         # Circle overlaps into ID box by 2px
         circle_top = id_box_y1 + 2
@@ -303,6 +304,7 @@ class IconRenderer:
             id_box_border_width=id_box_border_width,
             id_label=id_label,
             id_text_color=id_text_color,
+            id_font_size=id_font_size,
             img_x=img_x,
             img_y=img_y,
             img_draw_width=img_draw_width,
@@ -370,6 +372,7 @@ class IconRenderer:
         id_box_border_width: float,
         id_label: str,
         id_text_color: tuple[float, float, float],
+        id_font_size: float,
         img_x: float,
         img_y: float,
         img_draw_width: float,
@@ -449,16 +452,18 @@ class IconRenderer:
         parts.append("B")
         parts.append("Q")
 
-        # ID box text
+        # ID box text (centered in box)
         parts.append("BT")
         parts.append(
             f"{id_text_color[0]:.4f} {id_text_color[1]:.4f} "
             f"{id_text_color[2]:.4f} rg"
         )
-        parts.append("/Helv 2.5 Tf")
-        id_text_width = len(id_label) * 1.2
-        id_text_x = cx - id_text_width / 2
-        id_text_y = id_box_y1 + 1.0
+        parts.append(f"/Helv {id_font_size:.1f} Tf")
+        # Better centering: use actual char width estimate for Helvetica-Bold
+        id_char_width = 0.6 * id_font_size  # Approximate char width
+        id_text_width = len(id_label) * id_char_width
+        id_text_x = id_box_x1 + (id_box_width - id_text_width) / 2  # Center in box
+        id_text_y = id_box_y1 + (id_box_height - id_font_size) / 2 + 0.3  # Vertically center
         parts.append(f"{id_text_x:.3f} {id_text_y:.3f} Td")
         parts.append(f"({id_label}) Tj")
         parts.append("ET")

@@ -37,6 +37,7 @@ Updated based on actual subjects discovered in BidMap.pdf.
 | Point-of-Sale - High Capacity Ethernet Hardline | HL - PoS | Hardlines |
 | Access Control - Indoor Wi-Fi Access Point | AP - Cisco MR36H | Access Points |
 | Access Control - Wi-Fi Access Point | AP - Cisco MR36H | Access Points |
+| Access Control - Medium Density Wi-Fi Access Point | AP - Cisco 9166I | Access Points |
 | Access Control - High Density Wi-Fi Access Point | AP - Cisco 9166I | Access Points |
 | Access Control - High Density Directional Wi-Fi Access Point | AP - Cisco 9166D | Access Points |
 | Access Control - Outdoor Wi-Fi Access Point | AP - Cisco MR78 | Access Points |
@@ -56,6 +57,7 @@ Updated based on actual subjects discovered in BidMap.pdf.
 | Distribution - Compact Edge Switch | SW - Cisco Micro 4P | Switches |
 | Distribution - Edge Switch | SW - Cisco 9200 12P | Switches |
 | Distribution - Clair Custom IDF Rack | SW - IDF Cisco 9300 24X | Switches |
+| Distribution - Clair Network Core Rack | DIST - Standard NOC | Switches |
 | Distribution - Clair Network Core Rack Compact | DIST - Micro NOC | Switches |
 | Distribution - Clair Network Core Rack - Compact | DIST - Micro NOC | Switches |
 | Distribution - Clair Network Core Rack - High-Capacity | DIST - Standard NOC | Switches |
@@ -70,6 +72,9 @@ Updated based on actual subjects discovered in BidMap.pdf.
 | INFRAS - Point-to-Multipoint Transeiver | P2P - Ubiquiti LiteAP | Point-to-Points |
 | INFRAS - High Capacity Point-to-Point Transeiver | P2P - Ubiquiti GigaBeam | Point-to-Points |
 | INFRAS - High Capacity Point-to-Multipoint Transeiver | P2P - Ubiquiti GigaBeam LR | Point-to-Points |
+| Distribution - Point-to-Point Transeiver | P2P - Ubiquiti NanoBeam | Point-to-Points |
+| Distribution - High Capacity Point-to-Point Transeiver | P2P - Ubiquiti GigaBeam | Point-to-Points |
+| P2P - Link | P2P - Ubiquiti NanoBeam | Point-to-Points |
 | INFRAS - VoIP Phone | VOIP - Yealink T29G | IoT |
 | INFRAS - Conference VoIP Phone | VOIP - Yealink CP965 | IoT |
 | INFRAS - Starlink Satellite Internet | DIST - Starlink | Switches |
@@ -81,9 +86,13 @@ Updated based on actual subjects discovered in BidMap.pdf.
 | CCTV - Axis Outdoor PTZ Camera | CCTV - AXIS P5655-E | IoT |
 | CCTV - Axis Camera Workstation | CCTV - AXIS S9302 | IoT |
 | CCTV - CCTV Network Video Recorder | CCTV - AXIS S9302 | IoT |
+| CCTV - Camera | CCTV - AXIS P5655-E | IoT |
+| CCTV - Networked Video Recorder | CCTV - AXIS S9302 | IoT |
 | EAS - Clair Emergency Announce, Command Control Unit | EAS - Command Unit | IoT |
 | EAS - Clair Emergency Announce, Read Only Tablet | EAS - Laptop | IoT |
 | EAS - Clair Emergency Announce, Trigger Box | EAS - Trigger Box | IoT |
+| Emergency Announce - Command Control Unit | EAS - Command Unit | IoT |
+| Emergency Announce - Trigger Box | EAS - Trigger Box | IoT |
 | IPTV - IPTV Set-Top Box \(DMP\ | IPTV - BrightSign XT1144 | IoT |
 | IPTV - Low Latency IPTV Encoder | IPTV - BrightSign XT1144 | IoT |
 | Fiber Junction | INFRA - Fiber Patch Panel | Miscellaneous |

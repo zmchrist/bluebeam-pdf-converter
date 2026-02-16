@@ -345,10 +345,16 @@ class AnnotationReplacer:
                         skipped_subjects.append("(empty subject)")
                         continue
 
-                    # Delete legend annotations
-                    if "Legend" in bid_subject:
-                        logger.debug(f"Marking legend for deletion: {bid_subject}")
+                    # Delete legend and gear list annotations
+                    if "Legend" in bid_subject or "CLAIR GEAR LIST" in bid_subject:
+                        logger.debug(f"Marking for deletion: {bid_subject}")
                         annotations_to_delete.append(idx)
+                        continue
+
+                    # Preserve line annotations (e.g., P2P link lines) as-is
+                    annot_subtype = str(annot.get("/Subtype", ""))
+                    if annot_subtype == "/Line":
+                        logger.debug(f"Preserving line annotation: {bid_subject}")
                         continue
 
                     # Look up deployment subject
