@@ -759,6 +759,9 @@ def get_icon_config(subject: str) -> dict:
     """
     Get merged configuration for an icon (category defaults + icon overrides).
 
+    Checks JSON overrides file first. If found, returns that config directly.
+    Otherwise falls through to Python merge logic.
+
     Args:
         subject: Deployment subject name (e.g., "AP - Cisco MR36H")
 
@@ -770,6 +773,15 @@ def get_icon_config(subject: str) -> dict:
         - category: Category name
         Returns empty dict if subject not found in configuration.
     """
+    # Check JSON overrides first (lazy import to avoid circular deps)
+    from app.services.icon_override_store import IconOverrideStore
+    from app.config import settings
+
+    store = IconOverrideStore(settings.icon_overrides_file)
+    json_config = store.get_icon(subject)
+    if json_config:
+        return json_config
+
     category = ICON_CATEGORIES.get(subject)
     if not category:
         return {}

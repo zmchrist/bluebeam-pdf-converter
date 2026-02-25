@@ -1,0 +1,3836 @@
+{
+  "_meta": {
+    "version": 1,
+    "last_modified": "2026-02-24T23:35:39.469833+00:00"
+  },
+  "icons": {
+    "AP - Cisco MR36H": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "CISCO",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "APs/AP - Cisco MR36H.png",
+      "category": "APs",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "AP - Cisco 9120": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "CISCO",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "image_path": "APs/AP - Cisco 9120.png",
+      "category": "APs",
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "AP - Cisco 9166I": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "CISCO",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "APs/AP - Cisco 9166.png",
+      "category": "APs",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "AP - Cisco 9166D": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "CISCO",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "image_path": "APs/AP - Cisco 9166.png",
+      "category": "APs",
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "AP - Cisco MR78": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "CISCO",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "image_path": "APs/AP - Cisco MR78.png",
+      "category": "APs",
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "AP - Cisco DB10": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "CISCO",
+      "brand_font_size": 3.9,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "image_path": "APs/AP - DB10.png",
+      "category": "APs",
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "SW - Cisco Micro 4P": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "CISCO",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Switches/Cisco Micro 4-P.png",
+      "category": "Switches",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "SW - Cisco 9200 12P": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "CISCO",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "image_path": "Switches/Cisco 9200 12-P.png",
+      "category": "Switches",
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "SW - IDF Cisco 9300 24X": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "IDF 6U",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "img_y_offset": 0.0,
+      "img_x_offset": 0.0,
+      "model_text_override": "9300 24X",
+      "image_path": "Switches/IDF.png",
+      "category": "Switches",
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "DIST - Mini NOC": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Switches/Mini NOC.png",
+      "category": "Switches",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "DIST - Micro NOC": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Switches/Mini NOC.png",
+      "category": "Switches",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "DIST - Standard NOC": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Switches/NOC.png",
+      "category": "Switches",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "DIST - Pelican NOC": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Switches/NOC.png",
+      "category": "Switches",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "DIST - MikroTik Hex": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "MIKROTIK",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Switches/MikroTik Hex.png",
+      "category": "Switches",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "DIST - Starlink": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "STARLINK",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Switches/Starlink.png",
+      "category": "Switches",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "DIST - Cisco MX": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "CISCO",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Switches/Cisco MX.png",
+      "category": "Switches",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "DIST - Fortinet FortiGate": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "FORTINET",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Switches/Fortinet FortiGate.png",
+      "category": "Switches",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "DIST - Mega NOC": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Switches/NOC.png",
+      "category": "Switches",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "SW - 1G 60W PoE Extender": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Switches/1x4 PoE Extender.png",
+      "category": "Switches",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "SW - 1G PoE+ Injectors": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Switches/48V PoE Injector.png",
+      "category": "Switches",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "SW - 1G PoE+ Media Converter": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Switches/Media Converter.png",
+      "category": "Switches",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "SW - Cisco 9300 12X36M": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "CISCO",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Switches/Cisco 9300 24-P.png",
+      "category": "Switches",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "SW - Cisco 9300X 24X": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "CISCO",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Switches/Cisco 9300 24-P.png",
+      "category": "Switches",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "SW - Cisco 9300X 24Y": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "CISCO",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Switches/Cisco 9300 24-P.png",
+      "category": "Switches",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "SW - Cisco 9500 48Y4C": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "CISCO",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Switches/Cisco 9500 48-P.png",
+      "category": "Switches",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "SW - Fortinet 108F 8P": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "FORTINET",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Switches/Fortinet 108F 8-P.png",
+      "category": "Switches",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "SW - IDF Cisco 9300 12X36M": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "IDF 6U",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "img_y_offset": 0.0,
+      "img_x_offset": 0.0,
+      "model_text_override": "9300 12X36M",
+      "image_path": "Switches/IDF.png",
+      "category": "Switches",
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "SW - IDF Cisco 9300X 24X": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "IDF 6U",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "img_y_offset": 0.0,
+      "img_x_offset": 0.0,
+      "model_text_override": "9300X 24X",
+      "image_path": "Switches/IDF.png",
+      "category": "Switches",
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "SW - IDF Cisco 9300X 24Y": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "IDF 6U",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "img_y_offset": 0.0,
+      "img_x_offset": 0.0,
+      "model_text_override": "9300X 24Y",
+      "image_path": "Switches/IDF.png",
+      "category": "Switches",
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "SW - IDF Cisco 9500 48Y4C": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "IDF 6U",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "img_y_offset": 0.0,
+      "img_x_offset": 0.0,
+      "model_text_override": "9500 48Y4C",
+      "image_path": "Switches/IDF.png",
+      "category": "Switches",
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "SW - Raspberry Pi": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Switches/Raspberry Pi.png",
+      "category": "Switches",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "P2P - Ubiquiti NanoBeam": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "UBIQUITI",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "P2Ps/P2P - Ubiquiti NanoBeam.png",
+      "category": "P2Ps",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "P2P - Ubiquiti LiteAP": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "UBIQUITI",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "P2Ps/P2P - Ubiquiti LiteAP AC.png",
+      "category": "P2Ps",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "P2P - Ubiquiti GigaBeam": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "UBIQUITI",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "P2Ps/P2P - Ubiquiti GigaBeam.png",
+      "category": "P2Ps",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "P2P - Ubiquiti GigaBeam LR": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "UBIQUITI",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "P2Ps/P2P - Ubiquiti GigaBeam LR.png",
+      "category": "P2Ps",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "P2P - Ubiquiti Wave AP Micro": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "UBIQUITI",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "P2Ps/P2P - Ubiquiti Wave AP Micro.png",
+      "category": "P2Ps",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "P2P - Ubiquiti Wave Nano": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "UBIQUITI",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "P2Ps/P2P - Ubiquiti Wave Nano.png",
+      "category": "P2Ps",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "P2P - Ubiquiti Wave Pico": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "UBIQUITI",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "P2Ps/P2P - Ubiquiti Wave Pico.png",
+      "category": "P2Ps",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "VOIP - Yealink T29G": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "YEALINK",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Misc/Yealink T29G.png",
+      "category": "IoT",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "VOIP - Yealink CP965": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "YEALINK",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Misc/Yealink P965.png",
+      "category": "IoT",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "CCTV - AXIS P5655-E": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "AXIS",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Misc/AXIS P5655-E.png",
+      "category": "Cameras",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "CCTV - AXIS S9302": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "AXIS",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Misc/AXIS S9302 Workstation.png",
+      "category": "Cameras",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "EAS - Command Unit": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Misc/Emergency Announce Command Unit.png",
+      "category": "IoT",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "EAS - Laptop": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Misc/EAS Laptop.png",
+      "category": "IoT",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "EAS - Trigger Box": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Misc/Emergency Announce Trigger Box.png",
+      "category": "IoT",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "IPTV - BrightSign XT1144": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "BRIGHTSIGN",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Misc/Brightsign XT1144.png",
+      "category": "IoT",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "CCTV - AXIS M5526-E": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "AXIS",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Misc/AXIS M5526-E.png",
+      "category": "Cameras",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "CCTV - Cisco MV93X": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "CISCO",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "image_path": "Misc/MV93X.png",
+      "category": "Cameras",
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "SEN - Meraki MT15": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "MERAKI",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Misc/Meraki MT15.png",
+      "category": "IoT",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "SEN - Meraki MT40": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "MERAKI",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Misc/Meraki MT40.png",
+      "category": "IoT",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "HL - Artist": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "img_y_offset": 0.0,
+      "brand_text": "CAT6",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.5,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "model_uppercase": false,
+      "image_path": "Hardlines/CAT6 Cable.png",
+      "category": "Hardlines",
+      "img_x_offset": 0.0,
+      "model_text_override": null,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "HL - Production": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "img_y_offset": 0.0,
+      "brand_text": "CAT6",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.5,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "model_uppercase": false,
+      "image_path": "Hardlines/CAT6 Cable.png",
+      "category": "Hardlines",
+      "img_x_offset": 0.0,
+      "model_text_override": null,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "HL - PoS": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "img_y_offset": 0.0,
+      "brand_text": "CAT6",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.5,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "model_uppercase": false,
+      "image_path": "Hardlines/CAT6 Cable.png",
+      "category": "Hardlines",
+      "img_x_offset": 0.0,
+      "model_text_override": null,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "HL - Access Control": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "img_y_offset": 0.0,
+      "brand_text": "CAT6",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.5,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "model_uppercase": false,
+      "image_path": "Hardlines/CAT6 Cable.png",
+      "category": "Hardlines",
+      "img_x_offset": 0.0,
+      "model_text_override": null,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "HL - Sponsor": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "img_y_offset": 0.0,
+      "brand_text": "CAT6",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.5,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "model_uppercase": false,
+      "image_path": "Hardlines/CAT6 Cable.png",
+      "category": "Hardlines",
+      "img_x_offset": 0.0,
+      "model_text_override": null,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "HL - General Internet": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "img_y_offset": 0.0,
+      "brand_text": "CAT6",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.5,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "model_uppercase": false,
+      "model_text_override": "GENERAL\nINTERNET",
+      "image_path": "Hardlines/CAT6 Cable.png",
+      "category": "Hardlines",
+      "img_x_offset": 0.0,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "HL - Audio": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "img_y_offset": 0.0,
+      "brand_text": "CAT6",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.5,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "model_uppercase": false,
+      "image_path": "Hardlines/CAT6 Cable.png",
+      "category": "Hardlines",
+      "img_x_offset": 0.0,
+      "model_text_override": null,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "HL - Emergency Announce System": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "img_y_offset": 0.0,
+      "brand_text": "CAT6",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.5,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "model_uppercase": false,
+      "model_text_override": "EAS",
+      "image_path": "Hardlines/CAT6 Cable.png",
+      "category": "Hardlines",
+      "img_x_offset": 0.0,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "HL - WAN": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "img_y_offset": 0.0,
+      "brand_text": "CAT6",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.5,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "model_uppercase": false,
+      "image_path": "Hardlines/CAT6 Cable.png",
+      "category": "Hardlines",
+      "img_x_offset": 0.0,
+      "model_text_override": null,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "HL -": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "img_y_offset": 0.0,
+      "brand_text": "CAT6",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.5,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "model_uppercase": false,
+      "image_path": "Hardlines/CAT6 Cable.png",
+      "category": "Hardlines",
+      "img_x_offset": 0.0,
+      "model_text_override": null,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "HL - CCTV": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "img_y_offset": 0.0,
+      "brand_text": "CAT6",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.5,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "model_uppercase": false,
+      "image_path": "Hardlines/CAT6 Cable.png",
+      "category": "Hardlines",
+      "img_x_offset": 0.0,
+      "model_text_override": null,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "HL - Clair": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "img_y_offset": 0.0,
+      "brand_text": "CAT6",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.5,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "model_uppercase": false,
+      "image_path": "Hardlines/CAT6 Cable.png",
+      "category": "Hardlines",
+      "img_x_offset": 0.0,
+      "model_text_override": null,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "HL - IPTV": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "img_y_offset": 0.0,
+      "brand_text": "CAT6",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.5,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "model_uppercase": false,
+      "image_path": "Hardlines/CAT6 Cable.png",
+      "category": "Hardlines",
+      "img_x_offset": 0.0,
+      "model_text_override": null,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "HL - Lighting": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "img_y_offset": 0.0,
+      "brand_text": "CAT6",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.5,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "model_uppercase": false,
+      "image_path": "Hardlines/CAT6 Cable.png",
+      "category": "Hardlines",
+      "img_x_offset": 0.0,
+      "model_text_override": null,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "HL - Media": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "img_y_offset": 0.0,
+      "brand_text": "CAT6",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.5,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "model_uppercase": false,
+      "image_path": "Hardlines/CAT6 Cable.png",
+      "category": "Hardlines",
+      "img_x_offset": 0.0,
+      "model_text_override": null,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "HL - Radios": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "img_y_offset": 0.0,
+      "brand_text": "CAT6",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.5,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "model_uppercase": false,
+      "image_path": "Hardlines/CAT6 Cable.png",
+      "category": "Hardlines",
+      "img_x_offset": 0.0,
+      "model_text_override": null,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "HL - Streaming": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "img_y_offset": 0.0,
+      "brand_text": "CAT6",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.5,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "model_uppercase": false,
+      "image_path": "Hardlines/CAT6 Cable.png",
+      "category": "Hardlines",
+      "img_x_offset": 0.0,
+      "model_text_override": null,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "HL - Video": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "img_y_offset": 0.0,
+      "brand_text": "CAT6",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.5,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "model_uppercase": false,
+      "image_path": "Hardlines/CAT6 Cable.png",
+      "category": "Hardlines",
+      "img_x_offset": 0.0,
+      "model_text_override": null,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "HL - LC SM": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "img_y_offset": 0.0,
+      "brand_text": "FIBER",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.5,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "model_uppercase": false,
+      "image_path": "Hardlines/LC SM.png",
+      "category": "Hardlines",
+      "img_x_offset": 0.0,
+      "model_text_override": null,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "HL - SC SM": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "img_y_offset": 0.0,
+      "brand_text": "FIBER",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.5,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "model_uppercase": false,
+      "image_path": "Hardlines/SC SM.png",
+      "category": "Hardlines",
+      "img_x_offset": 0.0,
+      "model_text_override": null,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "HL - ST SM": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "img_y_offset": 0.0,
+      "brand_text": "FIBER",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.5,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "model_uppercase": false,
+      "image_path": "Hardlines/ST SM.png",
+      "category": "Hardlines",
+      "img_x_offset": 0.0,
+      "model_text_override": null,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "FIBER": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "no_image": true,
+      "image_path": null,
+      "category": "Cables",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "INFRA - Fiber Patch Panel": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "no_image": true,
+      "image_path": null,
+      "category": "Misc",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "BOX - Dri Box": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Misc/Dri Box.png",
+      "category": "Boxes",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "BOX - Lock Box": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Misc/Lock Box.png",
+      "category": "Boxes",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "BOX - Patch Box": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Misc/Patch Box.png",
+      "category": "Boxes",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "BOX - Zarges Box": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Misc/Zarges Junction Box.png",
+      "category": "Boxes",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "BOX - Zarges XL Box": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Misc/Zarges XL Junction Box.png",
+      "category": "Boxes",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "PWR - EcoFlow Battery": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "ECOFLOW",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Misc/EcoFlow Battery.png",
+      "category": "Power",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "PWR - EcoFlow Solar Panel": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "ECOFLOW",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Misc/EcoFlow Solar Panel.png",
+      "category": "Power",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "PWR - Liebert UPS": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "LIEBERT",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Misc/Liebert UPS.png",
+      "category": "Power",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "PWR - Pinty Battery": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Misc/Pinty Battery.png",
+      "category": "Power",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "PWR - Quad Box": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Misc/Quad Box.png",
+      "category": "Power",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "INFRA - Conduit": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "no_image": true,
+      "image_path": "Misc/Conduit.png",
+      "category": "Misc",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "INFRA - Conduit Well": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "no_image": true,
+      "image_path": "Misc/Conduit Well.png",
+      "category": "Misc",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "MISC - Bike Rack": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.0,
+      "brand_text": "",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "no_image": true,
+      "image_path": "Misc/Bike Rack.png",
+      "category": "Misc",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": null,
+      "model_uppercase": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    },
+    "AP - Cisco Marlin 4": {
+      "circle_color": [
+        0.2157,
+        0.3412,
+        0.6431
+      ],
+      "circle_border_width": 0.75,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 5.3,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.32,
+      "brand_text": "CISCO",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "img_x_offset": -0.2,
+      "img_y_offset": 0.4,
+      "image_path": "APs/AP - Cisco Marlin 4.png",
+      "category": "APs",
+      "model_text_override": null,
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ]
+    }
+  }
+}

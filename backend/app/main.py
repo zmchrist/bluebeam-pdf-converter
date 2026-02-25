@@ -13,7 +13,7 @@ from datetime import datetime
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import upload, convert, download
+from app.routers import upload, convert, download, tuner
 from app.config import settings
 from app.services.file_manager import file_manager
 from app.services.mapping_parser import MappingParser
@@ -81,6 +81,7 @@ app.add_middleware(
 app.include_router(upload.router, prefix="/api", tags=["upload"])
 app.include_router(convert.router, prefix="/api", tags=["convert"])
 app.include_router(download.router, prefix="/api", tags=["download"])
+app.include_router(tuner.router, prefix="/api/tuner", tags=["tuner"])
 
 
 @app.get("/health")

@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Layout } from './components/layout/Layout';
 import { Card } from './components/ui/Card';
@@ -7,6 +8,7 @@ import { Alert } from './components/ui/Alert';
 import { DropZone, FileInfo, useUpload } from './features/upload';
 import { ConversionPanel, useConvert } from './features/convert';
 import { DownloadButton } from './features/download';
+import { IconTunerPage } from './features/tuner';
 import type { WorkflowStep, PDFUploadResponse, ConversionResponse, ConversionDirection } from './types';
 import { RefreshCw } from 'lucide-react';
 
@@ -188,7 +190,10 @@ function PDFConverter() {
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <PDFConverter />
+      <Routes>
+        <Route path="/" element={<PDFConverter />} />
+        <Route path="/tuner" element={<IconTunerPage />} />
+      </Routes>
     </QueryClientProvider>
   );
 }

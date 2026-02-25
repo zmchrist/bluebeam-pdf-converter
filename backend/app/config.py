@@ -44,6 +44,10 @@ class Settings(BaseSettings):
     samples_dir: Path = _PROJECT_ROOT / "samples"
     deployment_map_path: Path = _PROJECT_ROOT / "samples" / "maps" / "DeploymentMap.pdf"
 
+    # Tuner settings
+    icon_overrides_file: Path = _BACKEND_ROOT / "data" / "icon_overrides.json"
+    gear_icons_dir: Path = _PROJECT_ROOT / "samples" / "icons" / "gearIcons"
+
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
 
