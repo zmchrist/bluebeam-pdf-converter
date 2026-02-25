@@ -1,6 +1,32 @@
 # Bluebeam Conversion Project Memory
 
-**Last Updated:** February 24, 2026 (Icon Tuner Feature Complete)
+**Last Updated:** February 24, 2026 (Rendering Gap Fix - Canonical Coordinate Space)
+
+---
+
+## Session Update: 2026-02-24 (Late) - Fix Rendering Gap: Canonical Coordinate Space
+
+### Completed
+- Fixed visual fidelity gap between icon tuner preview and converted PDF output
+- Implemented canonical coordinate space (25x30) with PDF `cm` transform in icon_renderer.py
+
+### Root Cause
+The icon tuner always renders in a fixed `[0, 0, 25, 30]` coordinate space (25 wide, 30 tall). But real Bluebeam stamp annotations are **square** (~22.9x22.9 or ~14.6x14.6). The icon renderer was drawing directly in the annotation's coordinate space, so config parameters (font sizes, border widths, offsets) produced different visual proportions depending on annotation rect size.
+
+### Solution
+All icon content now renders in canonical `[0, 0, 25, 30]` space (matching the tuner), then uses a PDF `cm` (concatenate matrix) operator to uniformly scale and center the content within the actual annotation rect:
+- `render_scale = min(rect_width / 25, rect_height / 30)` — uniform scale
+- Content centered with `(rect_size - canonical_size * scale) / 2` offset
+- All drawing commands wrapped in `q` / `cm` / ... / `Q`
+
+### Files Modified
+- `backend/app/services/icon_renderer.py` — `_create_appearance_stream()` layout section replaced
+
+### Test Results
+- **170 passed, 6 failed (all known), 11 skipped** — no regressions
+
+### Status
+**Rendering gap fix COMPLETE.** Tuner preview and converted PDF output now use identical coordinate space.
 
 ---
 
@@ -48,11 +74,11 @@
 - `frontend/src/lib/tunerApi.ts` - Tuner API client
 - `frontend/src/types/tuner.ts` - TypeScript interfaces
 
-### Known Issue: Visual Fidelity Gap
-Icons in converted PDFs don't look identical to how they appear in the icon tuner canvas preview. The tuner uses HTML5 Canvas drawing while the PDF renderer uses pypdf appearance streams — coordinate systems, scaling, and rendering differ. **Next task: investigate and fix this gap.**
+### Known Issue: Visual Fidelity Gap — RESOLVED (2026-02-24)
+Icons in converted PDFs didn't match icon tuner canvas preview due to coordinate space mismatch. **Fixed** by implementing canonical 25x30 coordinate space with PDF `cm` transform in `icon_renderer.py`.
 
 ### Status
-**Icon Tuner COMPLETE.** Next: fix icon rendering fidelity in converted PDFs.
+**Icon Tuner COMPLETE.** Rendering gap fixed — tuner and PDF output now use identical coordinate space.
 
 ---
 

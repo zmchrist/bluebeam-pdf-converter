@@ -88,6 +88,15 @@ export function FrameProperties({ config, onConfigChange, onApplyToAll }: FrameP
         </div>
         {idBoxOpen && (
           <div className="px-3 pb-2 space-y-1.5">
+            <label className="flex items-center gap-2 text-xs text-gray-700 dark:text-gray-300">
+              <input
+                type="checkbox"
+                checked={config.no_id_box}
+                onChange={e => onConfigChange({ no_id_box: e.target.checked }, e.target.checked ? 'Hide ID box' : 'Show ID box')}
+                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              Hide ID Box
+            </label>
             <NumericInput
               label="Height"
               value={config.id_box_height}
@@ -95,6 +104,7 @@ export function FrameProperties({ config, onConfigChange, onApplyToAll }: FrameP
               min={1}
               max={10}
               step={0.1}
+              disabled={config.no_id_box}
             />
             <NumericInput
               label="Width Ratio"
@@ -103,6 +113,7 @@ export function FrameProperties({ config, onConfigChange, onApplyToAll }: FrameP
               min={0.1}
               max={1}
               step={0.01}
+              disabled={config.no_id_box}
             />
             <NumericInput
               label="Border Width"
@@ -111,6 +122,16 @@ export function FrameProperties({ config, onConfigChange, onApplyToAll }: FrameP
               min={0}
               max={3}
               step={0.05}
+              disabled={config.no_id_box}
+            />
+            <NumericInput
+              label="Y-Offset"
+              value={config.id_box_y_offset}
+              onChange={v => onConfigChange({ id_box_y_offset: v }, 'Change ID box Y offset')}
+              min={-10}
+              max={10}
+              step={0.5}
+              disabled={config.no_id_box}
             />
             <NumericInput
               label="Font Size"
@@ -119,6 +140,7 @@ export function FrameProperties({ config, onConfigChange, onApplyToAll }: FrameP
               min={1}
               max={10}
               step={0.1}
+              disabled={config.no_id_box}
             />
           </div>
         )}

@@ -9,7 +9,7 @@ import { FrameProperties } from '../components/FrameProperties';
 import { LayerStackPanel } from '../components/LayerStackPanel';
 import { ApplyToAllModal } from '../components/ApplyToAllModal';
 import { Toolbar } from '../components/Toolbar';
-import { useIconList, useIconConfig, useSaveIcon, useDeleteIcon } from '../hooks/useIconConfig';
+import { useIconList, useIconConfig, useSaveIcon } from '../hooks/useIconConfig';
 import { useHistory } from '../hooks/useHistory';
 import { useApplyToAll } from '../hooks/useApplyToAll';
 
@@ -36,7 +36,6 @@ export function IconTunerPage() {
   const iconListQuery = useIconList();
   const iconConfigQuery = useIconConfig(currentSubject);
   const saveIconMutation = useSaveIcon();
-  const deleteIconMutation = useDeleteIcon();
   const applyToAllMutation = useApplyToAll();
 
   const [applyModalOpen, setApplyModalOpen] = useState(false);
@@ -83,18 +82,13 @@ export function IconTunerPage() {
     }
   }, [config, currentSubject, saveIconMutation]);
 
-  const handleReset = useCallback(async () => {
-    if (!currentSubject) return;
-    try {
-      await deleteIconMutation.mutateAsync(currentSubject);
-      // Refetch to get Python defaults
-      iconConfigQuery.refetch();
-      setSuccessMessage('Reset to defaults');
-      setTimeout(() => setSuccessMessage(null), 3000);
-    } catch (err) {
-      setErrorMessage(err instanceof Error ? err.message : 'Reset failed');
-    }
-  }, [currentSubject, deleteIconMutation, iconConfigQuery]);
+  const handleReset = useCallback(() => {
+    if (!currentSubject || !savedConfig) return;
+    setConfig(savedConfig);
+    history.reset(savedConfig);
+    setSuccessMessage('Reset to last saved state');
+    setTimeout(() => setSuccessMessage(null), 3000);
+  }, [currentSubject, savedConfig, history]);
 
   const handleUndo = useCallback(() => {
     const prev = history.undo();
@@ -126,6 +120,8 @@ export function IconTunerPage() {
       request.id_box_height = config.id_box_height;
       request.id_box_width_ratio = config.id_box_width_ratio;
       request.id_box_border_width = config.id_box_border_width;
+      request.id_box_y_offset = config.id_box_y_offset;
+      request.no_id_box = config.no_id_box;
       request.id_font_size = config.id_font_size;
     } else if (applyFieldGroup === 'gear_image') {
       request.img_scale_ratio = config.img_scale_ratio;

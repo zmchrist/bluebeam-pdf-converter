@@ -94,6 +94,8 @@ class IconOverrideStore:
                 config.setdefault("model_text_override", None)
                 config.setdefault("model_uppercase", False)
                 config.setdefault("no_image", False)
+                config.setdefault("id_box_y_offset", 0.0)
+                config.setdefault("no_id_box", False)
                 config.setdefault("layer_order", ["gear_image", "brand_text", "model_text"])
                 result[subject] = config
 
@@ -138,17 +140,17 @@ class IconOverrideStore:
         """
         Build a complete config by merging partial updates onto the current config.
 
-        If the subject exists in Python config, start from that base.
+        Priority: JSON override (current state) > Python config > category defaults.
         Apply partial updates on top.
         """
-        # Get base config
-        base = get_icon_config(subject)
-        if not base:
-            # Check JSON for custom icon
-            existing = self.get_icon(subject)
-            if existing:
-                base = existing.copy()
-            else:
+        # Check JSON override first - this is the current tuned state
+        existing_json = self.get_icon(subject)
+        if existing_json:
+            base = existing_json.copy()
+        else:
+            # Fall back to Python config
+            base = get_icon_config(subject)
+            if not base:
                 # New icon - use category defaults if category provided
                 category = partial.get("category", "Misc")
                 base = CATEGORY_DEFAULTS.get(category, CATEGORY_DEFAULTS["Misc"]).copy()
@@ -161,6 +163,8 @@ class IconOverrideStore:
         base.setdefault("model_text_override", None)
         base.setdefault("model_uppercase", False)
         base.setdefault("no_image", False)
+        base.setdefault("id_box_y_offset", 0.0)
+        base.setdefault("no_id_box", False)
         base.setdefault("layer_order", ["gear_image", "brand_text", "model_text"])
 
         # Apply partial updates (skip None values)

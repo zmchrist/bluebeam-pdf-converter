@@ -7,6 +7,8 @@ export const DEFAULT_CONFIG: Omit<IconConfig, 'subject' | 'category' | 'source'>
   id_box_height: 2.3,
   id_box_width_ratio: 0.41,
   id_box_border_width: 0.35,
+  id_box_y_offset: 0,
+  no_id_box: false,
   id_font_size: 3.9,
   img_scale_ratio: 0.70,
   img_x_offset: 0,
@@ -26,4 +28,5 @@ export const DEFAULT_CONFIG: Omit<IconConfig, 'subject' | 'category' | 'source'>
   no_image: false,
   image_path: null,
   layer_order: ['gear_image', 'brand_text', 'model_text'],
+  id_preview: 'j100',
 };

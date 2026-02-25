@@ -63,7 +63,11 @@ export interface LayoutResult {
   modelText: { x: number; y: number; lines: string[] } | null;
 }
 
-export function calculateLayout(config: IconConfig, modelText: string): LayoutResult {
+export function calculateLayout(
+  config: IconConfig,
+  modelText: string,
+  imageSize?: { w: number; h: number },
+): LayoutResult {
   // Mirror _create_appearance_stream layout logic
   const rect = [0, 0, PDF_WIDTH, PDF_HEIGHT]; // [x1, y1, x2, y2]
   const x1 = rect[0], y1 = rect[1], x2 = rect[2], y2 = rect[3];
@@ -73,8 +77,9 @@ export function calculateLayout(config: IconConfig, modelText: string): LayoutRe
   const idBoxWidthRatio = config.id_box_width_ratio;
   const idBoxWidth = width * idBoxWidthRatio;
   const pdfCx = (x1 + x2) / 2;
+  const idBoxYOffset = config.id_box_y_offset || 0;
   const idBoxX1 = pdfCx - idBoxWidth / 2;
-  const idBoxY1 = y2 - idBoxHeight; // PDF Y of bottom of ID box
+  const idBoxY1 = y2 - idBoxHeight + idBoxYOffset; // PDF Y of bottom of ID box
 
   // Circle overlaps into ID box by 2 PDF units
   const circleTop = idBoxY1 + 2;
@@ -96,20 +101,32 @@ export function calculateLayout(config: IconConfig, modelText: string): LayoutRe
     height: toCanvasSize(idBoxHeight),
   };
 
-  // Image
+  // Image - match PDF renderer's aspect-ratio-aware scaling
   let image: LayoutResult['image'] = null;
   if (config.image_path && !config.no_image) {
     const imgScaleRatio = config.img_scale_ratio;
-    // Approximate: assume square image
-    const imgSize = radius * imgScaleRatio;
-    const imgDrawSize = toCanvasSize(imgSize);
     const imgXOffset = config.img_x_offset || 0;
     const imgYOffset = config.img_y_offset || 0;
+
+    let imgDrawW: number;
+    let imgDrawH: number;
+    if (imageSize && imageSize.w > 0 && imageSize.h > 0) {
+      // Use actual aspect ratio (matches icon_renderer.py lines 284-286)
+      const imgScale = (radius * imgScaleRatio) / Math.max(imageSize.w, imageSize.h);
+      imgDrawW = toCanvasSize(imageSize.w * imgScale);
+      imgDrawH = toCanvasSize(imageSize.h * imgScale);
+    } else {
+      // Fallback: assume square
+      const imgSize = radius * imgScaleRatio;
+      imgDrawW = toCanvasSize(imgSize);
+      imgDrawH = toCanvasSize(imgSize);
+    }
+
     image = {
-      x: cx - imgDrawSize / 2 + toCanvasSize(imgXOffset),
-      y: cy - imgDrawSize / 2 - toCanvasSize(imgYOffset), // Flip Y offset
-      width: imgDrawSize,
-      height: imgDrawSize,
+      x: cx - imgDrawW / 2 + toCanvasSize(imgXOffset),
+      y: cy - imgDrawH / 2 - toCanvasSize(imgYOffset), // Flip Y offset
+      width: imgDrawW,
+      height: imgDrawH,
     };
   }
 
@@ -168,7 +185,10 @@ export function drawIcon(
 ) {
   const modelText = getModelText(config);
   const displayModel = config.model_uppercase ? modelText.toUpperCase() : modelText;
-  const layout = calculateLayout(config, displayModel);
+  const imageSize = gearImage && gearImage.naturalWidth > 0
+    ? { w: gearImage.naturalWidth, h: gearImage.naturalHeight }
+    : undefined;
+  const layout = calculateLayout(config, displayModel, imageSize);
 
   // 1. Draw circle
   ctx.beginPath();
@@ -192,29 +212,31 @@ export function drawIcon(
     ctx.setLineDash([]);
   }
 
-  // 2. Draw ID box
-  const { idBox } = layout;
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(idBox.x, idBox.y, idBox.width, idBox.height);
-  ctx.strokeStyle = '#000000';
-  ctx.lineWidth = toCanvasSize(config.id_box_border_width);
-  ctx.strokeRect(idBox.x, idBox.y, idBox.width, idBox.height);
+  // 2. Draw ID box (unless hidden)
+  if (!config.no_id_box) {
+    const { idBox } = layout;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(idBox.x, idBox.y, idBox.width, idBox.height);
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth = toCanvasSize(config.id_box_border_width);
+    ctx.strokeRect(idBox.x, idBox.y, idBox.width, idBox.height);
 
-  // ID box text
-  const idTextColor = config.id_text_color || config.circle_color;
-  ctx.fillStyle = rgbToCSS(idTextColor);
-  ctx.font = `bold ${toCanvasSize(config.id_font_size)}px Helvetica, Arial, sans-serif`;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('j100', idBox.x + idBox.width / 2, idBox.y + idBox.height / 2);
+    // ID box text
+    const idTextColor = config.id_text_color || config.circle_color;
+    ctx.fillStyle = rgbToCSS(idTextColor);
+    ctx.font = `bold ${toCanvasSize(config.id_font_size)}px Helvetica, Arial, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(config.id_preview || 'j100', idBox.x + idBox.width / 2, idBox.y + idBox.height / 2);
 
-  // Selection highlight for ID box
-  if (selectedElement === 'id_box') {
-    ctx.strokeStyle = '#3b82f6';
-    ctx.lineWidth = 2;
-    ctx.setLineDash([6, 3]);
-    ctx.strokeRect(idBox.x - 3, idBox.y - 3, idBox.width + 6, idBox.height + 6);
-    ctx.setLineDash([]);
+    // Selection highlight for ID box
+    if (selectedElement === 'id_box') {
+      ctx.strokeStyle = '#3b82f6';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([6, 3]);
+      ctx.strokeRect(idBox.x - 3, idBox.y - 3, idBox.width + 6, idBox.height + 6);
+      ctx.setLineDash([]);
+    }
   }
 
   // 3. Draw layers in configured order

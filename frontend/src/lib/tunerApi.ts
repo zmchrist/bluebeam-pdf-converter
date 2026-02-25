@@ -102,22 +102,4 @@ export async function applyToAll(request: ApplyToAllRequest): Promise<ApplyToAll
   }
 }
 
-export async function renderTestPdf(
-  subject: string,
-  idLabel: string = 'j100',
-): Promise<Blob> {
-  try {
-    const response = await api.post(
-      '/api/tuner/render-pdf',
-      null,
-      {
-        params: { subject, id_label: idLabel },
-        responseType: 'blob',
-        timeout: 15000,
-      },
-    );
-    return response.data;
-  } catch (error) {
-    handleError(error);
-  }
-}
+

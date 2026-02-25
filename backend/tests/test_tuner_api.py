@@ -139,16 +139,3 @@ def test_list_gear_images_by_category(client):
         assert item["category"] == "APs"
 
 
-def test_render_pdf(client):
-    resp = client.post(
-        "/api/tuner/render-pdf?subject=AP%20-%20Cisco%20MR36H&id_label=j100"
-    )
-    assert resp.status_code == 200
-    assert resp.headers["content-type"] == "image/png"
-    # Check PNG magic bytes
-    assert resp.content[:4] == b"\x89PNG"
-
-
-def test_render_pdf_not_found(client):
-    resp = client.post("/api/tuner/render-pdf?subject=Nonexistent")
-    assert resp.status_code == 404

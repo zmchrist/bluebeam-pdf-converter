@@ -48,45 +48,46 @@ export function CanvasEditor({
   };
 
   return (
-    <div className="relative bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-      <canvas
-        ref={canvasRef}
-        width={CANVAS_WIDTH}
-        height={CANVAS_HEIGHT}
-        className="w-full"
-        style={{ maxHeight: '700px' }}
-        onMouseDown={onMouseDown}
-        onMouseMove={onMouseMove}
-        onMouseUp={onMouseUp}
-        onMouseLeave={onMouseUp}
-        onWheel={onWheel}
-      />
-      {/* Zoom controls */}
-      <div className="absolute bottom-3 right-3 flex items-center gap-1 bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 p-1">
-        <button
-          onClick={() => handleZoom(1.2)}
-          className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
-          title="Zoom in"
-        >
-          <ZoomIn className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-        </button>
-        <span className="text-xs text-gray-500 dark:text-gray-400 px-1 min-w-[3rem] text-center">
-          {Math.round(canvasState.zoom * 100)}%
-        </span>
-        <button
-          onClick={() => handleZoom(0.8)}
-          className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
-          title="Zoom out"
-        >
-          <ZoomOut className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-        </button>
-        <button
-          onClick={handleFit}
-          className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
-          title="Fit to view"
-        >
-          <Maximize className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-        </button>
+    <div className="flex justify-center">
+      <div className="relative bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden inline-block">
+        <canvas
+          ref={canvasRef}
+          width={CANVAS_WIDTH}
+          height={CANVAS_HEIGHT}
+          style={{ width: CANVAS_WIDTH, height: CANVAS_HEIGHT }}
+          onMouseDown={onMouseDown}
+          onMouseMove={onMouseMove}
+          onMouseUp={onMouseUp}
+          onMouseLeave={onMouseUp}
+          onWheel={onWheel}
+        />
+        {/* Zoom controls */}
+        <div className="absolute bottom-3 right-3 flex items-center gap-1 bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 p-1">
+          <button
+            onClick={() => handleZoom(1.2)}
+            className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+            title="Zoom in"
+          >
+            <ZoomIn className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+          </button>
+          <span className="text-xs text-gray-500 dark:text-gray-400 px-1 min-w-[3rem] text-center">
+            {Math.round(canvasState.zoom * 100)}%
+          </span>
+          <button
+            onClick={() => handleZoom(0.8)}
+            className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+            title="Zoom out"
+          >
+            <ZoomOut className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+          </button>
+          <button
+            onClick={handleFit}
+            className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+            title="Fit to view"
+          >
+            <Maximize className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+          </button>
+        </div>
       </div>
     </div>
   );

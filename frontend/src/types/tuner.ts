@@ -11,6 +11,8 @@ export interface IconConfig {
   id_box_height: number;
   id_box_width_ratio: number;
   id_box_border_width: number;
+  id_box_y_offset: number;
+  no_id_box: boolean;
   id_font_size: number;
   img_scale_ratio: number;
   img_x_offset: number;
@@ -30,6 +32,7 @@ export interface IconConfig {
   no_image: boolean;
   image_path: string | null;
   layer_order: LayerId[];
+  id_preview: string;
   source: 'python' | 'json_override' | 'custom';
 }
 
@@ -73,6 +76,8 @@ export interface ApplyToAllRequest {
   id_box_height?: number;
   id_box_width_ratio?: number;
   id_box_border_width?: number;
+  id_box_y_offset?: number;
+  no_id_box?: boolean;
   id_font_size?: number;
   img_scale_ratio?: number;
   img_x_offset?: number;

@@ -9,7 +9,7 @@ interface IconSelectorProps {
   onSelect: (subject: string) => void;
 }
 
-const ALL_CATEGORIES = ['All', 'APs', 'Switches', 'P2Ps', 'Hardlines', 'IoT', 'Cameras', 'Cables', 'Misc', 'Power', 'Boxes'];
+const ALL_CATEGORIES = ['All', 'APs', 'Switches', 'P2Ps', 'Hardlines', 'IoT', 'Cameras', 'Misc', 'Power', 'Boxes'];
 
 export function IconSelector({ icons, isLoading, currentSubject, onSelect }: IconSelectorProps) {
   const [category, setCategory] = useState('All');
@@ -37,7 +37,16 @@ export function IconSelector({ icons, isLoading, currentSubject, onSelect }: Ico
         {ALL_CATEGORIES.map(cat => (
           <button
             key={cat}
-            onClick={() => setCategory(cat)}
+            onClick={() => {
+              setCategory(cat);
+              // Auto-select first icon in the category
+              const catIcons = cat === 'All'
+                ? [...icons].sort((a, b) => a.subject.localeCompare(b.subject))
+                : icons.filter(i => i.category === cat).sort((a, b) => a.subject.localeCompare(b.subject));
+              if (catIcons.length > 0) {
+                onSelect(catIcons[0].subject);
+              }
+            }}
             className={`px-2.5 py-1 text-xs rounded-md transition-colors ${
               category === cat
                 ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 font-medium'

@@ -7,7 +7,6 @@ from urllib.parse import unquote
 
 from fastapi import APIRouter, HTTPException, Response
 from PIL import Image as PILImage
-from pypdf import PdfWriter
 
 from app.config import settings
 from app.models.tuner import (
@@ -22,10 +21,10 @@ from app.models.tuner import (
 from app.services.icon_config import (
     CATEGORY_DEFAULTS,
     ICON_CATEGORIES,
+    ID_PREFIX_CONFIG,
     get_icon_config,
 )
 from app.services.icon_override_store import IconOverrideStore
-from app.services.icon_renderer import IconRenderer
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -47,6 +46,19 @@ def _decode_subject(subject: str) -> str:
     return unquote(subject)
 
 
+def _get_id_preview(subject: str) -> str:
+    """Get the ID preview string for a subject from ID_PREFIX_CONFIG."""
+    config = ID_PREFIX_CONFIG.get(subject)
+    if not config:
+        return "j100"
+    prefix = config["prefix"]
+    start = config["start"]
+    fmt = config.get("format", "prefix_first")
+    if fmt == "number_first":
+        return f"{start}{prefix}"
+    return f"{prefix}{start}"
+
+
 # ─── Icon CRUD ───────────────────────────────────────────────────────
 
 
@@ -55,6 +67,8 @@ async def list_icons():
     """List all icons with merged configs (Python + JSON overrides)."""
     store = _get_store()
     configs = store.get_all_configs()
+    for c in configs:
+        c["id_preview"] = _get_id_preview(c["subject"])
     return [IconConfigResponse(**c) for c in configs]
 
 
@@ -105,6 +119,8 @@ async def apply_to_all(request: ApplyToAllRequest):
                 "id_box_height",
                 "id_box_width_ratio",
                 "id_box_border_width",
+                "id_box_y_offset",
+                "no_id_box",
                 "id_font_size",
             },
             exclude_none=True,
@@ -163,6 +179,7 @@ async def get_icon(subject: str):
     if json_config:
         json_config["subject"] = subject
         json_config["source"] = "json_override"
+        json_config["id_preview"] = _get_id_preview(subject)
         return IconConfigResponse(**json_config)
 
     # Fall back to Python config
@@ -177,7 +194,10 @@ async def get_icon(subject: str):
     config.setdefault("model_text_override", None)
     config.setdefault("model_uppercase", False)
     config.setdefault("no_image", False)
+    config.setdefault("id_box_y_offset", 0.0)
+    config.setdefault("no_id_box", False)
     config.setdefault("layer_order", ["gear_image", "brand_text", "model_text"])
+    config["id_preview"] = _get_id_preview(subject)
     return IconConfigResponse(**config)
 
 
@@ -196,6 +216,7 @@ async def save_icon(subject: str, update: IconConfigUpdateRequest):
     store.set_icon(subject, save_config)
 
     full_config["source"] = "json_override"
+    full_config["id_preview"] = _get_id_preview(subject)
     return IconConfigResponse(**full_config)
 
 
@@ -240,6 +261,8 @@ async def create_icon(request: IconConfigCreateRequest):
     base.setdefault("model_text_override", None)
     base.setdefault("model_uppercase", False)
     base.setdefault("no_image", False)
+    base.setdefault("id_box_y_offset", 0.0)
+    base.setdefault("no_id_box", False)
     base.setdefault("layer_order", ["gear_image", "brand_text", "model_text"])
 
     # Save (without transient fields)
@@ -248,6 +271,7 @@ async def create_icon(request: IconConfigCreateRequest):
 
     base["subject"] = subject
     base["source"] = "custom"
+    base["id_preview"] = _get_id_preview(subject)
     return IconConfigResponse(**base)
 
 
@@ -356,66 +380,3 @@ async def list_categories():
     return categories
 
 
-# ─── Render Test ─────────────────────────────────────────────────────
-
-
-@router.post("/render-pdf")
-async def render_test_pdf(
-    subject: str,
-    id_label: str = "j100",
-    size: int = 400,
-):
-    """Render icon to PDF then convert to PNG for preview."""
-    import fitz  # PyMuPDF
-
-    if size < 50 or size > 2000:
-        raise HTTPException(status_code=400, detail="Size must be between 50 and 2000")
-
-    store = _get_store()
-
-    # Get config (JSON override or Python)
-    json_config = store.get_icon(subject)
-    config = json_config if json_config else get_icon_config(subject)
-    if not config:
-        raise HTTPException(status_code=404, detail=f"Icon not found: {subject}")
-
-    # Check for image
-    image_path = config.get("image_path")
-    if not image_path or config.get("no_image"):
-        raise HTTPException(status_code=400, detail="Icon has no image to render")
-
-    full_image_path = settings.gear_icons_dir / image_path
-    # Security: validate path doesn't escape gear_icons_dir
-    try:
-        resolved_image = full_image_path.resolve()
-        resolved_image.relative_to(settings.gear_icons_dir.resolve())
-    except ValueError:
-        raise HTTPException(status_code=400, detail="Invalid image path")
-    if not resolved_image.exists():
-        raise HTTPException(status_code=400, detail=f"Image not found: {image_path}")
-
-    # Create PDF with icon
-    rect = [0, 0, 25, 30]
-    renderer = IconRenderer(settings.gear_icons_dir)
-    writer = PdfWriter()
-    writer.add_blank_page(width=25, height=30)
-
-    ap_ref = renderer.render_icon(writer, subject, rect, id_label)
-    if not ap_ref:
-        raise HTTPException(status_code=500, detail="Failed to render icon")
-
-    # Write PDF to bytes
-    pdf_buf = io.BytesIO()
-    writer.write(pdf_buf)
-    pdf_bytes = pdf_buf.getvalue()
-
-    # Convert to PNG with PyMuPDF
-    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
-    page = doc[0]
-    zoom = size / 30  # Scale to requested pixel size
-    mat = fitz.Matrix(zoom, zoom)
-    pix = page.get_pixmap(matrix=mat, alpha=False)
-    png_bytes = pix.tobytes("png")
-    doc.close()
-
-    return Response(content=png_bytes, media_type="image/png")

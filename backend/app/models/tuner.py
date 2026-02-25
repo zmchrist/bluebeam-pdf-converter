@@ -16,6 +16,8 @@ class IconConfigResponse(BaseModel):
     id_box_height: float
     id_box_width_ratio: float
     id_box_border_width: float
+    id_box_y_offset: float = 0.0
+    no_id_box: bool = False
     id_font_size: float
     img_scale_ratio: float
     img_x_offset: float = 0.0
@@ -35,6 +37,7 @@ class IconConfigResponse(BaseModel):
     no_image: bool = False
     image_path: str | None = None
     layer_order: list[str] = ["gear_image", "brand_text", "model_text"]
+    id_preview: str = "j100"
     source: str = "python"  # "python" | "json_override" | "custom"
 
 
@@ -48,6 +51,8 @@ class IconConfigUpdateRequest(BaseModel):
     id_box_height: float | None = None
     id_box_width_ratio: float | None = None
     id_box_border_width: float | None = None
+    id_box_y_offset: float | None = None
+    no_id_box: bool | None = None
     id_font_size: float | None = None
     img_scale_ratio: float | None = None
     img_x_offset: float | None = None
@@ -100,6 +105,8 @@ class ApplyToAllRequest(BaseModel):
     id_box_height: float | None = None
     id_box_width_ratio: float | None = None
     id_box_border_width: float | None = None
+    id_box_y_offset: float | None = None
+    no_id_box: bool | None = None
     id_font_size: float | None = None
     # Gear Image fields
     img_scale_ratio: float | None = None

@@ -1,7 +1,6 @@
 import { useState, useCallback } from 'react';
-import { Save, Undo2, Redo2, RotateCcw, Image, Plus, Loader2 } from 'lucide-react';
+import { Save, Undo2, Redo2, RotateCcw, Plus, Loader2 } from 'lucide-react';
 import type { IconConfig } from '../../../types/tuner';
-import { renderTestPdf } from '../../../lib/tunerApi';
 import { useCreateIcon } from '../hooks/useIconConfig';
 
 interface ToolbarProps {
@@ -37,22 +36,7 @@ export function Toolbar({
   const [newSubject, setNewSubject] = useState('');
   const [newCategory, setNewCategory] = useState('APs');
   const [cloneFrom, setCloneFrom] = useState('');
-  const [isRendering, setIsRendering] = useState(false);
   const createIconMutation = useCreateIcon();
-
-  const handleTestPdf = useCallback(async () => {
-    if (!currentSubject) return;
-    setIsRendering(true);
-    try {
-      const blob = await renderTestPdf(currentSubject);
-      const url = URL.createObjectURL(blob);
-      window.open(url, '_blank');
-    } catch (err) {
-      onError(err instanceof Error ? err.message : 'Render failed');
-    } finally {
-      setIsRendering(false);
-    }
-  }, [currentSubject, onError]);
 
   const handleCreateIcon = useCallback(async () => {
     if (!newSubject.trim()) return;
@@ -71,7 +55,7 @@ export function Toolbar({
     }
   }, [newSubject, newCategory, cloneFrom, createIconMutation, onSelectSubject, onError]);
 
-  const categories = ['APs', 'Switches', 'P2Ps', 'Hardlines', 'IoT', 'Cameras', 'Cables', 'Misc', 'Power', 'Boxes'];
+  const categories = ['APs', 'Switches', 'P2Ps', 'Hardlines', 'IoT', 'Cameras', 'Misc', 'Power', 'Boxes'];
 
   return (
     <>
@@ -114,16 +98,6 @@ export function Toolbar({
         >
           <RotateCcw className="h-3.5 w-3.5" />
           Reset
-        </button>
-
-        <button
-          onClick={handleTestPdf}
-          disabled={!currentSubject || isRendering}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg disabled:opacity-50"
-          title="Test in PDF"
-        >
-          {isRendering ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Image className="h-3.5 w-3.5" />}
-          Test PDF
         </button>
 
         <div className="flex-1" />
