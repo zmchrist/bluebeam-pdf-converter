@@ -39,6 +39,17 @@ DEFAULT_FILL_COLOR = (0.22, 0.34, 0.65)  # Navy blue - matches deployment icons
 DEFAULT_STROKE_COLOR = (0.0, 0.0, 0.0)  # Black border
 DEFAULT_BORDER_WIDTH = 0.5
 
+# Only these annotation subtypes represent bid icons eligible for conversion.
+# /Popup annotations share the same /Subj as their parent /Circle but must be
+# skipped — converting them produces a smaller duplicate icon.
+CONVERTIBLE_SUBTYPES = {"/Circle", "/Square"}
+
+# Standard deployment icon rect size (PDF points).
+# All deployment icons use this uniform size, centered on the bid annotation's
+# position. Matches the bid outer circle diameter (~14.6 pts) so icons are
+# consistent across all categories.
+STANDARD_ICON_SIZE = 14.6
+
 
 class AnnotationReplacer:
     """
@@ -230,6 +241,7 @@ class AnnotationReplacer:
         fill_color: tuple[float, float, float],
         stroke_color: tuple[float, float, float],
         annotation_type: str = "/Circle",
+        has_rich_appearance: bool = False,
     ) -> DictionaryObject:
         """
         Create a deployment annotation dictionary with appearance stream.
@@ -241,6 +253,8 @@ class AnnotationReplacer:
             fill_color: RGB fill color
             stroke_color: RGB stroke color
             annotation_type: Type of annotation
+            has_rich_appearance: When True, omit /IC, /C, /BS to prevent
+                Bluebeam from rendering a native circle underneath the /AP stream
 
         Returns:
             DictionaryObject for the annotation
@@ -259,23 +273,23 @@ class AnnotationReplacer:
         annot[NameObject("/Subj")] = TextStringObject(deployment_subject)
         annot[NameObject("/F")] = NumberObject(4)  # Print flag
 
-        # Colors (fallback if appearance not used)
-        annot[NameObject("/IC")] = ArrayObject([
-            FloatObject(fill_color[0]),
-            FloatObject(fill_color[1]),
-            FloatObject(fill_color[2]),
-        ])
-        annot[NameObject("/C")] = ArrayObject([
-            FloatObject(stroke_color[0]),
-            FloatObject(stroke_color[1]),
-            FloatObject(stroke_color[2]),
-        ])
+        if not has_rich_appearance:
+            # Only set native colors when no rich /AP — prevents ghost rendering
+            annot[NameObject("/IC")] = ArrayObject([
+                FloatObject(fill_color[0]),
+                FloatObject(fill_color[1]),
+                FloatObject(fill_color[2]),
+            ])
+            annot[NameObject("/C")] = ArrayObject([
+                FloatObject(stroke_color[0]),
+                FloatObject(stroke_color[1]),
+                FloatObject(stroke_color[2]),
+            ])
 
-        # Border style
-        bs = DictionaryObject()
-        bs[NameObject("/W")] = FloatObject(DEFAULT_BORDER_WIDTH)
-        bs[NameObject("/S")] = NameObject("/S")
-        annot[NameObject("/BS")] = bs
+            bs = DictionaryObject()
+            bs[NameObject("/W")] = FloatObject(DEFAULT_BORDER_WIDTH)
+            bs[NameObject("/S")] = NameObject("/S")
+            annot[NameObject("/BS")] = bs
 
         # Appearance dictionary - THIS IS THE KEY
         ap = DictionaryObject()
@@ -292,7 +306,8 @@ class AnnotationReplacer:
         """
         Replace bid annotations with deployment annotations in a PDF.
 
-        Uses pypdf for rich icon rendering with embedded images.
+        Uses a single-pass array rebuild per page to avoid index management
+        bugs and prevent duplicate annotations from /Popup conversion.
 
         Args:
             input_pdf: Path to input PDF with bid annotations
@@ -320,7 +335,7 @@ class AnnotationReplacer:
         for page in reader.pages:
             writer.add_page(page)
 
-        # Process each page
+        # Process each page — single-pass array rebuild
         for page_num, page in enumerate(writer.pages):
             annots_ref = page.get("/Annots")
             if not annots_ref:
@@ -330,72 +345,66 @@ class AnnotationReplacer:
             if not annots:
                 continue
 
-            # Collect annotations to process
-            annotations_to_replace: list[dict] = []
-            annotations_to_delete: list[int] = []  # Indices of legends to delete
+            new_annots = ArrayObject()
+            deleted_count = 0
 
             for idx, annot_ref in enumerate(annots):
                 try:
                     annot = annot_ref.get_object() if hasattr(annot_ref, 'get_object') else annot_ref
                     bid_subject = str(annot.get("/Subj", ""))
-
-                    if not bid_subject:
-                        logger.debug("Skipping annotation with empty subject")
-                        skipped_count += 1
-                        skipped_subjects.append("(empty subject)")
-                        continue
-
-                    # Delete legend and gear list annotations
-                    if "Legend" in bid_subject or "CLAIR GEAR LIST" in bid_subject:
-                        logger.debug(f"Marking for deletion: {bid_subject}")
-                        annotations_to_delete.append(idx)
-                        continue
-
-                    # Preserve line annotations (e.g., P2P link lines) as-is
                     annot_subtype = str(annot.get("/Subtype", ""))
-                    if annot_subtype == "/Line":
-                        logger.debug(f"Preserving line annotation: {bid_subject}")
+
+                    # --- SKIP: legend and gear list annotations (don't append) ---
+                    if bid_subject and ("Legend" in bid_subject or "CLAIR GEAR LIST" in bid_subject):
+                        logger.debug(f"Deleting: {bid_subject}")
+                        deleted_count += 1
                         continue
 
-                    # Look up deployment subject
+                    # --- PRESERVE: annotations without a subject ---
+                    if not bid_subject:
+                        new_annots.append(annot_ref)
+                        continue
+
+                    # --- Check mapping early: needed for both IRT drop and conversion ---
                     deployment_subject = self.mapping_parser.get_deployment_subject(bid_subject)
+
+                    # --- DROP: child component of a compound Bluebeam bid icon ---
+                    # Bluebeam creates compound icons (Circle+Square, Circle+FreeText)
+                    # linked via /IRT (In Reply To). All children with a valid bid mapping
+                    # are visual sub-elements and must be removed regardless of subtype.
+                    if annot.get("/IRT") is not None and deployment_subject:
+                        logger.debug(f"Dropping IRT child annotation: {annot_subtype} {bid_subject}")
+                        continue
+
+                    # --- PRESERVE: non-convertible subtypes (e.g. /Popup, /Line, /FreeText) ---
+                    if annot_subtype not in CONVERTIBLE_SUBTYPES:
+                        logger.debug(f"Preserving {annot_subtype} annotation: {bid_subject}")
+                        new_annots.append(annot_ref)
+                        continue
+
+                    # --- SKIP (preserve): no mapping for this bid subject ---
                     if not deployment_subject:
                         logger.debug(f"No mapping found for bid subject: {bid_subject}")
                         skipped_count += 1
                         skipped_subjects.append(bid_subject)
+                        new_annots.append(annot_ref)
                         continue
 
-                    # Get annotation details
+                    # --- CONVERT: root convertible annotation with valid mapping ---
                     rect_obj = annot.get("/Rect", [])
-                    rect = [float(r) for r in rect_obj] if rect_obj else None
-                    if not rect or len(rect) != 4:
+                    raw_rect = [float(r) for r in rect_obj] if rect_obj else None
+                    if not raw_rect or len(raw_rect) != 4:
                         logger.warning(f"Invalid rect for annotation: {bid_subject}")
                         skipped_count += 1
                         skipped_subjects.append(bid_subject)
+                        new_annots.append(annot_ref)
                         continue
 
-                    subtype = str(annot.get("/Subtype", "/Circle"))
-
-                    annotations_to_replace.append({
-                        "index": idx,
-                        "bid_subject": bid_subject,
-                        "deployment_subject": deployment_subject,
-                        "rect": rect,
-                        "subtype": subtype,
-                    })
-
-                except Exception as e:
-                    logger.error(f"Error reading annotation at index {idx}: {e}")
-                    skipped_count += 1
-                    skipped_subjects.append(f"(error at index {idx})")
-
-            # Replace annotations (process in reverse order to preserve indices)
-            for annot_info in reversed(annotations_to_replace):
-                try:
-                    deployment_subject = annot_info["deployment_subject"]
-                    rect = annot_info["rect"]
-                    subtype = annot_info["subtype"]
-                    idx = annot_info["index"]
+                    # Standardize rect: uniform size centered on original position
+                    cx = (raw_rect[0] + raw_rect[2]) / 2
+                    cy = (raw_rect[1] + raw_rect[3]) / 2
+                    half = STANDARD_ICON_SIZE / 2
+                    rect = [cx - half, cy - half, cx + half, cy + half]
 
                     # Get colors
                     icon_data = self.btx_loader.get_icon_data(deployment_subject, "deployment")
@@ -403,53 +412,48 @@ class AnnotationReplacer:
                         deployment_subject, icon_data
                     )
 
-                    # Get dynamic ID for this device (or empty string if none configured)
+                    # Get dynamic ID for this device
                     id_label = self.id_assigner.get_next_id(deployment_subject) or ""
 
                     # Try rich icon rendering first
                     appearance_ref = self._render_rich_icon(
                         writer, deployment_subject, rect, id_label=id_label
                     )
+                    has_rich = appearance_ref is not None
 
                     # Fall back to simple appearance if rich rendering not available
                     if appearance_ref is None:
                         appearance_ref = self._create_simple_appearance(
-                            writer, rect, fill_color, stroke_color, subtype
+                            writer, rect, fill_color, stroke_color, annot_subtype
                         )
 
-                    # Create new annotation
+                    # Create new annotation (omit native colors when rich /AP present)
                     new_annot = self._create_deployment_annotation_dict(
                         rect=rect,
                         deployment_subject=deployment_subject,
                         appearance_ref=appearance_ref,
                         fill_color=fill_color,
                         stroke_color=stroke_color,
-                        annotation_type=subtype,
+                        annotation_type=annot_subtype,
+                        has_rich_appearance=has_rich,
                     )
 
-                    # Replace in annotations array
-                    del annots[idx]
-                    annots.append(new_annot)
-
+                    new_annots.append(new_annot)
                     converted_count += 1
-                    logger.debug(f"Converted: {annot_info['bid_subject']} -> {deployment_subject}")
+                    logger.debug(f"Converted: {bid_subject} -> {deployment_subject}")
 
                 except Exception as e:
-                    logger.error(f"Error converting annotation {annot_info['bid_subject']}: {e}")
+                    logger.error(f"Error processing annotation at index {idx}: {e}")
                     skipped_count += 1
-                    skipped_subjects.append(annot_info["bid_subject"])
+                    skipped_subjects.append(f"(error at index {idx})")
+                    # Preserve the original annotation on error
+                    new_annots.append(annot_ref)
 
-            # Delete legend annotations (in reverse order to preserve indices)
-            deleted_count = 0
-            for idx in reversed(annotations_to_delete):
-                try:
-                    del annots[idx]
-                    deleted_count += 1
-                except Exception as e:
-                    logger.error(f"Error deleting legend at index {idx}: {e}")
+            # Replace the page's annotation array with the rebuilt one
+            page[NameObject("/Annots")] = new_annots
 
             if deleted_count > 0:
-                logger.info(f"Deleted {deleted_count} legend annotations")
+                logger.info(f"Deleted {deleted_count} legend annotations on page {page_num + 1}")
 
         # Save the output PDF
         with open(output_pdf, "wb") as f:

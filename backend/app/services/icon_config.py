@@ -140,6 +140,7 @@ ICON_CATEGORIES: dict[str, str] = {
     "BOX - Patch Box": "Boxes",
     "BOX - Zarges Box": "Boxes",
     "BOX - Zarges XL Box": "Boxes",
+    "BOX - JCT": "Boxes",
     # === Power Equipment ===
     "PWR - EcoFlow Battery": "Power",
     "PWR - EcoFlow Solar Panel": "Power",
@@ -673,6 +674,7 @@ ICON_IMAGE_PATHS: dict[str, str | None] = {
     "BOX - Patch Box": "Misc/Patch Box.png",
     "BOX - Zarges Box": "Misc/Zarges Junction Box.png",
     "BOX - Zarges XL Box": "Misc/Zarges XL Junction Box.png",
+    "BOX - JCT": "Misc/Zarges Junction Box.png",
     # === Power Equipment ===
     "PWR - EcoFlow Battery": "Misc/EcoFlow Battery.png",
     "PWR - EcoFlow Solar Panel": "Misc/EcoFlow Solar Panel.png",

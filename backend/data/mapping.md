@@ -95,7 +95,7 @@ Updated based on actual subjects discovered in BidMap.pdf.
 | Emergency Announce - Trigger Box | EAS - Trigger Box | IoT |
 | IPTV - IPTV Set-Top Box \(DMP\ | IPTV - BrightSign XT1144 | IoT |
 | IPTV - Low Latency IPTV Encoder | IPTV - BrightSign XT1144 | IoT |
-| Fiber Junction | INFRA - Fiber Patch Panel | Miscellaneous |
+| Fiber Junction | BOX - JCT | Boxes |
 | CBL - CAT6 | HL - General Internet | Hardlines |
 | CBL - Tactical Fiber, Single Mode, TAC2, ST, 100' \(30m\ | FIBER | Cables |
 | CBL - Tactical Fiber, Single Mode, TAC2, ST, 250' \(76m\ | FIBER | Cables |

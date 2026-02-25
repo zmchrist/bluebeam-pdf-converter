@@ -1,7 +1,7 @@
 {
   "_meta": {
     "version": 1,
-    "last_modified": "2026-02-25T01:51:20.209862+00:00"
+    "last_modified": "2026-02-25T03:50:25.608717+00:00"
   },
   "icons": {
     "AP - Cisco 9120": {
@@ -23,7 +23,7 @@
       "img_scale_ratio": 1.0,
       "brand_text": "CISCO",
       "brand_font_size": 2.0,
-      "brand_y_offset": -3.9999999999999996,
+      "brand_y_offset": -4.5,
       "brand_x_offset": 0.0,
       "model_font_size": 2.2,
       "model_y_offset": 4.3,
@@ -69,7 +69,7 @@
       "img_scale_ratio": 1.0,
       "brand_text": "CISCO",
       "brand_font_size": 2.0,
-      "brand_y_offset": -3.9999999999999996,
+      "brand_y_offset": -4.5,
       "brand_x_offset": 0.0,
       "model_font_size": 2.2,
       "model_y_offset": 4.3,
@@ -115,7 +115,7 @@
       "img_scale_ratio": 1.0,
       "brand_text": "CISCO",
       "brand_font_size": 2.0,
-      "brand_y_offset": -3.9999999999999996,
+      "brand_y_offset": -4.5,
       "brand_x_offset": 0.0,
       "model_font_size": 2.2,
       "model_y_offset": 4.3,
@@ -161,10 +161,10 @@
       "img_scale_ratio": 1.0,
       "brand_text": "CISCO",
       "brand_font_size": 2.0,
-      "brand_y_offset": -3.9999999999999996,
+      "brand_y_offset": -4.5,
       "brand_x_offset": 0.0,
       "model_font_size": 2.2,
-      "model_y_offset": 4.3,
+      "model_y_offset": 3.9999999999999996,
       "model_x_offset": 0.0,
       "font_name": "/Helvetica-Bold",
       "text_color": [
@@ -207,7 +207,7 @@
       "img_scale_ratio": 1.08,
       "brand_text": "CISCO",
       "brand_font_size": 2.0,
-      "brand_y_offset": -3.9999999999999996,
+      "brand_y_offset": -4.5,
       "brand_x_offset": 0.0,
       "model_font_size": 2.2,
       "model_y_offset": 4.3,
@@ -1353,7 +1353,7 @@
       "img_scale_ratio": 1.0,
       "brand_text": "UBIQUITI",
       "brand_font_size": 2.0,
-      "brand_y_offset": -4.0,
+      "brand_y_offset": -4.5,
       "brand_x_offset": 0.0,
       "model_font_size": 2.2,
       "model_y_offset": 4.3,
@@ -1399,7 +1399,7 @@
       "img_scale_ratio": 1.0,
       "brand_text": "UBIQUITI",
       "brand_font_size": 2.0,
-      "brand_y_offset": -4.0,
+      "brand_y_offset": -4.5,
       "brand_x_offset": 0.0,
       "model_font_size": 2.2,
       "model_y_offset": 4.3,
@@ -1445,7 +1445,7 @@
       "img_scale_ratio": 1.0,
       "brand_text": "UBIQUITI",
       "brand_font_size": 2.0,
-      "brand_y_offset": -4.0,
+      "brand_y_offset": -4.5,
       "brand_x_offset": 0.0,
       "model_font_size": 2.2,
       "model_y_offset": 4.3,
@@ -1491,7 +1491,7 @@
       "img_scale_ratio": 1.0,
       "brand_text": "UBIQUITI",
       "brand_font_size": 2.0,
-      "brand_y_offset": -4.0,
+      "brand_y_offset": -4.5,
       "brand_x_offset": 0.0,
       "model_font_size": 2.2,
       "model_y_offset": 4.3,
@@ -1537,7 +1537,7 @@
       "img_scale_ratio": 1.0,
       "brand_text": "UBIQUITI",
       "brand_font_size": 2.0,
-      "brand_y_offset": -4.0,
+      "brand_y_offset": -4.5,
       "brand_x_offset": 0.0,
       "model_font_size": 2.2,
       "model_y_offset": 4.3,
@@ -1583,7 +1583,7 @@
       "img_scale_ratio": 1.0,
       "brand_text": "UBIQUITI",
       "brand_font_size": 2.0,
-      "brand_y_offset": -4.0,
+      "brand_y_offset": -4.5,
       "brand_x_offset": 0.0,
       "model_font_size": 2.2,
       "model_y_offset": 4.3,
@@ -1629,7 +1629,7 @@
       "img_scale_ratio": 1.0,
       "brand_text": "UBIQUITI",
       "brand_font_size": 2.0,
-      "brand_y_offset": -4.0,
+      "brand_y_offset": -4.5,
       "brand_x_offset": 0.0,
       "model_font_size": 2.2,
       "model_y_offset": 4.3,
@@ -3867,8 +3867,8 @@
       "brand_font_size": 2.0,
       "brand_y_offset": -3.9999999999999996,
       "brand_x_offset": 0.0,
-      "model_font_size": 2.1,
-      "model_y_offset": 4.3,
+      "model_font_size": 2.0,
+      "model_y_offset": 4.0,
       "model_x_offset": 0.0,
       "font_name": "/Helvetica-Bold",
       "text_color": [
@@ -3911,7 +3911,7 @@
       "img_scale_ratio": 0.64,
       "brand_text": "CISCO",
       "brand_font_size": 2.0,
-      "brand_y_offset": -3.9999999999999996,
+      "brand_y_offset": -4.5,
       "brand_x_offset": 0.0,
       "model_font_size": 2.2,
       "model_y_offset": 4.3,
@@ -3937,6 +3937,52 @@
       ],
       "id_box_y_offset": 0.0,
       "no_id_box": false
+    },
+    "BOX - JCT": {
+      "circle_color": [
+        0.3333333333333333,
+        0.23921568627450981,
+        0.0
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 4.6000000000000005,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.36,
+      "brand_text": "",
+      "brand_font_size": 1.8,
+      "brand_y_offset": -3.2,
+      "brand_x_offset": -0.2,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "image_path": "Misc/Zarges Junction Box.png",
+      "category": "Boxes",
+      "img_x_offset": 0.0,
+      "img_y_offset": 0.0,
+      "model_text_override": "JUNCTION",
+      "model_uppercase": false,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ],
+      "id_box_y_offset": 0.0,
+      "no_id_box": true
     }
   }
 }
