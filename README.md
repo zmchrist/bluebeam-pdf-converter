@@ -32,7 +32,7 @@ Frontend runs at http://localhost:5173
 
 ### 3. Open the App
 
-Navigate to **http://localhost:5173** in your browser. Upload your BTX files and start converting!
+Navigate to **http://localhost:5173** in your browser. Upload your pdf files and start converting!
 
 ## Architecture
 
