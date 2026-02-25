@@ -69,9 +69,9 @@ REFERENCE_REGIONS: dict[str, list[tuple[str, tuple[int, int, int, int] | None]]]
         ("HL - Video", None),
         ("HL - WAN", None),
         # Fiber types
-        ("HL - LC SM", None),
-        ("HL - SC SM", None),
-        ("HL - ST SM", None),
+        ("HL - LC Fiber", None),
+        ("HL - SC Fiber", None),
+        ("HL - ST Fiber", None),
     ],
     "p2p.pdf": [
         ("P2P - Ubiquiti NanoBeam", None),

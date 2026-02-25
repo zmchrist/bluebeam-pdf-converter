@@ -133,7 +133,7 @@ class TestIconConfig:
 
     def test_fiber_hardlines_use_hardlines_category(self):
         """Test fiber connector hardlines use Hardlines category (red like reference)."""
-        fiber_types = ["HL - LC SM", "HL - SC SM", "HL - ST SM"]
+        fiber_types = ["HL - LC Fiber", "HL - SC Fiber", "HL - ST Fiber"]
         for subject in fiber_types:
             config = get_icon_config(subject)
             assert config["category"] == "Hardlines", f"{subject} should be Hardlines"

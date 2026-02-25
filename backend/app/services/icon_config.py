@@ -127,9 +127,9 @@ ICON_CATEGORIES: dict[str, str] = {
     "HL - Streaming": "Hardlines",
     "HL - Video": "Hardlines",
     # === Fiber Connectors (same red as hardlines in reference PDF) ===
-    "HL - LC SM": "Hardlines",
-    "HL - SC SM": "Hardlines",
-    "HL - ST SM": "Hardlines",
+    "HL - LC Fiber": "Hardlines",
+    "HL - SC Fiber": "Hardlines",
+    "HL - ST Fiber": "Hardlines",
     # === Cables (no gear images) ===
     "FIBER": "Cables",
     # === Miscellaneous (no gear images) ===
@@ -564,13 +564,13 @@ ICON_OVERRIDES: dict[str, dict] = {
         "model_text_override": "GENERAL\nINTERNET",  # Stacked text
     },
     # === Fiber connectors (use FIBER brand instead of CAT6) ===
-    "HL - LC SM": {
+    "HL - LC Fiber": {
         "brand_text": "FIBER",
     },
-    "HL - SC SM": {
+    "HL - SC Fiber": {
         "brand_text": "FIBER",
     },
-    "HL - ST SM": {
+    "HL - ST Fiber": {
         "brand_text": "FIBER",
     },
 }
@@ -661,9 +661,9 @@ ICON_IMAGE_PATHS: dict[str, str | None] = {
     "HL - Streaming": "Hardlines/CAT6 Cable.png",
     "HL - Video": "Hardlines/CAT6 Cable.png",
     # === Fiber Connectors (specific images) ===
-    "HL - LC SM": "Hardlines/LC SM.png",
-    "HL - SC SM": "Hardlines/SC SM.png",
-    "HL - ST SM": "Hardlines/ST SM.png",
+    "HL - LC Fiber": "Hardlines/LC Fiber.png",
+    "HL - SC Fiber": "Hardlines/SC Fiber.png",
+    "HL - ST Fiber": "Hardlines/ST Fiber.png",
     # === Cables (NO gear images) ===
     "FIBER": None,
     # === Miscellaneous (NO gear images) ===

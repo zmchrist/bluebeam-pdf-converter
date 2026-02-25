@@ -18,6 +18,7 @@ from app.services.annotation_replacer import AnnotationReplacer
 from app.services.appearance_extractor import AppearanceExtractor
 from app.services.icon_renderer import IconRenderer
 from app.services.icon_config import GEAR_ICONS_DIR
+from app.services.layer_manager import LayerManager
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -98,12 +99,19 @@ async def convert_pdf(
             icon_renderer = IconRenderer(gear_icons_path)
             logger.info("Initialized icon renderer")
 
-        # 7. Create annotation replacer
+        # 7. Optional: Load layer manager for OCG structure
+        layer_manager = None
+        if settings.layer_reference_pdf.exists():
+            layer_manager = LayerManager(settings.layer_reference_pdf)
+            logger.info("Initialized layer manager for OCG structure")
+
+        # 8. Create annotation replacer
         replacer = AnnotationReplacer(
             mapping_parser=mapping_parser,
             btx_loader=btx_loader,
             appearance_extractor=appearance_extractor,
             icon_renderer=icon_renderer,
+            layer_manager=layer_manager,
         )
 
         # 8. Generate output path

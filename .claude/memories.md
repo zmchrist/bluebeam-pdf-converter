@@ -1,6 +1,44 @@
 # Bluebeam Conversion Project Memory
 
-**Last Updated:** February 24, 2026 (Rendering Gap Fix - Canonical Coordinate Space)
+**Last Updated:** February 24, 2026 (Duplicate Icon Fix + Fiber Junction Mapping + Standardized Sizes)
+
+---
+
+## Session Update: 2026-02-24 (Night) - Fix Duplicate Icons, Add BOX-JCT, Standardize Sizes
+
+### Completed
+- Fixed duplicate deployment icons appearing when moving icons in Bluebeam
+- Added Fiber Junction → BOX - JCT mapping with Zarges Junction Box gear image
+- Standardized all deployment icon sizes to uniform 14.6x14.6 pts
+
+### Root Cause: Compound Bluebeam Annotations
+Each Bluebeam bid icon is a **compound annotation** — a `/Circle` (outer, ~14.6x14.6) + `/Square` or `/FreeText` (inner) pair linked via `/IRT` (In Reply To). The old code converted both independently, creating duplicate deployment icons. Additionally, native `/IC`/`/C`/`/BS` properties alongside rich `/AP` streams caused Bluebeam to render ghost circles.
+
+### Fixes Applied
+1. **IRT child filtering** — Annotations with `/IRT` and a valid bid mapping are dropped (they're visual sub-elements of compound icons). IRT check runs before subtype filter so `/FreeText` children are also caught.
+2. **`has_rich_appearance` flag** — When rich icon rendering succeeds, `/IC`, `/C`, `/BS` omitted from annotation dict to prevent native ghost rendering.
+3. **Single-pass array rebuild** — Replaced multi-pass `del`/`append` with clean `ArrayObject` rebuild per page, eliminating stale index bugs.
+4. **`CONVERTIBLE_SUBTYPES`** — Only `/Circle` and `/Square` are eligible for conversion; all other subtypes preserved as-is.
+5. **`STANDARD_ICON_SIZE = 14.6`** — All deployment icons use uniform rect centered on original annotation position.
+
+### New Icon: BOX - JCT
+- Mapping: "Fiber Junction" → "BOX - JCT" (was "INFRA - Fiber Patch Panel")
+- Category: Boxes
+- Gear image: Zarges Junction Box.png
+- Added to `ICON_CATEGORIES` and `ICON_IMAGE_PATHS` in icon_config.py
+
+### E2E Results (Updated)
+- **98 converted** (was 376 — old count was inflated by compound annotation duplicates)
+- **2 skipped** (Production - VoIP Phone, unmapped)
+- **All 99 deployment icons at 14.6x14.6** (1 unmapped VoIP Phone preserved at original size)
+
+### Files Modified
+- `backend/app/services/annotation_replacer.py` — Single-pass rebuild, IRT filtering, standardized sizing, `has_rich_appearance`
+- `backend/app/services/icon_config.py` — Added "BOX - JCT" to categories and image paths
+- `backend/data/mapping.md` — Changed Fiber Junction mapping to BOX - JCT
+
+### Test Results
+- **167 passed, 7 failed (all known), 11 skipped** — no regressions
 
 ---
 

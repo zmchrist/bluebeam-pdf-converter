@@ -31,6 +31,7 @@ from app.services.mapping_parser import MappingParser
 if TYPE_CHECKING:
     from app.services.appearance_extractor import AppearanceExtractor
     from app.services.icon_renderer import IconRenderer
+    from app.services.layer_manager import LayerManager
 
 logger = logging.getLogger(__name__)
 
@@ -69,6 +70,7 @@ class AnnotationReplacer:
         btx_loader: BTXReferenceLoader,
         appearance_extractor: "AppearanceExtractor | None" = None,
         icon_renderer: "IconRenderer | None" = None,
+        layer_manager: "LayerManager | None" = None,
     ):
         """
         Initialize annotation replacer.
@@ -83,6 +85,7 @@ class AnnotationReplacer:
         self.btx_loader = btx_loader
         self.appearance_extractor = appearance_extractor
         self.icon_renderer = icon_renderer
+        self.layer_manager = layer_manager
         self.id_assigner = IconIdAssigner()
 
     def _get_colors_for_annotation(
@@ -242,6 +245,7 @@ class AnnotationReplacer:
         stroke_color: tuple[float, float, float],
         annotation_type: str = "/Circle",
         has_rich_appearance: bool = False,
+        ocg_ref=None,
     ) -> DictionaryObject:
         """
         Create a deployment annotation dictionary with appearance stream.
@@ -272,6 +276,9 @@ class AnnotationReplacer:
         ])
         annot[NameObject("/Subj")] = TextStringObject(deployment_subject)
         annot[NameObject("/F")] = NumberObject(4)  # Print flag
+
+        if ocg_ref is not None:
+            annot[NameObject("/OC")] = ocg_ref
 
         if not has_rich_appearance:
             # Only set native colors when no rich /AP — prevents ghost rendering
@@ -334,6 +341,10 @@ class AnnotationReplacer:
         # Copy all pages to writer
         for page in reader.pages:
             writer.add_page(page)
+
+        # Apply layer structure from reference PDF (if available)
+        if self.layer_manager:
+            self.layer_manager.apply_to_writer(writer)
 
         # Process each page — single-pass array rebuild
         for page_num, page in enumerate(writer.pages):
@@ -427,6 +438,9 @@ class AnnotationReplacer:
                             writer, rect, fill_color, stroke_color, annot_subtype
                         )
 
+                    # Look up OCG layer reference for this deployment subject
+                    ocg_ref = self.layer_manager.get_ocg_ref(deployment_subject) if self.layer_manager else None
+
                     # Create new annotation (omit native colors when rich /AP present)
                     new_annot = self._create_deployment_annotation_dict(
                         rect=rect,
@@ -436,6 +450,7 @@ class AnnotationReplacer:
                         stroke_color=stroke_color,
                         annotation_type=annot_subtype,
                         has_rich_appearance=has_rich,
+                        ocg_ref=ocg_ref,
                     )
 
                     new_annots.append(new_annot)

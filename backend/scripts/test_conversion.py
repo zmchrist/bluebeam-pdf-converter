@@ -19,6 +19,7 @@ from app.services.btx_loader import BTXReferenceLoader
 from app.services.annotation_replacer import AnnotationReplacer
 from app.services.appearance_extractor import AppearanceExtractor
 from app.services.icon_renderer import IconRenderer
+from app.services.layer_manager import LayerManager
 
 
 def main():
@@ -86,7 +87,9 @@ def main():
     print("\n[5/6] Converting annotations...")
     gear_icons_dir = project_root / "samples" / "icons" / "gearIcons"
     icon_renderer = IconRenderer(gear_icons_dir)
-    replacer = AnnotationReplacer(mapping_parser, btx_loader, appearance_extractor, icon_renderer)
+    layer_ref = project_root / "samples" / "EVENT26 IT Deployment [v0.0] [USE TO IMPORT LAYER FORMATTING].pdf"
+    layer_manager = LayerManager(layer_ref) if layer_ref.exists() else None
+    replacer = AnnotationReplacer(mapping_parser, btx_loader, appearance_extractor, icon_renderer, layer_manager=layer_manager)
 
     # Use the new API that takes input/output paths
     converted, skipped, skipped_subjects = replacer.replace_annotations(input_pdf, output_pdf)

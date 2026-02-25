@@ -43,6 +43,7 @@ class Settings(BaseSettings):
     # Reference files
     samples_dir: Path = _PROJECT_ROOT / "samples"
     deployment_map_path: Path = _PROJECT_ROOT / "samples" / "maps" / "DeploymentMap.pdf"
+    layer_reference_pdf: Path = _PROJECT_ROOT / "samples" / "EVENT26 IT Deployment [v0.0] [USE TO IMPORT LAYER FORMATTING].pdf"
 
     # Tuner settings
     icon_overrides_file: Path = _BACKEND_ROOT / "data" / "icon_overrides.json"

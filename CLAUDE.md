@@ -32,6 +32,7 @@ bluebeam-pdf-converter/
 │   │   │   ├── icon_config.py    # Config for 87+ deployment icons, ID assignment
 │   │   │   ├── icon_renderer.py  # Create PDF appearance streams
 │   │   │   ├── icon_override_store.py # JSON persistence for icon tuner overrides
+│   │   │   ├── layer_manager.py  # Clone OCG layers from reference PDF
 │   │   │   └── file_manager.py   # Manage uploaded/converted file storage
 │   │   ├── routers/
 │   │   │   ├── upload.py         # POST /api/upload
@@ -87,10 +88,10 @@ npx tsc --noEmit                         # Type check passes
 These failures are expected and should not block development:
 
 - **5 failures in `test_annotation_replacer.py`** - PyMuPDF/pypdf fixture incompatibility (tests create PDFs with PyMuPDF but conversion uses pypdf)
-- **1 failure in `test_icon_renderer.py`** - `test_get_icon_config_applies_overrides` assertion outdated after icon tuning changes
+- **2 failures in `test_icon_renderer.py`** - `test_get_icon_config_applies_overrides` assertion outdated; `test_fiber_hardlines_use_hardlines_category` brand text assertion stale
 - **11 skipped tests** - Features not yet implemented or require specific test files
 
-Run `cd backend && uv run pytest` and expect ~170 passed, 6 failed, 11 skipped.
+Run `cd backend && uv run pytest` and expect ~173 passed, 7 failed, 11 skipped.
 
 ## Commands
 
@@ -259,7 +260,13 @@ function Panel({ data }: { data: Data }) {
 
 ### Annotation Handling During Bid → Deployment Conversion
 - **Always delete** Legend annotations and CLAIR GEAR LIST annotations — these are bid-phase artifacts that must not appear in deployment output
-- **Always preserve** `/Line` annotations (e.g., P2P link lines) — pass through unchanged, do not convert to deployment icons
+- **Always preserve** `/Line` and `/PolyLine` annotations (e.g., P2P link lines) — pass through unchanged
+- **Only convert** `/Circle` and `/Square` subtypes (`CONVERTIBLE_SUBTYPES`) — all other subtypes are preserved as-is
+- **Drop IRT children** — Bluebeam compound icons are Circle+Square (or Circle+FreeText) pairs linked via `/IRT`. Only the root annotation (no `/IRT`) is converted; children are removed to prevent duplicates
+- **Standardized sizing** — All deployment icons use `STANDARD_ICON_SIZE` (14.6 pts) centered on the original annotation position, ensuring uniform appearance
+- **No native rendering properties with rich `/AP`** — When rich icon rendering succeeds, `/IC`, `/C`, `/BS` are omitted to prevent Bluebeam from drawing a ghost circle under the appearance stream
+- **Single-pass array rebuild** — Annotations are processed in one pass, building a new `ArrayObject` per page (no `del`/`append` index shifting)
+- **OCG layers** — Full 169-layer structure cloned from EVENT26 reference PDF via `LayerManager`; each deployment annotation gets `/OC` entry linking it to its device layer for visibility toggling in Bluebeam
 
 ## Code Conventions
 
@@ -363,7 +370,8 @@ backend/tests/
 ├── test_file_manager.py        # File storage (8 tests)
 ├── test_api.py                 # API endpoint tests (9 tests)
 ├── test_icon_override_store.py # Icon tuner JSON store tests
-└── test_tuner_api.py           # Icon tuner API endpoint tests
+├── test_tuner_api.py           # Icon tuner API endpoint tests
+└── test_layer_manager.py       # OCG layer cloning tests (6 tests)
 ```
 
 ### Running Tests
@@ -437,6 +445,13 @@ JSON-based persistence for icon tuner overrides:
 - Supports per-icon and batch (Apply to All) updates
 - File: `backend/data/icon_overrides.json`
 
+### LayerManager
+Clones PDF Optional Content Groups (OCG) from EVENT26 reference PDF:
+- `apply_to_writer()` clones all 169 OCG layers via pypdf `.clone()`
+- `get_ocg_ref()` returns `subject → IndirectObject` for `/OC` annotation entries
+- Graceful degradation if reference PDF missing (annotations still created, just without layers)
+- Reference: `samples/EVENT26 IT Deployment [v0.0] [USE TO IMPORT LAYER FORMATTING].pdf`
+
 ### FileManager
 Manages temporary file storage for uploads and conversions:
 - UUID-based file naming
@@ -457,7 +472,9 @@ Manages temporary file storage for uploads and conversions:
 - FileManager service for upload/download storage
 - FastAPI endpoints (upload, convert, download) - all implemented
 - Health check with mapping/toolchest validation
-- End-to-end conversion via API working (376/402 annotations, ~1 second)
+- End-to-end conversion via API working (98 converted per page, ~1 second)
+- Compound annotation deduplication (IRT filtering, single-pass rebuild)
+- Standardized deployment icon sizing (14.6x14.6 pts uniform)
 
 **Phase 4 Frontend: ✅ Complete**
 - React 18 frontend with TypeScript, Vite, Tailwind CSS

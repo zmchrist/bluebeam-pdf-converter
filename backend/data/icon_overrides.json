@@ -3028,144 +3028,6 @@
       "id_box_y_offset": 0.0,
       "no_id_box": false
     },
-    "HL - LC SM": {
-      "circle_color": [
-        0.8901960784313725,
-        0.1411764705882353,
-        0.0
-      ],
-      "circle_border_width": 0.65,
-      "circle_border_color": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "id_box_height": 4.6000000000000005,
-      "id_box_width_ratio": 0.54,
-      "id_box_border_width": 0.5,
-      "id_font_size": 3.8,
-      "img_scale_ratio": 1.1,
-      "img_y_offset": 0.0,
-      "brand_text": "CAT6",
-      "brand_font_size": 2.0,
-      "brand_y_offset": -3.9999999999999996,
-      "brand_x_offset": 0.0,
-      "model_font_size": 2.2,
-      "model_y_offset": 4.3,
-      "model_x_offset": 0.0,
-      "font_name": "/Helvetica-Bold",
-      "text_color": [
-        1.0,
-        1.0,
-        1.0
-      ],
-      "id_text_color": null,
-      "model_uppercase": true,
-      "image_path": "Hardlines/LC SM.png",
-      "category": "Hardlines",
-      "img_x_offset": 0.0,
-      "model_text_override": null,
-      "no_image": false,
-      "layer_order": [
-        "gear_image",
-        "brand_text",
-        "model_text"
-      ],
-      "id_box_y_offset": 0.0,
-      "no_id_box": false
-    },
-    "HL - SC SM": {
-      "circle_color": [
-        0.8901960784313725,
-        0.1411764705882353,
-        0.0
-      ],
-      "circle_border_width": 0.65,
-      "circle_border_color": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "id_box_height": 4.6000000000000005,
-      "id_box_width_ratio": 0.54,
-      "id_box_border_width": 0.5,
-      "id_font_size": 3.8,
-      "img_scale_ratio": 1.1,
-      "img_y_offset": 0.0,
-      "brand_text": "CAT6",
-      "brand_font_size": 2.0,
-      "brand_y_offset": -3.9999999999999996,
-      "brand_x_offset": 0.0,
-      "model_font_size": 2.2,
-      "model_y_offset": 4.3,
-      "model_x_offset": 0.0,
-      "font_name": "/Helvetica-Bold",
-      "text_color": [
-        1.0,
-        1.0,
-        1.0
-      ],
-      "id_text_color": null,
-      "model_uppercase": true,
-      "image_path": "Hardlines/SC SM.png",
-      "category": "Hardlines",
-      "img_x_offset": 0.0,
-      "model_text_override": null,
-      "no_image": false,
-      "layer_order": [
-        "gear_image",
-        "brand_text",
-        "model_text"
-      ],
-      "id_box_y_offset": 0.0,
-      "no_id_box": false
-    },
-    "HL - ST SM": {
-      "circle_color": [
-        0.8901960784313725,
-        0.1411764705882353,
-        0.0
-      ],
-      "circle_border_width": 0.65,
-      "circle_border_color": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "id_box_height": 4.6000000000000005,
-      "id_box_width_ratio": 0.54,
-      "id_box_border_width": 0.5,
-      "id_font_size": 3.8,
-      "img_scale_ratio": 1.1,
-      "img_y_offset": 0.0,
-      "brand_text": "CAT6",
-      "brand_font_size": 2.0,
-      "brand_y_offset": -3.9999999999999996,
-      "brand_x_offset": 0.0,
-      "model_font_size": 2.2,
-      "model_y_offset": 4.3,
-      "model_x_offset": 0.0,
-      "font_name": "/Helvetica-Bold",
-      "text_color": [
-        1.0,
-        1.0,
-        1.0
-      ],
-      "id_text_color": null,
-      "model_uppercase": true,
-      "image_path": "Hardlines/ST SM.png",
-      "category": "Hardlines",
-      "img_x_offset": 0.0,
-      "model_text_override": null,
-      "no_image": false,
-      "layer_order": [
-        "gear_image",
-        "brand_text",
-        "model_text"
-      ],
-      "id_box_y_offset": 0.0,
-      "no_id_box": false
-    },
     "FIBER": {
       "circle_color": [
         0.2157,
@@ -3983,6 +3845,144 @@
       ],
       "id_box_y_offset": 0.0,
       "no_id_box": true
+    },
+    "HL - LC Fiber": {
+      "circle_color": [
+        0.8901960784313725,
+        0.1411764705882353,
+        0.0
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 4.6000000000000005,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.1,
+      "img_y_offset": 0.0,
+      "brand_text": "CAT6",
+      "brand_font_size": 2.0,
+      "brand_y_offset": -3.9999999999999996,
+      "brand_x_offset": 0.0,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "model_uppercase": true,
+      "image_path": "Hardlines/LC Fiber.png",
+      "category": "Hardlines",
+      "img_x_offset": 0.0,
+      "model_text_override": null,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ],
+      "id_box_y_offset": 0.0,
+      "no_id_box": false
+    },
+    "HL - SC Fiber": {
+      "circle_color": [
+        0.8901960784313725,
+        0.1411764705882353,
+        0.0
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 4.6000000000000005,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.1,
+      "img_y_offset": 0.0,
+      "brand_text": "CAT6",
+      "brand_font_size": 2.0,
+      "brand_y_offset": -3.9999999999999996,
+      "brand_x_offset": 0.0,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "model_uppercase": true,
+      "image_path": "Hardlines/SC Fiber.png",
+      "category": "Hardlines",
+      "img_x_offset": 0.0,
+      "model_text_override": null,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ],
+      "id_box_y_offset": 0.0,
+      "no_id_box": false
+    },
+    "HL - ST Fiber": {
+      "circle_color": [
+        0.8901960784313725,
+        0.1411764705882353,
+        0.0
+      ],
+      "circle_border_width": 0.65,
+      "circle_border_color": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id_box_height": 4.6000000000000005,
+      "id_box_width_ratio": 0.54,
+      "id_box_border_width": 0.5,
+      "id_font_size": 3.8,
+      "img_scale_ratio": 1.1,
+      "img_y_offset": 0.0,
+      "brand_text": "CAT6",
+      "brand_font_size": 2.0,
+      "brand_y_offset": -3.9999999999999996,
+      "brand_x_offset": 0.0,
+      "model_font_size": 2.2,
+      "model_y_offset": 4.3,
+      "model_x_offset": 0.0,
+      "font_name": "/Helvetica-Bold",
+      "text_color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "id_text_color": null,
+      "model_uppercase": true,
+      "image_path": "Hardlines/ST Fiber.png",
+      "category": "Hardlines",
+      "img_x_offset": 0.0,
+      "model_text_override": null,
+      "no_image": false,
+      "layer_order": [
+        "gear_image",
+        "brand_text",
+        "model_text"
+      ],
+      "id_box_y_offset": 0.0,
+      "no_id_box": false
     }
   }
 }
