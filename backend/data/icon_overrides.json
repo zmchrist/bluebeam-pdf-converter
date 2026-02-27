@@ -1,7 +1,7 @@
 {
   "_meta": {
     "version": 1,
-    "last_modified": "2026-02-25T03:50:25.608717+00:00"
+    "last_modified": "2026-02-26T22:46:54.861796+00:00"
   },
   "icons": {
     "AP - Cisco 9120": {
@@ -2374,7 +2374,7 @@
       "image_path": "Hardlines/CAT6 Cable.png",
       "category": "Hardlines",
       "img_x_offset": 0.0,
-      "model_text_override": "ACCESS CONTROL",
+      "model_text_override": "AC",
       "no_image": false,
       "layer_order": [
         "gear_image",

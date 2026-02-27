@@ -414,6 +414,145 @@ class TestAnnotationReplacerWithPDF:
             doc.close()
 
 
+class TestCompoundAnnotationGroup:
+    """Tests for compound annotation group creation."""
+
+    def test_compound_group_structure(self):
+        """Test compound group has correct IRT/GroupNesting structure."""
+        from pypdf import PdfWriter
+        from pypdf.generic import IndirectObject
+
+        mapper = MockMappingParser({"AP_Bid": "AP - Cisco MR36H"})
+        loader = MockBTXLoader()
+
+        # Need a real icon renderer for compound rendering
+        gear_icons_dir = Path(__file__).parent.parent.parent / "samples" / "icons" / "gearIcons"
+        if not gear_icons_dir.exists():
+            pytest.skip("Gear icons directory not found")
+
+        from app.services.icon_renderer import IconRenderer
+        renderer = IconRenderer(gear_icons_dir)
+
+        replacer = AnnotationReplacer(mapper, loader, icon_renderer=renderer)
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            input_pdf = Path(tmpdir) / "input.pdf"
+            output_pdf = Path(tmpdir) / "output.pdf"
+
+            create_test_pdf_with_annotations(input_pdf, [
+                {"subject": "AP_Bid", "x": 100, "y": 200, "width": 50, "height": 50}
+            ])
+
+            converted, skipped, _ = replacer.replace_annotations(input_pdf, output_pdf)
+
+            assert converted == 1
+            assert output_pdf.exists()
+
+            # Read back the output and verify compound structure
+            from pypdf import PdfReader
+            reader = PdfReader(str(output_pdf))
+            page = reader.pages[0]
+            annots = page.get("/Annots", [])
+
+            # Should have multiple annotations for the compound group
+            compound_annots = []
+            for annot_ref in annots:
+                annot = annot_ref.get_object()
+                subj = str(annot.get("/Subj", ""))
+                if subj == "AP - Cisco MR36H":
+                    compound_annots.append(annot)
+
+            assert len(compound_annots) >= 3, f"Expected at least 3 compound annotations, got {len(compound_annots)}"
+
+            # Find root (no /IRT)
+            roots = [a for a in compound_annots if a.get("/IRT") is None]
+            assert len(roots) == 1, "Expected exactly 1 root annotation"
+            root = roots[0]
+
+            # Root should have /GroupNesting
+            group_nesting = root.get("/GroupNesting")
+            assert group_nesting is not None, "Root missing /GroupNesting"
+            # First entry should be the subject
+            assert str(group_nesting[0]) == "AP - Cisco MR36H"
+            # Remaining entries should be /NM values (prefixed with /)
+            for entry in group_nesting[1:]:
+                assert str(entry).startswith("/"), f"GroupNesting entry should start with /: {entry}"
+
+            # Root should have /Sequence
+            seq = root.get("/Sequence")
+            assert seq is not None, "Root missing /Sequence"
+
+            # All children should have /IRT
+            children = [a for a in compound_annots if a.get("/IRT") is not None]
+            assert len(children) == len(compound_annots) - 1
+
+            # All should have unique /NM
+            nms = [str(a.get("/NM", "")) for a in compound_annots]
+            assert len(set(nms)) == len(nms), "NM values must be unique"
+
+            # All should share same /GroupNesting
+            for annot in compound_annots:
+                gn = annot.get("/GroupNesting")
+                assert gn is not None, "All annotations must have /GroupNesting"
+
+    def test_compound_converted_count_is_logical(self):
+        """Test that converted_count counts logical icons, not annotations."""
+        mapper = MockMappingParser({
+            "AP_Bid1": "AP - Cisco MR36H",
+            "AP_Bid2": "AP - Cisco MR36H",
+        })
+        loader = MockBTXLoader()
+
+        gear_icons_dir = Path(__file__).parent.parent.parent / "samples" / "icons" / "gearIcons"
+        if not gear_icons_dir.exists():
+            pytest.skip("Gear icons directory not found")
+
+        from app.services.icon_renderer import IconRenderer
+        renderer = IconRenderer(gear_icons_dir)
+
+        replacer = AnnotationReplacer(mapper, loader, icon_renderer=renderer)
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            input_pdf = Path(tmpdir) / "input.pdf"
+            output_pdf = Path(tmpdir) / "output.pdf"
+
+            create_test_pdf_with_annotations(input_pdf, [
+                {"subject": "AP_Bid1", "x": 100, "y": 200, "width": 50, "height": 50},
+                {"subject": "AP_Bid2", "x": 300, "y": 400, "width": 50, "height": 50},
+            ])
+
+            converted, skipped, _ = replacer.replace_annotations(input_pdf, output_pdf)
+
+            # 2 logical icons converted (not 14 annotations)
+            assert converted == 2
+
+    def test_fallback_single_annotation_without_renderer(self):
+        """Test fallback to single annotation when no renderer available."""
+        mapper = MockMappingParser({"AP_Bid": "AP_Deploy"})
+        loader = MockBTXLoader()
+        replacer = AnnotationReplacer(mapper, loader)  # No icon_renderer
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            input_pdf = Path(tmpdir) / "input.pdf"
+            output_pdf = Path(tmpdir) / "output.pdf"
+
+            create_test_pdf_with_annotations(input_pdf, [
+                {"subject": "AP_Bid", "x": 100, "y": 200, "width": 50, "height": 50}
+            ])
+
+            converted, skipped, _ = replacer.replace_annotations(input_pdf, output_pdf)
+
+            assert converted == 1
+
+            # Should produce a single annotation (no compound)
+            doc = pymupdf.open(output_pdf)
+            page = doc[0]
+            annots = list(page.annots())
+            assert len(annots) == 1
+            assert annots[0].info.get("subject") == "AP_Deploy"
+            doc.close()
+
+
 class TestAnnotationReplacerIntegration:
     """Integration tests with real PDF and mapping files."""
 

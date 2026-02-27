@@ -4,7 +4,7 @@ A web-based tool that automates the conversion of PDF venue maps from "bid phase
 
 ## Tech Stack
 
-- **Backend**: Python 3.11+, FastAPI, PyMuPDF (fitz), lxml, Pydantic
+- **Backend**: Python 3.11+, FastAPI, pypdf, Pillow, lxml, Pydantic
 - **Frontend**: React 18, TypeScript, Vite, Tailwind CSS, TanStack Query, React Router
 - **Testing**: pytest, pytest-asyncio
 - **No authentication** - internal single-user tool
@@ -87,11 +87,11 @@ npx tsc --noEmit                         # Type check passes
 
 These failures are expected and should not block development:
 
-- **5 failures in `test_annotation_replacer.py`** - PyMuPDF/pypdf fixture incompatibility (tests create PDFs with PyMuPDF but conversion uses pypdf)
+- **1 failure in `test_annotation_replacer.py`** - PyMuPDF/pypdf fixture incompatibility (tests create PDFs with PyMuPDF but conversion uses pypdf)
 - **2 failures in `test_icon_renderer.py`** - `test_get_icon_config_applies_overrides` assertion outdated; `test_fiber_hardlines_use_hardlines_category` brand text assertion stale
 - **11 skipped tests** - Features not yet implemented or require specific test files
 
-Run `cd backend && uv run pytest` and expect ~173 passed, 7 failed, 11 skipped.
+Run `cd backend && uv run pytest` and expect ~186 passed, 3 failed, 11 skipped.
 
 ## Commands
 
@@ -116,6 +116,9 @@ uv run python scripts/test_icon_render.py "SW - Cisco Micro 4P"
 
 # End-to-End Conversion Test
 uv run python scripts/test_conversion.py
+
+# BBox Variant Comparison (generates PDF A + PDF B for Bluebeam testing)
+uv run python scripts/test_bbox_variants.py
 
 # Frontend
 cd frontend && npm install && npm run dev
@@ -262,11 +265,16 @@ function Panel({ data }: { data: Data }) {
 - **Always delete** Legend annotations and CLAIR GEAR LIST annotations — these are bid-phase artifacts that must not appear in deployment output
 - **Always preserve** `/Line` and `/PolyLine` annotations (e.g., P2P link lines) — pass through unchanged
 - **Only convert** `/Circle` and `/Square` subtypes (`CONVERTIBLE_SUBTYPES`) — all other subtypes are preserved as-is
-- **Drop IRT children** — Bluebeam compound icons are Circle+Square (or Circle+FreeText) pairs linked via `/IRT`. Only the root annotation (no `/IRT`) is converted; children are removed to prevent duplicates
-- **Standardized sizing** — All deployment icons use `STANDARD_ICON_SIZE` (14.6 pts) centered on the original annotation position, ensuring uniform appearance
-- **No native rendering properties with rich `/AP`** — When rich icon rendering succeeds, `/IC`, `/C`, `/BS` are omitted to prevent Bluebeam from drawing a ghost circle under the appearance stream
+- **Drop IRT children** — Bluebeam bid compound icons are Circle+Square (or Circle+FreeText) pairs linked via `/IRT`. Only the root annotation (no `/IRT`) is converted; children are removed to prevent duplicates
+- **Compound annotation groups** — Each deployment icon emits 7 linked annotations matching Bluebeam's native structure (FreeText root + Square ID box + FreeText container + Circle + Square image + FreeText model + FreeText brand), linked via `/IRT` and `/GroupNesting`. Each component has a simple AP stream that Bluebeam can regenerate on move, preventing shape reversion
+- **Absolute BBox + Matrix** — Compound AP streams use `BBox [x1,y1,x2,y2]` with `Matrix [1,0,0,1,-x1,-y1]`; content draws at absolute page coords. The Matrix translates absolute coords into form-local space
+- **`/GroupNesting` format** — `[subject, /NM1, /NM2, ..., /NMn]` on ALL annotations (root + children); root has `/Sequence` with `/IID` + `/Index`
+- **Compound render scale** — `COMPOUND_RENDER_SCALE = 1.12` transforms canonical 25×30 space to ~28×34 pts per icon
+- **Fallback single annotation** — Icons without config use `STANDARD_ICON_SIZE` (14.6 pts) single annotation with zero-origin BBox
 - **Single-pass array rebuild** — Annotations are processed in one pass, building a new `ArrayObject` per page (no `del`/`append` index shifting)
 - **OCG layers** — Full 169-layer structure cloned from EVENT26 reference PDF via `LayerManager`; each deployment annotation gets `/OC` entry linking it to its device layer for visibility toggling in Bluebeam
+- **Indirect object registration** — All annotations registered via `writer._add_object()` to get proper PDF object IDs; direct `DictionaryObject` dicts are not interactive in Bluebeam
+- **Bluebeam editability properties** — Each annotation includes `/NM` (unique 16-char UUID), `/M` + `/CreationDate` (timestamps), `/T` (author), `/RD` (rect difference inset) so Bluebeam can select, move, resize, and manage them
 
 ## Code Conventions
 
@@ -366,7 +374,7 @@ backend/tests/
 ├── test_mapping_parser.py      # Mapping config loading
 ├── test_btx_loader.py          # BTX parsing (24 tests)
 ├── test_annotation_replacer.py # Annotation replacement
-├── test_icon_renderer.py       # Appearance streams (24 tests)
+├── test_icon_renderer.py       # Appearance streams + compound rendering (30 tests)
 ├── test_file_manager.py        # File storage (8 tests)
 ├── test_api.py                 # API endpoint tests (9 tests)
 ├── test_icon_override_store.py # Icon tuner JSON store tests
@@ -404,6 +412,29 @@ npm run build                           # Verify build
 npx tsc --noEmit                        # Type check
 ```
 
+## Planning & Development Workflow
+
+### Workshop Period (Before Planning)
+**Do NOT start a plan until explicitly requested with the `/plan-feature` command.**
+
+When discussing features, bugs, or improvements:
+- Ask clarifying questions to understand the full scope
+- Discuss trade-offs and potential approaches
+- Take notes on requirements, constraints, and context
+- Identify unknowns and research gaps
+- Gather as much information as possible before planning
+
+This "workshop period" ensures we have complete context before committing to an implementation strategy.
+
+### Plan Creation
+Once you say `/plan-feature` (or equivalent), I will create a comprehensive plan using:
+- Full codebase analysis and existing patterns
+- Architectural decisions and trade-offs
+- Step-by-step implementation approach
+- File list and estimated scope
+
+The plan then goes to you for review and approval before implementation begins.
+
 ## Key Services
 
 ### PDFAnnotationParser
@@ -419,16 +450,17 @@ Parses `mapping.md` for bid→deployment subject mappings (112+ entries).
 Loads BTX XML files, decodes zlib-compressed hex data, extracts icon subjects.
 
 ### AnnotationReplacer
-Replaces bid annotations with deployment annotations using PyMuPDF:
-- Preserves exact coordinates and sizing
-- Creates visual appearance streams with icon renderer
-- Falls back to simple shapes if rendering fails
+Replaces bid annotations with deployment annotations using pypdf:
+- Emits compound annotation groups (7 linked annotations per icon) matching Bluebeam's native structure
+- Builds `/GroupNesting` arrays and `/IRT` links between root and children
+- Tracks `/Sequence` counter across conversion run
+- Falls back to single annotation for icons without config
 
 ### IconRenderer
-Creates PDF appearance streams for deployment icons:
-- Bezier curves for circles
-- Embedded PNG gear images
-- ID boxes, brand text, model text
+Creates PDF appearance streams for deployment icons in two modes:
+- **Compound mode** (`render_compound_icon()`): Separate AP streams per component (circle, ID box, image, text) for Bluebeam-native groups
+- **Combined mode** (`render_icon()`): Single AP stream with all elements (used by Icon Tuner preview)
+- Bezier curves for circles, embedded PNG gear images, centered text
 
 ### IconConfig
 Central configuration for 87+ deployment icons:
@@ -472,9 +504,9 @@ Manages temporary file storage for uploads and conversions:
 - FileManager service for upload/download storage
 - FastAPI endpoints (upload, convert, download) - all implemented
 - Health check with mapping/toolchest validation
-- End-to-end conversion via API working (98 converted per page, ~1 second)
+- End-to-end conversion via API working (98 icons converted per page, ~698 annotations with compound groups)
+- Compound annotation groups (7 linked annotations per icon matching Bluebeam's native structure)
 - Compound annotation deduplication (IRT filtering, single-pass rebuild)
-- Standardized deployment icon sizing (14.6x14.6 pts uniform)
 
 **Phase 4 Frontend: ✅ Complete**
 - React 18 frontend with TypeScript, Vite, Tailwind CSS

@@ -338,6 +338,226 @@ class TestIconRenderer:
             assert result is not None
 
 
+class TestCompoundRendering:
+    """Tests for compound annotation rendering."""
+
+    @pytest.fixture
+    def renderer_with_test_image(self, tmp_path):
+        """Create renderer with temp directory and test image."""
+        aps_dir = tmp_path / "APs"
+        aps_dir.mkdir()
+        img = Image.new("RGB", (100, 100), color="blue")
+        img.save(aps_dir / "AP - Cisco MR36H.png")
+        return IconRenderer(tmp_path)
+
+    def test_render_compound_icon_returns_components(self, renderer_with_test_image):
+        """Test render_compound_icon returns list of component dicts."""
+        with patch("app.services.icon_renderer.get_icon_config") as mock_config:
+            mock_config.return_value = {
+                "image_path": "APs/AP - Cisco MR36H.png",
+                "category": "APs",
+                "circle_color": (0.22, 0.34, 0.65),
+                "circle_border_width": 0.75,
+                "circle_border_color": (0.0, 0.0, 0.0),
+                "id_box_height": 2.3,
+                "id_box_width_ratio": 0.41,
+                "id_box_border_width": 0.35,
+                "id_font_size": 3.9,
+                "img_scale_ratio": 0.70,
+                "brand_text": "CISCO",
+                "brand_font_size": 1.8,
+                "brand_y_offset": -3.2,
+                "brand_x_offset": -0.2,
+                "model_font_size": 2.2,
+                "model_y_offset": 2.5,
+                "model_x_offset": -0.2,
+                "text_color": (1.0, 1.0, 1.0),
+                "id_text_color": None,
+            }
+
+            writer = PdfWriter()
+            result = renderer_with_test_image.render_compound_icon(
+                writer, "AP - Cisco MR36H", (500.0, 600.0), id_label="j100"
+            )
+
+            assert result is not None
+            assert len(result) == 7  # All 7 components
+
+            # Verify roles
+            roles = [c["role"] for c in result]
+            assert roles[0] == "root_id_text"
+            assert "circle" in roles
+            assert "image" in roles
+            assert "brand_text" in roles
+            assert "model_text" in roles
+            assert "container" in roles
+            assert "id_box_border" in roles
+
+    def test_render_compound_icon_no_config_returns_none(self, renderer_with_test_image):
+        """Test render_compound_icon returns None for unknown subject."""
+        with patch("app.services.icon_renderer.get_icon_config") as mock_config:
+            mock_config.return_value = {}
+            writer = PdfWriter()
+            result = renderer_with_test_image.render_compound_icon(
+                writer, "Unknown Icon", (500.0, 600.0)
+            )
+            assert result is None
+
+    def test_render_compound_icon_no_image(self, tmp_path):
+        """Test compound icon with no_image flag produces fewer components."""
+        renderer = IconRenderer(tmp_path)
+        with patch("app.services.icon_renderer.get_icon_config") as mock_config:
+            mock_config.return_value = {
+                "image_path": None,
+                "category": "Cables",
+                "no_image": True,
+                "circle_color": (0.8, 0.6, 0.0),
+                "circle_border_width": 0.75,
+                "circle_border_color": (0.0, 0.0, 0.0),
+                "id_box_height": 2.3,
+                "id_box_width_ratio": 0.41,
+                "id_box_border_width": 0.35,
+                "id_font_size": 3.9,
+                "img_scale_ratio": 0.70,
+                "brand_text": "",
+                "brand_font_size": 1.8,
+                "brand_y_offset": -3.2,
+                "brand_x_offset": -0.2,
+                "model_font_size": 2.2,
+                "model_y_offset": 2.5,
+                "model_x_offset": -0.2,
+                "text_color": (1.0, 1.0, 1.0),
+                "id_text_color": None,
+            }
+
+            writer = PdfWriter()
+            result = renderer.render_compound_icon(
+                writer, "FIBER", (500.0, 600.0), id_label="f100"
+            )
+
+            assert result is not None
+            # Should have: root, id_box, container, circle, model_text = 5
+            # No image, no brand_text
+            roles = [c["role"] for c in result]
+            assert "root_id_text" in roles
+            assert "circle" in roles
+            assert "image" not in roles
+            assert "brand_text" not in roles
+
+    def test_render_compound_icon_no_brand(self, renderer_with_test_image):
+        """Test compound icon without brand text omits brand component."""
+        with patch("app.services.icon_renderer.get_icon_config") as mock_config:
+            mock_config.return_value = {
+                "image_path": "APs/AP - Cisco MR36H.png",
+                "category": "APs",
+                "circle_color": (0.22, 0.34, 0.65),
+                "circle_border_width": 0.75,
+                "circle_border_color": (0.0, 0.0, 0.0),
+                "id_box_height": 2.3,
+                "id_box_width_ratio": 0.41,
+                "id_box_border_width": 0.35,
+                "id_font_size": 3.9,
+                "img_scale_ratio": 0.70,
+                "brand_text": "",  # No brand
+                "brand_font_size": 1.8,
+                "brand_y_offset": -3.2,
+                "brand_x_offset": -0.2,
+                "model_font_size": 2.2,
+                "model_y_offset": 2.5,
+                "model_x_offset": -0.2,
+                "text_color": (1.0, 1.0, 1.0),
+                "id_text_color": None,
+            }
+
+            writer = PdfWriter()
+            result = renderer_with_test_image.render_compound_icon(
+                writer, "SW - Cisco Micro 4P", (500.0, 600.0)
+            )
+
+            assert result is not None
+            roles = [c["role"] for c in result]
+            assert "brand_text" not in roles
+            assert len(result) == 6  # All except brand
+
+    def test_compound_component_rects_are_absolute(self, renderer_with_test_image):
+        """Test that component rects use absolute page coordinates."""
+        with patch("app.services.icon_renderer.get_icon_config") as mock_config:
+            mock_config.return_value = {
+                "image_path": "APs/AP - Cisco MR36H.png",
+                "category": "APs",
+                "circle_color": (0.22, 0.34, 0.65),
+                "circle_border_width": 0.75,
+                "circle_border_color": (0.0, 0.0, 0.0),
+                "id_box_height": 2.3,
+                "id_box_width_ratio": 0.41,
+                "id_box_border_width": 0.35,
+                "id_font_size": 3.9,
+                "img_scale_ratio": 0.70,
+                "brand_text": "CISCO",
+                "brand_font_size": 1.8,
+                "brand_y_offset": -3.2,
+                "brand_x_offset": -0.2,
+                "model_font_size": 2.2,
+                "model_y_offset": 2.5,
+                "model_x_offset": -0.2,
+                "text_color": (1.0, 1.0, 1.0),
+                "id_text_color": None,
+            }
+
+            writer = PdfWriter()
+            result = renderer_with_test_image.render_compound_icon(
+                writer, "AP - Cisco MR36H", (5000.0, 6000.0)
+            )
+
+            # All rects should be near the center (5000, 6000)
+            for comp in result:
+                x1, y1, x2, y2 = comp["rect"]
+                assert x2 > x1, f"{comp['role']} has invalid rect width"
+                assert y2 > y1, f"{comp['role']} has invalid rect height"
+                # Should be within ~30 pts of center
+                assert abs((x1 + x2) / 2 - 5000) < 30, f"{comp['role']} too far from center X"
+                assert abs((y1 + y2) / 2 - 6000) < 30, f"{comp['role']} too far from center Y"
+
+    def test_compound_component_subtypes(self, renderer_with_test_image):
+        """Test that components have correct PDF subtypes."""
+        with patch("app.services.icon_renderer.get_icon_config") as mock_config:
+            mock_config.return_value = {
+                "image_path": "APs/AP - Cisco MR36H.png",
+                "category": "APs",
+                "circle_color": (0.22, 0.34, 0.65),
+                "circle_border_width": 0.75,
+                "circle_border_color": (0.0, 0.0, 0.0),
+                "id_box_height": 2.3,
+                "id_box_width_ratio": 0.41,
+                "id_box_border_width": 0.35,
+                "id_font_size": 3.9,
+                "img_scale_ratio": 0.70,
+                "brand_text": "CISCO",
+                "brand_font_size": 1.8,
+                "brand_y_offset": -3.2,
+                "brand_x_offset": -0.2,
+                "model_font_size": 2.2,
+                "model_y_offset": 2.5,
+                "model_x_offset": -0.2,
+                "text_color": (1.0, 1.0, 1.0),
+                "id_text_color": None,
+            }
+
+            writer = PdfWriter()
+            result = renderer_with_test_image.render_compound_icon(
+                writer, "AP - Cisco MR36H", (500.0, 600.0)
+            )
+
+            subtype_map = {c["role"]: c["subtype"] for c in result}
+            assert subtype_map["root_id_text"] == "/FreeText"
+            assert subtype_map["id_box_border"] == "/Square"
+            assert subtype_map["container"] == "/FreeText"
+            assert subtype_map["circle"] == "/Circle"
+            assert subtype_map["image"] == "/Square"
+            assert subtype_map["model_text"] == "/FreeText"
+            assert subtype_map["brand_text"] == "/FreeText"
+
+
 class TestIconRendererIntegration:
     """Integration tests with real files."""
 

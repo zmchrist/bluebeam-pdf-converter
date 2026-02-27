@@ -1,6 +1,73 @@
 # Bluebeam Conversion Project Memory
 
-**Last Updated:** February 24, 2026 (Duplicate Icon Fix + Fiber Junction Mapping + Standardized Sizes)
+**Last Updated:** February 27, 2026 (Compound Annotation Groups)
+
+---
+
+## Session Update: 2026-02-27 - Compound Annotation Groups
+
+### Completed
+- Implemented compound annotation groups: each deployment icon now emits 7 linked annotations matching Bluebeam's native structure
+- Added `render_compound_icon()` to IconRenderer — produces per-component AP streams (circle, ID box, image, text) instead of single combined stream
+- Added `_create_compound_annotation_group()` to AnnotationReplacer — builds `/GroupNesting`, `/IRT` links, `/Sequence` tracking
+- All compound AP streams use absolute BBox `[x1,y1,x2,y2]` + Matrix `[1,0,0,1,-x1,-y1]` with content at absolute page coords
+- Fallback to single annotation for icons without config (backward compatible with tests)
+- Added 9 new tests (6 compound rendering, 3 compound group structure) — total 186 passed
+
+### Structure Per Icon (7 Annotations)
+1. `/FreeText` — ROOT, ID text ("j100"), no `/IRT`, has `/Sequence`
+2. `/Square` — ID box border (white fill, black border)
+3. `/FreeText` — Container bounding box (invisible)
+4. `/Circle` — Blue filled circle
+5. `/Square` — Gear image (embedded PNG)
+6. `/FreeText` — Model text
+7. `/FreeText` — Brand text
+
+### Key Technical Details
+- `COMPOUND_RENDER_SCALE = 1.12` — canonical 25×30 → ~28×34 pts per icon
+- `/GroupNesting` = `[subject, /NM1, /NM2, ...]` on ALL 7 annotations
+- Root registered first via `writer._add_object()`, children get `/IRT` → root ref
+- Icons with `no_image` produce fewer components (skip image/brand)
+- E2E: 98 icons → 698 annotations on page 1
+
+### Files Modified
+- `backend/app/services/icon_renderer.py` — Added 9 methods for compound rendering
+- `backend/app/services/annotation_replacer.py` — Added compound group builder, sequence tracking
+- `backend/tests/test_icon_renderer.py` — 6 new compound tests
+- `backend/tests/test_annotation_replacer.py` — 3 new group structure tests
+
+---
+
+## Session Update: 2026-02-26 - Annotation Editability Fix + BBox/Matrix Investigation
+
+### Completed
+- Fixed annotations not being interactive in Bluebeam (couldn't select, move, resize, or delete)
+- Changed `/IC`, `/C`, `/BS` to always be present (removed `has_rich_appearance` conditional)
+- Registered deployment annotations as indirect PDF objects via `writer._add_object()`
+- Added Bluebeam editability properties: `/NM`, `/M`, `/CreationDate`, `/T`, `/RD`
+- Fixed zero-origin BBox for both rich and simple appearances (content survives annotation moves)
+- Generated two BBox variant test PDFs for Bluebeam comparison (PDF A vs PDF B)
+
+### Root Cause: Invisible/Non-Interactive Annotations
+Two issues made annotations non-functional in Bluebeam:
+1. **Direct dict objects** — Annotations appended as plain `DictionaryObject` dicts had no PDF object IDs; Bluebeam needs indirect objects (via `writer._add_object()`) to interact with them.
+2. **Absolute BBox coordinates** — BBox `[x1,y1,x2,y2]` with content drawn at zero-origin meant content was entirely outside the clipping rectangle. Fixed: BBox is now `[0,0,w,h]` with zero-origin content coordinates (no Matrix needed).
+
+### BBox/Matrix Investigation
+- **BBox** defines the **clipping rectangle** in form space — content outside it is invisible
+- **Matrix** transforms form-space → outer-space, does NOT affect BBox clipping
+- Two test PDFs generated via `backend/scripts/test_bbox_variants.py`:
+  - **PDF A**: Absolute BBox + Matrix `[1,0,0,1,-x1,-y1]` + absolute cm offsets
+  - **PDF B**: Zero-origin BBox `[0,0,w,h]` + no Matrix + zero-origin cm (current code)
+- Awaiting Bluebeam comparison to determine which approach handles move/resize best
+
+### Files Modified
+- `backend/app/services/annotation_replacer.py` — Indirect object registration, editability props, zero-origin simple appearance, always-present `/IC`/`/C`/`/BS`
+- `backend/app/services/icon_renderer.py` — Zero-origin BBox `[0,0,w,h]`, zero-origin cm offsets
+- `backend/scripts/test_bbox_variants.py` — New test script for BBox variant comparison
+
+### Test Results
+- **177 passed, 3 failed (all known), 11 skipped** — no regressions
 
 ---
 
@@ -16,7 +83,7 @@ Each Bluebeam bid icon is a **compound annotation** — a `/Circle` (outer, ~14.
 
 ### Fixes Applied
 1. **IRT child filtering** — Annotations with `/IRT` and a valid bid mapping are dropped (they're visual sub-elements of compound icons). IRT check runs before subtype filter so `/FreeText` children are also caught.
-2. **`has_rich_appearance` flag** — When rich icon rendering succeeds, `/IC`, `/C`, `/BS` omitted from annotation dict to prevent native ghost rendering.
+2. **Native color properties always present** — `/IC`, `/C`, `/BS` always included (was conditionally omitted via `has_rich_appearance` flag; now zero-origin BBox prevents ghost rendering instead).
 3. **Single-pass array rebuild** — Replaced multi-pass `del`/`append` with clean `ArrayObject` rebuild per page, eliminating stale index bugs.
 4. **`CONVERTIBLE_SUBTYPES`** — Only `/Circle` and `/Square` are eligible for conversion; all other subtypes preserved as-is.
 5. **`STANDARD_ICON_SIZE = 14.6`** — All deployment icons use uniform rect centered on original annotation position.

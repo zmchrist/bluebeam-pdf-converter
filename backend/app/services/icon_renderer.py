@@ -7,6 +7,10 @@ Creates PDF appearance streams for deployment icons with:
 - Product image in center
 - Brand text (e.g., "CISCO")
 - Model text (e.g., "MR36H")
+
+Supports two rendering modes:
+1. Combined (legacy): Single appearance stream with all elements (for Icon Tuner preview)
+2. Compound: Separate appearance streams per component (for Bluebeam-native groups)
 """
 
 import logging
@@ -279,8 +283,9 @@ class IconRenderer:
         render_scale = min(rect_width / CANON_W, rect_height / CANON_H)
         content_w = CANON_W * render_scale
         content_h = CANON_H * render_scale
-        x_off = x1 + (rect_width - content_w) / 2
-        y_off = y1 + (rect_height - content_h) / 2
+        # Zero-origin offsets: BBox is [0,0,w,h], content draws in local coords
+        x_off = (rect_width - content_w) / 2
+        y_off = (rect_height - content_h) / 2
 
         # Extract config parameters with defaults
         circle_color = config.get("circle_color", (0.22, 0.34, 0.65))
@@ -376,10 +381,10 @@ class IconRenderer:
         ap_stream[NameObject("/FormType")] = NumberObject(1)
         ap_stream[NameObject("/BBox")] = ArrayObject(
             [
-                FloatObject(x1),
-                FloatObject(y1),
-                FloatObject(x2),
-                FloatObject(y2),
+                FloatObject(0),
+                FloatObject(0),
+                FloatObject(rect_width),
+                FloatObject(rect_height),
             ]
         )
 
@@ -564,3 +569,502 @@ class IconRenderer:
                 parts.append("ET")
 
         return parts
+
+    # ── Compound rendering (Bluebeam-native 7-component groups) ──────────
+
+    # Scale from canonical 25x30 space to page points.
+    # ~28 pts wide by ~34 pts tall — close to Bluebeam's reference proportions.
+    COMPOUND_RENDER_SCALE = 1.12
+
+    # Canonical coordinate space dimensions (shared with combined renderer above)
+    CANON_W = 25.0
+    CANON_H = 30.0
+
+    def render_compound_icon(
+        self,
+        writer: PdfWriter,
+        subject: str,
+        center: tuple[float, float],
+        id_label: str = "j100",
+    ) -> list[dict] | None:
+        """
+        Render a deployment icon as compound annotation components.
+
+        Each component has its own simple appearance stream that Bluebeam
+        can regenerate on move, preventing shape reversion.
+
+        Args:
+            writer: PdfWriter to add objects to
+            subject: Deployment subject (e.g., "AP - Cisco MR36H")
+            center: (cx, cy) center position in page coordinates
+            id_label: ID label for top box (e.g., "j100")
+
+        Returns:
+            List of component dicts (3-7 items) or None if no config.
+            Each dict has: role, subtype, rect, ap_ref, extra_props.
+        """
+        config = get_icon_config(subject)
+        if not config:
+            return None
+
+        cx, cy = center
+
+        # Load image if available
+        has_image = False
+        image_xobj_ref = None
+        img_width, img_height = 0, 0
+        image_path = config.get("image_path")
+
+        if image_path and not config.get("no_image"):
+            full_path = self.gear_icons_dir / image_path
+            if full_path.exists():
+                circle_color = config.get("circle_color", (0.5, 0.5, 0.5))
+                img_data, img_width, img_height = self.load_image(
+                    image_path, circle_color
+                )
+                image_xobj_ref = self.create_image_xobject(
+                    writer, img_data, img_width, img_height
+                )
+                has_image = True
+
+        # Get text values
+        model_text = config.get("model_text_override") or get_model_text(subject)
+        if config.get("model_uppercase"):
+            model_text = model_text.upper()
+        brand_text = config.get("brand_text", "")
+
+        # Extract config parameters
+        circle_color = config.get("circle_color", (0.22, 0.34, 0.65))
+        circle_border_color = config.get("circle_border_color", (0.0, 0.0, 0.0))
+        circle_border_width = config.get("circle_border_width", 0.75)
+        text_color = config.get("text_color", (1.0, 1.0, 1.0))
+        id_text_color = config.get("id_text_color") or circle_color
+        id_font_size = config.get("id_font_size", 3.9)
+        id_box_border_width = config.get("id_box_border_width", 0.35)
+        no_id_box = config.get("no_id_box", False)
+        model_font_size = config.get("model_font_size", 2.2)
+        brand_font_size = config.get("brand_font_size", 1.8)
+
+        # Compute absolute page rects for all components
+        rects = self._compute_component_rects(
+            cx, cy, config, img_width, img_height
+        )
+
+        components: list[dict] = []
+
+        # 1. Root: ID text (FreeText) — always created
+        id_rect = rects["id_text"]
+        id_ap = self._render_freetext_ap(
+            writer, id_rect, id_label if not no_id_box else "",
+            id_font_size, id_text_color,
+        )
+        components.append({
+            "role": "root_id_text",
+            "subtype": "/FreeText",
+            "rect": id_rect,
+            "ap_ref": id_ap,
+            "extra_props": {
+                "/DA": (
+                    f"{id_text_color[0]:.4f} {id_text_color[1]:.4f} "
+                    f"{id_text_color[2]:.4f} rg /HelvBld {id_font_size:.2f} Tf"
+                ),
+                "/Contents": id_label if not no_id_box else "",
+                "/C": [],
+                "/BS": {"W": 0},
+            },
+        })
+
+        # 2. ID box border (Square) — unless hidden
+        if not no_id_box:
+            box_rect = rects["id_box"]
+            box_ap = self._render_id_box_ap(writer, box_rect, id_box_border_width)
+            components.append({
+                "role": "id_box_border",
+                "subtype": "/Square",
+                "rect": box_rect,
+                "ap_ref": box_ap,
+                "extra_props": {
+                    "/IC": [1.0, 1.0, 1.0],
+                    "/C": [0.0, 0.0, 0.0],
+                    "/BS": {"W": id_box_border_width},
+                    "/RD": id_box_border_width / 2,
+                },
+            })
+
+        # 3. Container (FreeText) — overall bounding box
+        container_rect = rects["container"]
+        container_ap = self._render_container_ap(writer, container_rect)
+        components.append({
+            "role": "container",
+            "subtype": "/FreeText",
+            "rect": container_rect,
+            "ap_ref": container_ap,
+            "extra_props": {
+                "/DA": "0 0 0 rg /HelvBld 1 Tf",
+                "/Contents": "",
+                "/C": [],
+                "/BS": {"W": 0},
+            },
+        })
+
+        # 4. Circle
+        circle_rect = rects["circle"]
+        circle_ap = self._render_circle_ap(
+            writer, circle_rect, circle_color, circle_border_color,
+            circle_border_width,
+        )
+        components.append({
+            "role": "circle",
+            "subtype": "/Circle",
+            "rect": circle_rect,
+            "ap_ref": circle_ap,
+            "extra_props": {
+                "/IC": list(circle_color),
+                "/C": list(circle_border_color),
+                "/BS": {"W": circle_border_width},
+                "/RD": circle_border_width / 2,
+            },
+        })
+
+        # 5. Image (Square) — if available
+        if has_image and image_xobj_ref:
+            img_rect = rects["image"]
+            img_ap = self._render_image_ap(writer, img_rect, image_xobj_ref)
+            components.append({
+                "role": "image",
+                "subtype": "/Square",
+                "rect": img_rect,
+                "ap_ref": img_ap,
+                "extra_props": {
+                    "/C": [1.0, 0.0, 0.0],
+                    "/BS": {"W": 0},
+                },
+            })
+
+        # 6. Model text (FreeText) — if available
+        if model_text:
+            model_rect = rects["model_text"]
+            model_ap = self._render_freetext_ap(
+                writer, model_rect, model_text, model_font_size, text_color,
+            )
+            components.append({
+                "role": "model_text",
+                "subtype": "/FreeText",
+                "rect": model_rect,
+                "ap_ref": model_ap,
+                "extra_props": {
+                    "/DA": (
+                        f"{text_color[0]:.4f} {text_color[1]:.4f} "
+                        f"{text_color[2]:.4f} rg /HelvBld {model_font_size:.2f} Tf"
+                    ),
+                    "/Contents": model_text,
+                    "/C": [],
+                    "/BS": {"W": 0},
+                },
+            })
+
+        # 7. Brand text (FreeText) — if available
+        if brand_text:
+            brand_rect = rects["brand_text"]
+            brand_ap = self._render_freetext_ap(
+                writer, brand_rect, brand_text, brand_font_size, text_color,
+            )
+            components.append({
+                "role": "brand_text",
+                "subtype": "/FreeText",
+                "rect": brand_rect,
+                "ap_ref": brand_ap,
+                "extra_props": {
+                    "/DA": (
+                        f"{text_color[0]:.4f} {text_color[1]:.4f} "
+                        f"{text_color[2]:.4f} rg /HelvBld {brand_font_size:.2f} Tf"
+                    ),
+                    "/Contents": brand_text,
+                    "/C": [],
+                    "/BS": {"W": 0},
+                },
+            })
+
+        return components
+
+    def _compute_component_rects(
+        self,
+        cx: float,
+        cy: float,
+        config: dict[str, Any],
+        img_width: int,
+        img_height: int,
+    ) -> dict[str, list[float]]:
+        """
+        Compute absolute page rects for all compound annotation components.
+
+        Reuses the canonical 25x30 coordinate space layout math from
+        _create_appearance_stream, transforming to absolute page coords.
+
+        Args:
+            cx: Page X center of the icon
+            cy: Page Y center of the icon
+            config: Icon configuration dictionary
+            img_width: Image width in pixels (0 if no image)
+            img_height: Image height in pixels (0 if no image)
+
+        Returns:
+            Dict mapping role name to [x1, y1, x2, y2] absolute page rects.
+        """
+        scale = self.COMPOUND_RENDER_SCALE
+        half_w = (self.CANON_W * scale) / 2
+        half_h = (self.CANON_H * scale) / 2
+
+        # Origin of canonical (0,0) in page coords
+        ox = cx - half_w
+        oy = cy - half_h
+
+        def to_page_rect(c_x1: float, c_y1: float, c_w: float, c_h: float) -> list[float]:
+            return [
+                ox + c_x1 * scale,
+                oy + c_y1 * scale,
+                ox + (c_x1 + c_w) * scale,
+                oy + (c_y1 + c_h) * scale,
+            ]
+
+        # Canonical layout (same math as _create_appearance_stream lines 286-328)
+        id_box_height = config.get("id_box_height", 2.3)
+        id_box_width_ratio = config.get("id_box_width_ratio", 0.41)
+        id_box_y_offset = config.get("id_box_y_offset", 0.0)
+        img_scale_ratio = config.get("img_scale_ratio", 0.70)
+
+        canon_cx = self.CANON_W / 2  # 12.5
+        id_box_width = self.CANON_W * id_box_width_ratio
+        id_box_x1 = canon_cx - id_box_width / 2
+        id_box_y1 = self.CANON_H - id_box_height + id_box_y_offset
+
+        circle_top = id_box_y1 + 2
+        circle_area_height = circle_top  # circle_bottom = 0
+        radius = min(self.CANON_W, circle_area_height) / 2 - 0.3
+        canon_cy = circle_top - radius
+
+        rects: dict[str, list[float]] = {}
+
+        # Container — full canonical space
+        rects["container"] = to_page_rect(0, 0, self.CANON_W, self.CANON_H)
+
+        # ID box (Square border)
+        rects["id_box"] = to_page_rect(
+            id_box_x1, id_box_y1, id_box_width, id_box_height
+        )
+
+        # ID text (FreeText) — full width, covers ID box area with padding
+        rects["id_text"] = to_page_rect(
+            0, id_box_y1 - 2, self.CANON_W, id_box_height + 4
+        )
+
+        # Circle
+        rects["circle"] = to_page_rect(
+            canon_cx - radius, canon_cy - radius, 2 * radius, 2 * radius
+        )
+
+        # Image
+        if img_width > 0 and img_height > 0:
+            img_scale = (radius * img_scale_ratio) / max(img_width, img_height)
+            img_draw_w = img_width * img_scale
+            img_draw_h = img_height * img_scale
+            img_x_off = config.get("img_x_offset", 0.0)
+            img_y_off = config.get("img_y_offset", 0.0)
+            img_cx = canon_cx - img_draw_w / 2 + img_x_off
+            img_cy = canon_cy - img_draw_h / 2 + img_y_off
+            rects["image"] = to_page_rect(img_cx, img_cy, img_draw_w, img_draw_h)
+
+        # Model text — below circle, full width
+        model_y_offset = config.get("model_y_offset", 2.5)
+        model_font_size = config.get("model_font_size", 2.2)
+        model_text_y = canon_cy - radius + model_y_offset - model_font_size * 2
+        rects["model_text"] = to_page_rect(
+            0, max(model_text_y, 0), self.CANON_W, model_font_size * 5
+        )
+
+        # Brand text — upper area of circle, full width
+        brand_y_offset = config.get("brand_y_offset", -3.2)
+        brand_font_size = config.get("brand_font_size", 1.8)
+        brand_text_y = canon_cy + radius + brand_y_offset - brand_font_size
+        rects["brand_text"] = to_page_rect(
+            0, brand_text_y, self.CANON_W, brand_font_size * 4
+        )
+
+        return rects
+
+    def _make_form_stream(
+        self,
+        writer: PdfWriter,
+        bbox: list[float],
+        content_bytes: bytes,
+        resources: DictionaryObject | None = None,
+    ) -> IndirectObject:
+        """
+        Create a PDF Form XObject with absolute BBox and Matrix.
+
+        Uses absolute BBox [x1,y1,x2,y2] with Matrix [1,0,0,1,-x1,-y1]
+        so content streams draw at absolute page coordinates and the Matrix
+        translates them into form-local space.
+
+        Args:
+            writer: PdfWriter to add the object to
+            bbox: Absolute bounding box [x1, y1, x2, y2]
+            content_bytes: Encoded content stream bytes
+            resources: Optional Resources dictionary
+
+        Returns:
+            IndirectObject reference to the form stream
+        """
+        x1, y1 = bbox[0], bbox[1]
+
+        ap_stream = StreamObject()
+        ap_stream[NameObject("/Type")] = NameObject("/XObject")
+        ap_stream[NameObject("/Subtype")] = NameObject("/Form")
+        ap_stream[NameObject("/FormType")] = NumberObject(1)
+        ap_stream[NameObject("/BBox")] = ArrayObject([
+            FloatObject(bbox[0]), FloatObject(bbox[1]),
+            FloatObject(bbox[2]), FloatObject(bbox[3]),
+        ])
+        ap_stream[NameObject("/Matrix")] = ArrayObject([
+            NumberObject(1), NumberObject(0),
+            NumberObject(0), NumberObject(1),
+            FloatObject(-x1), FloatObject(-y1),
+        ])
+
+        if resources:
+            ap_stream[NameObject("/Resources")] = resources
+
+        ap_stream._data = content_bytes
+        return writer._add_object(ap_stream)
+
+    def _make_font_resource(self) -> DictionaryObject:
+        """Create a Resources dict with Helvetica-Bold font as /HelvBld."""
+        resources = DictionaryObject()
+        font_dict = DictionaryObject()
+        helv = DictionaryObject()
+        helv[NameObject("/Type")] = NameObject("/Font")
+        helv[NameObject("/Subtype")] = NameObject("/Type1")
+        helv[NameObject("/BaseFont")] = NameObject("/Helvetica-Bold")
+        font_dict[NameObject("/HelvBld")] = helv
+        resources[NameObject("/Font")] = font_dict
+        return resources
+
+    def _render_circle_ap(
+        self,
+        writer: PdfWriter,
+        rect: list[float],
+        circle_color: tuple[float, float, float],
+        border_color: tuple[float, float, float],
+        border_width: float,
+    ) -> IndirectObject:
+        """Create circle appearance stream at absolute coordinates."""
+        x1, y1, x2, y2 = rect
+        ccx = (x1 + x2) / 2
+        ccy = (y1 + y2) / 2
+        radius = min(x2 - x1, y2 - y1) / 2
+
+        k = self.BEZIER_K
+        r, g, b = circle_color
+        parts = [
+            f"{border_color[0]:.4f} {border_color[1]:.4f} {border_color[2]:.4f} RG",
+            f"{border_width:.4f} w",
+            f"{r:.4f} {g:.4f} {b:.4f} rg",
+            f"{ccx + radius:.3f} {ccy:.3f} m",
+            f"{ccx + radius:.3f} {ccy + radius * k:.3f} "
+            f"{ccx + radius * k:.3f} {ccy + radius:.3f} "
+            f"{ccx:.3f} {ccy + radius:.3f} c",
+            f"{ccx - radius * k:.3f} {ccy + radius:.3f} "
+            f"{ccx - radius:.3f} {ccy + radius * k:.3f} "
+            f"{ccx - radius:.3f} {ccy:.3f} c",
+            f"{ccx - radius:.3f} {ccy - radius * k:.3f} "
+            f"{ccx - radius * k:.3f} {ccy - radius:.3f} "
+            f"{ccx:.3f} {ccy - radius:.3f} c",
+            f"{ccx + radius * k:.3f} {ccy - radius:.3f} "
+            f"{ccx + radius:.3f} {ccy - radius * k:.3f} "
+            f"{ccx + radius:.3f} {ccy:.3f} c",
+            "h B",
+        ]
+        content = "\n".join(parts).encode("latin-1")
+        return self._make_form_stream(writer, rect, content)
+
+    def _render_id_box_ap(
+        self,
+        writer: PdfWriter,
+        rect: list[float],
+        border_width: float,
+    ) -> IndirectObject:
+        """Create white rectangle with black border at absolute coordinates."""
+        x1, y1, x2, y2 = rect
+        parts = [
+            "1 1 1 rg",
+            "0 0 0 RG",
+            f"{border_width:.2f} w",
+            f"{x1:.3f} {y1:.3f} {x2 - x1:.3f} {y2 - y1:.3f} re",
+            "B",
+        ]
+        content = "\n".join(parts).encode("latin-1")
+        return self._make_form_stream(writer, rect, content)
+
+    def _render_image_ap(
+        self,
+        writer: PdfWriter,
+        rect: list[float],
+        image_xobj_ref: IndirectObject,
+    ) -> IndirectObject:
+        """Create image appearance stream at absolute coordinates."""
+        x1, y1, x2, y2 = rect
+        w = x2 - x1
+        h = y2 - y1
+        content = f"q {w:.3f} 0 0 {h:.3f} {x1:.3f} {y1:.3f} cm /Img Do Q".encode(
+            "latin-1"
+        )
+
+        resources = DictionaryObject()
+        xobject_dict = DictionaryObject()
+        xobject_dict[NameObject("/Img")] = image_xobj_ref
+        resources[NameObject("/XObject")] = xobject_dict
+
+        return self._make_form_stream(writer, rect, content, resources)
+
+    def _render_freetext_ap(
+        self,
+        writer: PdfWriter,
+        rect: list[float],
+        text: str,
+        font_size: float,
+        text_color: tuple[float, float, float],
+    ) -> IndirectObject:
+        """Create FreeText appearance stream with centered text at absolute coords."""
+        x1, y1, x2, y2 = rect
+        tcx = (x1 + x2) / 2
+        tcy = (y1 + y2) / 2
+        r, g, b = text_color
+
+        lines = text.split("\n")[:3] if text else [""]
+        line_height = font_size * 1.2
+
+        parts = ["BT", f"{r:.4f} {g:.4f} {b:.4f} rg", f"/HelvBld {font_size:.2f} Tf"]
+
+        base_y = tcy - font_size / 2 + 0.3
+        if len(lines) > 1:
+            base_y += (len(lines) - 1) * line_height / 2
+
+        for i, line in enumerate(lines):
+            line_w = measure_text_width(line, font_size)
+            lx = tcx - line_w / 2
+            ly = base_y - i * line_height
+            parts.append(f"1 0 0 1 {lx:.3f} {ly:.3f} Tm")
+            parts.append(f"({line}) Tj")
+
+        parts.append("ET")
+
+        content = "\n".join(parts).encode("latin-1")
+        return self._make_form_stream(writer, rect, content, self._make_font_resource())
+
+    def _render_container_ap(
+        self,
+        writer: PdfWriter,
+        rect: list[float],
+    ) -> IndirectObject:
+        """Create empty container appearance (invisible bounding box)."""
+        return self._make_form_stream(writer, rect, b"", self._make_font_resource())
