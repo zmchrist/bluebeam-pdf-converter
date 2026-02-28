@@ -60,7 +60,6 @@ bluebeam-pdf-converter/
 │   └── maps/                     # Sample PDFs for testing
 ├── .claude/
 │   ├── PRD.md                    # Product requirements document
-│   ├── memories.md               # Session history and notes
 │   ├── errors.md                 # Known errors and solutions
 │   └── commands/                 # Claude Code command definitions
 └── .agents/plans/                # Implementation plans
@@ -120,6 +119,9 @@ uv run python scripts/test_conversion.py
 # BBox Variant Comparison (generates PDF A + PDF B for Bluebeam testing)
 uv run python scripts/test_bbox_variants.py
 
+# Diagnose Group Properties (compare native vs converter annotation structure)
+uv run python scripts/diagnose_group_properties.py [converter_output.pdf]
+
 # Frontend
 cd frontend && npm install && npm run dev
 ```
@@ -133,7 +135,6 @@ Read these documents when working on specific areas:
 | `.claude/PRD.md` | Understanding requirements, features, API spec, architecture |
 | `backend/data/mapping.md` | Icon mapping configuration, bid→deployment subject mappings |
 | `backend/app/services/icon_config.py` | Icon rendering configuration, categories, overrides |
-| `.claude/memories.md` | Recent implementation decisions, technical discoveries |
 | `.claude/errors.md` | Before debugging - check for known solutions |
 | `.claude/recommended-workflow.md` | Command workflow for feature implementations |
 
@@ -266,9 +267,11 @@ function Panel({ data }: { data: Data }) {
 - **Always preserve** `/Line` and `/PolyLine` annotations (e.g., P2P link lines) — pass through unchanged
 - **Only convert** `/Circle` and `/Square` subtypes (`CONVERTIBLE_SUBTYPES`) — all other subtypes are preserved as-is
 - **Drop IRT children** — Bluebeam bid compound icons are Circle+Square (or Circle+FreeText) pairs linked via `/IRT`. Only the root annotation (no `/IRT`) is converted; children are removed to prevent duplicates
-- **Compound annotation groups** — Each deployment icon emits 7 linked annotations matching Bluebeam's native structure (FreeText root + Square ID box + FreeText container + Circle + Square image + FreeText model + FreeText brand), linked via `/IRT` and `/GroupNesting`. Each component has a simple AP stream that Bluebeam can regenerate on move, preventing shape reversion
+- **Compound annotation groups** — Each deployment icon emits 7 linked annotations matching Bluebeam's native structure (FreeText root + Square ID box + FreeText container + Circle + Square image + FreeText model + FreeText brand), linked via `/IRT` + `/RT /Group` and `/GroupNesting`. Each component has a simple AP stream that Bluebeam can regenerate on move, preventing shape reversion
+- **Group movement** — Children have `/RT /Group` (not default `/RT /R` reply) so Bluebeam treats them as physically grouped annotations that move as a single unit
 - **Absolute BBox + Matrix** — Compound AP streams use `BBox [x1,y1,x2,y2]` with `Matrix [1,0,0,1,-x1,-y1]`; content draws at absolute page coords. The Matrix translates absolute coords into form-local space
-- **`/GroupNesting` format** — `[subject, /NM1, /NM2, ..., /NMn]` on ALL annotations (root + children); root has `/Sequence` with `/IID` + `/Index`
+- **`/GroupNesting` format** — `[subject, /NM1, /NM2, ..., /NMn]` on root annotation only; root has `/Sequence` with `/IID` + `/Index`
+- **Bluebeam text properties** — FreeText annotations include `/DS` (Default Style CSS) and `/RC` (Rich Content XHTML) so Bluebeam can regenerate text after move operations; image Squares have `/IT /SquareImage`
 - **Compound render scale** — `COMPOUND_RENDER_SCALE = 1.12` transforms canonical 25×30 space to ~28×34 pts per icon
 - **Fallback single annotation** — Icons without config use `STANDARD_ICON_SIZE` (14.6 pts) single annotation with zero-origin BBox
 - **Single-pass array rebuild** — Annotations are processed in one pass, building a new `ArrayObject` per page (no `del`/`append` index shifting)
@@ -433,6 +436,8 @@ Once you say `/plan-feature` (or equivalent), I will create a comprehensive plan
 - Step-by-step implementation approach
 - File list and estimated scope
 
+All implementation plans are stored in `.agents/plans/` within the project directory.
+
 The plan then goes to you for review and approval before implementation begins.
 
 ## Key Services
@@ -452,7 +457,8 @@ Loads BTX XML files, decodes zlib-compressed hex data, extracts icon subjects.
 ### AnnotationReplacer
 Replaces bid annotations with deployment annotations using pypdf:
 - Emits compound annotation groups (7 linked annotations per icon) matching Bluebeam's native structure
-- Builds `/GroupNesting` arrays and `/IRT` links between root and children
+- Builds `/GroupNesting` on root, `/IRT` + `/RT /Group` on children for physical group movement
+- Applies `/DS`, `/RC` (text properties) and `/IT` (image intent) for Bluebeam compatibility
 - Tracks `/Sequence` counter across conversion run
 - Falls back to single annotation for icons without config
 

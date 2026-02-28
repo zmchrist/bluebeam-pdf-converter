@@ -658,6 +658,7 @@ class IconRenderer:
             writer, id_rect, id_label if not no_id_box else "",
             id_font_size, id_text_color,
         )
+        id_contents = id_label if not no_id_box else ""
         components.append({
             "role": "root_id_text",
             "subtype": "/FreeText",
@@ -668,9 +669,13 @@ class IconRenderer:
                     f"{id_text_color[0]:.4f} {id_text_color[1]:.4f} "
                     f"{id_text_color[2]:.4f} rg /HelvBld {id_font_size:.2f} Tf"
                 ),
-                "/Contents": id_label if not no_id_box else "",
+                "/Contents": id_contents,
                 "/C": [],
                 "/BS": {"W": 0},
+                "/DS": self._make_ds_string(id_font_size, id_text_color),
+                "/RC": self._make_rc_string(
+                    id_contents, id_font_size, id_text_color
+                ),
             },
         })
 
@@ -704,6 +709,7 @@ class IconRenderer:
                 "/Contents": "",
                 "/C": [],
                 "/BS": {"W": 0},
+                "/DS": self._make_ds_string(1.0, circle_color),
             },
         })
 
@@ -738,6 +744,7 @@ class IconRenderer:
                 "extra_props": {
                     "/C": [1.0, 0.0, 0.0],
                     "/BS": {"W": 0},
+                    "/IT": "/SquareImage",
                 },
             })
 
@@ -760,6 +767,8 @@ class IconRenderer:
                     "/Contents": model_text,
                     "/C": [],
                     "/BS": {"W": 0},
+                    "/DS": self._make_ds_string(model_font_size, text_color),
+                    "/RC": self._make_rc_string(model_text, model_font_size, text_color),
                 },
             })
 
@@ -782,6 +791,8 @@ class IconRenderer:
                     "/Contents": brand_text,
                     "/C": [],
                     "/BS": {"W": 0},
+                    "/DS": self._make_ds_string(brand_font_size, text_color),
+                    "/RC": self._make_rc_string(brand_text, brand_font_size, text_color),
                 },
             })
 
@@ -948,6 +959,50 @@ class IconRenderer:
         font_dict[NameObject("/HelvBld")] = helv
         resources[NameObject("/Font")] = font_dict
         return resources
+
+    @staticmethod
+    def _make_ds_string(
+        font_size: float,
+        color_rgb: tuple[float, float, float],
+        text_valign: str = "middle",
+    ) -> str:
+        """Generate Bluebeam /DS (Default Style) CSS string for FreeText."""
+        hex_color = "#{:02X}{:02X}{:02X}".format(
+            int(color_rgb[0] * 255),
+            int(color_rgb[1] * 255),
+            int(color_rgb[2] * 255),
+        )
+        line_height = round(font_size * 0.575, 4)
+        return (
+            f"font: bold Helvetica {font_size}pt; text-align:center; "
+            f"text-valign:{text_valign}; margin:0pt; "
+            f"line-height:{line_height}pt; color:{hex_color}"
+        )
+
+    @staticmethod
+    def _make_rc_string(
+        text: str,
+        font_size: float,
+        color_rgb: tuple[float, float, float],
+    ) -> str:
+        """Generate Bluebeam /RC (Rich Content) XHTML string for FreeText."""
+        hex_color = "#{:02X}{:02X}{:02X}".format(
+            int(color_rgb[0] * 255),
+            int(color_rgb[1] * 255),
+            int(color_rgb[2] * 255),
+        )
+        line_height = round(font_size * 0.575, 4)
+        return (
+            f'<?xml version="1.0"?>'
+            f'<body xmlns:xfa="http://www.xfa.org/schema/xfa-data/1.0/" '
+            f'xfa:contentType="text/html" '
+            f'xfa:APIVersion="BluebeamPDFRevu:2018" xfa:spec="2.2.0" '
+            f'style="font:bold Helvetica {font_size}pt; text-align:center; '
+            f'text-valign:middle; margin:0pt; line-height:{line_height}pt; '
+            f'color:{hex_color}" '
+            f'xmlns="http://www.w3.org/1999/xhtml">'
+            f'<p>{text}</p></body>'
+        )
 
     def _render_circle_ap(
         self,

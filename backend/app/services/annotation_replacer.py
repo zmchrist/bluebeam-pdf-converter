@@ -301,7 +301,6 @@ class AnnotationReplacer:
             annot[NameObject("/M")] = TextStringObject(now)
             annot[NameObject("/CreationDate")] = TextStringObject(now)
             annot[NameObject("/T")] = TextStringObject("PDF Converter")
-            annot[NameObject("/GroupNesting")] = group_nesting
 
             if ocg_ref is not None:
                 annot[NameObject("/OC")] = ocg_ref
@@ -336,9 +335,16 @@ class AnnotationReplacer:
                     FloatObject(rd_val), FloatObject(rd_val),
                     FloatObject(rd_val), FloatObject(rd_val),
                 ])
+            if "/DS" in extra:
+                annot[NameObject("/DS")] = TextStringObject(extra["/DS"])
+            if "/RC" in extra:
+                annot[NameObject("/RC")] = TextStringObject(extra["/RC"])
+            if "/IT" in extra:
+                annot[NameObject("/IT")] = NameObject(extra["/IT"])
 
             if i == 0:
-                # Root annotation — /Sequence, NO /IRT
+                # Root annotation — /GroupNesting, /Sequence, NO /IRT
+                annot[NameObject("/GroupNesting")] = group_nesting
                 annot[NameObject("/Sequence")] = DictionaryObject({
                     NameObject("/IID"): TextStringObject(self._sequence_iid),
                     NameObject("/Index"): NumberObject(self._sequence_counter),
@@ -348,8 +354,9 @@ class AnnotationReplacer:
                 ref = writer._add_object(annot)
                 root_ref = ref
             else:
-                # Child annotation — /IRT points to root
+                # Child annotation — /IRT points to root, /RT marks as group member
                 annot[NameObject("/IRT")] = root_ref
+                annot[NameObject("/RT")] = NameObject("/Group")
                 ref = writer._add_object(annot)
 
             refs.append(ref)

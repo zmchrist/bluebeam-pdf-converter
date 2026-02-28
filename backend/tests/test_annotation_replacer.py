@@ -419,9 +419,6 @@ class TestCompoundAnnotationGroup:
 
     def test_compound_group_structure(self):
         """Test compound group has correct IRT/GroupNesting structure."""
-        from pypdf import PdfWriter
-        from pypdf.generic import IndirectObject
-
         mapper = MockMappingParser({"AP_Bid": "AP - Cisco MR36H"})
         loader = MockBTXLoader()
 
@@ -490,10 +487,23 @@ class TestCompoundAnnotationGroup:
             nms = [str(a.get("/NM", "")) for a in compound_annots]
             assert len(set(nms)) == len(nms), "NM values must be unique"
 
-            # All should share same /GroupNesting
+            # Only root should have /GroupNesting
             for annot in compound_annots:
-                gn = annot.get("/GroupNesting")
-                assert gn is not None, "All annotations must have /GroupNesting"
+                if annot.get("/IRT") is None:
+                    # Root: must have /GroupNesting
+                    gn = annot.get("/GroupNesting")
+                    assert gn is not None, "Root must have /GroupNesting"
+                else:
+                    # Child: must NOT have /GroupNesting
+                    assert annot.get("/GroupNesting") is None, (
+                        "Children must NOT have /GroupNesting"
+                    )
+
+            # All children should have /RT /Group
+            for child in children:
+                rt = child.get("/RT")
+                assert rt is not None, "Children must have /RT"
+                assert str(rt) == "/Group", f"Children /RT must be /Group, got {rt}"
 
     def test_compound_converted_count_is_logical(self):
         """Test that converted_count counts logical icons, not annotations."""
